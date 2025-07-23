@@ -37,7 +37,7 @@ flowchart TD
    - Recent changes
    - Next steps
    - Active decisions and considerations
-
+ь
 4. `systemPatterns.md`
    - System architecture
    - Key technical decisions
@@ -95,7 +95,7 @@ flowchart TD
 Memory Bank updates occur when:
 1. Discovering new project patterns
 2. After implementing significant changes
-3. When user requests with **update memory bank** (MUST review ALL files)
+3. When user requests wьith **update memory bank** (MUST review ALL files)
 4. When context needs clarification
 
 ```mermaid
