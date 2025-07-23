@@ -12,22 +12,29 @@ const PRELOAD_DEPENDENCIES = {
 };
 
 const App: React.FC = () => {
+  console.log('App component render START');
   const [originalCode, setOriginalCode] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   const [showSource, setShowSource] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
+    console.log('handleFile called');
     const reader = new FileReader();
     reader.onload = (e) => {
       const code = e.target?.result as string;
       setOriginalCode(code);
       setFileName(file.name);
       setError(null);
+      setShowSource(false);
+      setShowEditor(false);
+      setShowPreview(true);
+      console.log('File loaded, setShowPreview(true)');
     };
     reader.onerror = () => setError('Ошибка чтения файла');
     reader.readAsText(file);
@@ -91,6 +98,34 @@ const App: React.FC = () => {
     );
   }
 
+  const visiblePanels = [showSource, showEditor, showPreview].filter(Boolean).length;
+  console.log('showSource', showSource, 'showEditor', showEditor, 'showPreview', showPreview, 'visiblePanels', visiblePanels);
+
+  let singlePanel = null;
+  if (visiblePanels === 1) {
+    if (showSource) {
+      singlePanel = (
+        <div style={{ flexGrow: 1, height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
+          <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
+        </div>
+      );
+    } else if (showEditor) {
+      singlePanel = (
+        <SandpackLayout style={{ flexGrow: 1, height: '100%' }}>
+          <SandpackCodeEditor showLineNumbers={true} />
+        </SandpackLayout>
+      );
+    } else if (showPreview) {
+      singlePanel = (
+        <div style={{ flexGrow: 1, minHeight: 0, minWidth: 0, width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <SandpackLayout style={{ flexGrow: 1, minHeight: 0, minWidth: 0, width: '100%', height: '100%' }}>
+            <SandpackPreview style={{ flexGrow: 1, minHeight: 0, minWidth: 0, width: '100%', height: '100%' }} />
+          </SandpackLayout>
+        </div>
+      );
+    }
+  }
+
   return (
     <>
       {/* Универсальный Sandpack-прогрев для ускорения первой загрузки */}
@@ -132,36 +167,44 @@ const App: React.FC = () => {
           files={{ "/App.tsx": originalCode }}
           customSetup={{ dependencies: { "lucide-react": "^0.309.0" } }}
         >
-          <PanelGroup
-            direction="horizontal"
-            style={{ flexGrow: 1, minHeight: 0 }}
-          >
-            {showSource && (
-              <>
-                <Panel defaultSize={25} minSize={10}>
-                  <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
-                    <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
-                  </div>
-                </Panel>
-                <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
-              </>
-            )}
-            {showEditor && (
-              <>
-                <Panel defaultSize={35} minSize={10}>
-                  <SandpackLayout>
-                    <SandpackCodeEditor showLineNumbers={true} />
-                  </SandpackLayout>
-                </Panel>
-                <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
-              </>
-            )}
-            <Panel defaultSize={100} minSize={10}>
-              <SandpackLayout>
-                <SandpackPreview style={{ height: '100%' }} />
-              </SandpackLayout>
-            </Panel>
-          </PanelGroup>
+          <div style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+            {visiblePanels === 1
+              ? singlePanel
+              : (
+                <PanelGroup
+                  direction="horizontal"
+                  style={{ flexGrow: 1, minHeight: 0 }}
+                >
+                  {showSource && (
+                    <>
+                      <Panel defaultSize={25} minSize={10}>
+                        <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
+                          <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
+                        </div>
+                      </Panel>
+                      <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
+                    </>
+                  )}
+                  {showEditor && (
+                    <>
+                      <Panel defaultSize={35} minSize={10}>
+                        <SandpackLayout>
+                          <SandpackCodeEditor showLineNumbers={true} />
+                        </SandpackLayout>
+                      </Panel>
+                      <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
+                    </>
+                  )}
+                  {showPreview && (
+                    <Panel defaultSize={100} minSize={10}>
+                      <SandpackLayout>
+                        <SandpackPreview style={{ height: '100%' }} />
+                      </SandpackLayout>
+                    </Panel>
+                  )}
+                </PanelGroup>
+              )}
+          </div>
         </SandpackProvider>
         {error && <div style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>Ошибка: {error}</div>}
       </div>
