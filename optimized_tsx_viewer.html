@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimized TSX Viewer</title>
+    
+    <!-- Essential Libraries Only -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.4/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typescript/5.2.2/typescript.min.js"></script>
+    
+    <!-- Minimal Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Essential UI Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    
+    <!-- Sucrase -->
+    <script src="https://unpkg.com/sucrase@3.32.0/dist/browser/sucrase.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #8b5cf6;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f1f5f9;
+            --text-muted: #cbd5e1;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --border: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            gap: 1px;
+            background: var(--border);
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar {
+            background: var(--surface);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .section {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .url-input {
+            width: 100%;
+            background: var(--background);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .url-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 0.75rem;
+            padding: 2rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--background);
+            position: relative;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--primary);
+            border-style: solid;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .drop-zone-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+        }
+
+        .file-info {
+            background: var(--background);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .file-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-section {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .status-panel {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--error);
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: var(--warning);
+        }
+
+        .status-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: var(--primary);
+        }
+
+        .error-details {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            border-left: 3px solid var(--error);
+        }
+
+        .error-location {
+            background: rgba(239, 68, 68, 0.2);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            margin-top: 0.5rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+
+        .compilation-steps {
+            margin-top: 0.75rem;
+        }
+
+        .compilation-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+            font-size: 0.75rem;
+        }
+
+        .step-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+        }
+
+        .step-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .step-error {
+            background: var(--error);
+            color: white;
+        }
+
+        .step-pending {
+            background: var(--text-muted);
+            color: white;
+        }
+
+        .viewer {
+            background: white;
+            position: relative;
+            overflow: auto;
+        }
+
+        .viewer-content {
+            min-height: 100%;
+            padding: 2rem;
+        }
+
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #6b7280;
+        }
+
+        .loading-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .component-meta {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-family: monospace;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            max-width: 300px;
+        }
+
+        .viewer:hover .component-meta {
+            opacity: 1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--surface-light);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 60px 350px 1fr;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--surface);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--surface-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1>⚡ Optimized TSX Viewer</h1>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">
+                Fast • Reliable • Detailed Errors
+            </div>
+        </header>
+
+        <aside class="sidebar">
+            <!-- URL Input Section -->
+            <div class="section">
+                <div class="section-title">🌐 Load from URL</div>
+                <div class="input-group">
+                    <label for="urlInput">TSX File URL</label>
+                    <input type="url" id="urlInput" class="url-input" 
+                           placeholder="https://example.com/component.tsx" />
+                </div>
+                <button class="btn btn-primary" onclick="loadFromURL()">
+                    📥 Load from URL
+                </button>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="section">
+                <div class="section-title">📁 Upload File</div>
+                <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+                    <div class="drop-zone-content">
+                        <div style="font-size: 2rem;">📄</div>
+                        <div style="font-weight: 500;">Drop TSX file here</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">or click to browse</div>
+                    </div>
+                    <input type="file" id="fileInput" class="file-input" accept=".tsx,.ts,.jsx,.js" />
+                </div>
+                <div id="fileInfo" style="display: none;" class="file-info">
+                    <div class="file-info-item">
+                        <span>Name:</span>
+                        <span id="fileName"></span>
+                    </div>
+                    <div class="file-info-item">
+                        <span>Size:</span>
+                        <span id="fileSize"></span>
+                    </div>
+                    <div class="file-info-item">
+                        <span>Lines:</span>
+                        <span id="fileLines"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="section">
+                <div class="section-title">🎛️ Controls</div>
+                <button class="btn btn-primary" onclick="compileAndRender()" id="compileBtn" disabled>
+                    ⚡ Compile & Render
+                </button>
+                <button class="btn" onclick="clearViewer()">
+                    🗑️ Clear Viewer
+                </button>
+                <button class="btn" onclick="exportComponent()" id="exportBtn" disabled>
+                    💾 Export HTML
+                </button>
+            </div>
+
+            <!-- Status Section -->
+            <div class="status-section">
+                <div class="section-title">📊 Status</div>
+                <div id="statusPanel">
+                    <div class="loading-state">
+                        <div class="loading-icon">⚡</div>
+                        <div style="font-weight: 500;">Ready to load TSX files</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">
+                            Upload a file or paste a URL to get started
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="viewer" id="viewer">
+            <div class="viewer-content">
+                <div class="loading-state">
+                    <div class="loading-icon">📄</div>
+                    <div style="font-weight: 500;">Select a TSX file to preview</div>
+                    <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        Supports local files and remote URLs
+                    </div>
+                </div>
+            </div>
+            <div class="component-meta" id="componentMeta"></div>
+        </main>
+    </div>
+
+    <script>
+        class OptimizedTSXViewer {
+            constructor() {
+                this.currentCode = '';
+                this.currentFile = null;
+                this.compiledComponent = null;
+                this.compileStartTime = 0;
+                this.currentSource = '';
+                this.compilationSteps = [];
+                
+                this.setupEventListeners();
+                this.initializeReact();
+                
+                console.log('🚀 Optimized TSX Viewer initialized');
+            }
+
+            setupEventListeners() {
+                const fileInput = document.getElementById('fileInput');
+                const dropZone = document.querySelector('.drop-zone');
+                const urlInput = document.getElementById('urlInput');
+                
+                fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+                
+                // Drag and drop
+                dropZone.addEventListener('dragover', (e) => this.handleDragOver(e));
+                dropZone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+                dropZone.addEventListener('drop', (e) => this.handleDrop(e));
+
+                // URL input enter key
+                urlInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.loadFromURL();
+                    }
+                });
+            }
+
+            initializeReact() {
+                const { useState, useEffect, useCallback, useMemo, useRef, useReducer } = React;
+                
+                this.reactHooks = {
+                    useState, useEffect, useCallback, useMemo, useRef, useReducer
+                };
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                e.currentTarget.classList.add('drag-over');
+            }
+
+            handleDragLeave(e) {
+                e.preventDefault();
+                e.currentTarget.classList.remove('drag-over');
+            }
+
+            handleDrop(e) {
+                e.preventDefault();
+                e.currentTarget.classList.remove('drag-over');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    this.processFile(files[0]);
+                }
+            }
+
+            handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    this.processFile(file);
+                }
+            }
+
+            async loadFromURL() {
+                const urlInput = document.getElementById('urlInput');
+                const url = urlInput.value.trim();
+                
+                if (!url) {
+                    this.showStatus('error', 'Invalid URL', 'Please enter a valid URL');
+                    return;
+                }
+
+                if (!this.isValidTSXUrl(url)) {
+                    this.showStatus('warning', 'URL Warning', 'URL should point to a .tsx, .ts, .jsx, or .js file');
+                }
+
+                this.showStatus('info', 'Loading from URL...', `Fetching: ${url}`, null, true);
+
+                try {
+                    const response = await fetch(url);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const code = await response.text();
+                    const filename = this.extractFilenameFromUrl(url);
+                    
+                    this.currentCode = code;
+                    this.currentSource = url;
+                    this.showFileInfoFromUrl(filename, code, url);
+                    this.enableControls();
+                    
+                    this.showStatus('success', 'URL loaded successfully', 
+                        `Loaded ${code.split('\n').length} lines from ${filename}`);
+                        
+                } catch (error) {
+                    this.showDetailedError('Failed to load from URL', error, {
+                        url: url,
+                        step: 'Network Request'
+                    });
+                }
+            }
+
+            isValidTSXUrl(url) {
+                try {
+                    const urlObj = new URL(url);
+                    const pathname = urlObj.pathname.toLowerCase();
+                    return pathname.match(/\.(tsx|ts|jsx|js)$/);
+                } catch {
+                    return false;
+                }
+            }
+
+            extractFilenameFromUrl(url) {
+                try {
+                    const urlObj = new URL(url);
+                    const pathname = urlObj.pathname;
+                    return pathname.split('/').pop() || 'component.tsx';
+                } catch {
+                    return 'component.tsx';
+                }
+            }
+
+            processFile(file) {
+                if (!file.name.match(/\.(tsx|ts|jsx|js)$/)) {
+                    this.showStatus('error', 'Invalid file type', 
+                        'Please select a TSX, TS, JSX, or JS file');
+                    return;
+                }
+
+                this.currentFile = file;
+                this.currentSource = file.name;
+                this.showFileInfo(file);
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.currentCode = e.target.result;
+                    this.enableControls();
+                    this.showStatus('success', 'File loaded successfully', 
+                        `${file.name} is ready to compile`);
+                };
+                reader.onerror = () => {
+                    this.showStatus('error', 'File read error', 'Could not read the selected file');
+                };
+                reader.readAsText(file);
+            }
+
+            showFileInfo(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const lines = e.target.result.split('\n').length;
+                    this.displayFileInfo(file.name, this.formatFileSize(file.size), lines);
+                };
+                reader.readAsText(file);
+            }
+
+            showFileInfoFromUrl(filename, code, url) {
+                const size = new Blob([code]).size;
+                const lines = code.split('\n').length;
+                this.displayFileInfo(filename, this.formatFileSize(size), lines);
+            }
+
+            displayFileInfo(name, size, lines) {
+                const fileInfo = document.getElementById('fileInfo');
+                const fileName = document.getElementById('fileName');
+                const fileSize = document.getElementById('fileSize');
+                const fileLines = document.getElementById('fileLines');
+
+                fileName.textContent = name;
+                fileSize.textContent = size;
+                fileLines.textContent = lines;
+
+                fileInfo.style.display = 'block';
+                fileInfo.classList.add('fade-in');
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+            }
+
+            enableControls() {
+                document.getElementById('compileBtn').disabled = false;
+            }
+
+            showStatus(type, title, message, details = null, showProgress = false) {
+                const statusPanel = document.getElementById('statusPanel');
+                const statusClass = `status-${type}`;
+                
+                let html = `
+                    <div class="${statusClass} status-panel fade-in">
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">${title}</div>
+                        <div>${message}</div>
+                `;
+                
+                if (showProgress) {
+                    html += `
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%; animation: pulse 1.5s ease-in-out infinite;"></div>
+                        </div>
+                    `;
+                }
+
+                if (this.compilationSteps.length > 0) {
+                    html += '<div class="compilation-steps">';
+                    this.compilationSteps.forEach(step => {
+                        const iconClass = step.status === 'success' ? 'step-success' : 
+                                         step.status === 'error' ? 'step-error' : 'step-pending';
+                        const icon = step.status === 'success' ? '✓' : 
+                                    step.status === 'error' ? '✗' : '○';
+                        
+                        html += `
+                            <div class="compilation-step">
+                                <div class="step-icon ${iconClass}">${icon}</div>
+                                <span>${step.name}</span>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                }
+                
+                if (details) {
+                    html += `<div class="error-details">${details}</div>`;
+                }
+                
+                html += '</div>';
+                statusPanel.innerHTML = html;
+            }
+
+            showDetailedError(title, error, context = {}) {
+                let details = `Error: ${error.message}\n`;
+                
+                if (error.stack) {
+                    details += `\nStack Trace:\n${error.stack}`;
+                }
+                
+                if (context.url) {
+                    details += `\nURL: ${context.url}`;
+                }
+                
+                if (context.step) {
+                    details += `\nFailed at: ${context.step}`;
+                }
+                
+                if (context.line) {
+                    details += `\nLine: ${context.line}`;
+                }
+                
+                if (context.column) {
+                    details += `\nColumn: ${context.column}`;
+                }
+
+                this.showStatus('error', title, error.message, details);
+            }
+
+            updateCompilationStep(stepName, status) {
+                const existingStep = this.compilationSteps.find(s => s.name === stepName);
+                if (existingStep) {
+                    existingStep.status = status;
+                } else {
+                    this.compilationSteps.push({ name: stepName, status });
+                }
+            }
+
+            compileAndRender() {
+                if (!this.currentCode) return;
+
+                this.compileStartTime = performance.now();
+                this.compilationSteps = [];
+                
+                const compileBtn = document.getElementById('compileBtn');
+                const originalText = compileBtn.innerHTML;
+                compileBtn.innerHTML = '<div class="spinner">⚡</div> Compiling...';
+                compileBtn.disabled = true;
+
+                // Reset status
+                this.showStatus('info', 'Compiling...', 'Processing TypeScript and JSX', null, true);
+
+                setTimeout(() => {
+                    try {
+                        this.performAdvancedCompilation();
+                    } catch (error) {
+                        this.handleCompilationError(error);
+                    } finally {
+                        compileBtn.innerHTML = originalText;
+                        compileBtn.disabled = false;
+                    }
+                }, 100);
+            }
+
+            performAdvancedCompilation() {
+                try {
+                    // Step 1: Sucrase (TSX/TS -> JSX/JS)
+                    this.updateCompilationStep('Sucrase TSX->JSX', 'pending');
+                    const sucrased = window.sucrase.transform(this.currentCode, {
+                        transforms: ['typescript', 'jsx'],
+                    }).code;
+                    this.updateCompilationStep('Sucrase TSX->JSX', 'success');
+
+                    // Step 2: Icon replacement (Babel plugin)
+                    this.updateCompilationStep('Icon Replacement', 'pending');
+                    const processedCode = this.advancedCodeProcessing(sucrased);
+                    this.updateCompilationStep('Icon Replacement', 'success');
+
+                    // Debug: output processed code lines 120-150
+                    const lines = processedCode.split('\n');
+                    console.log('Processed code (120-150):\n' + lines.slice(119, 150).join('\n'));
+                    
+                    // Step 3: JSX transformation
+                    this.updateCompilationStep('JSX Transformation', 'pending');
+                    const transformedCode = this.transformJSX(processedCode);
+                    this.updateCompilationStep('JSX Transformation', 'success');
+                    
+                    // Step 4: Component creation
+                    this.updateCompilationStep('Component Creation', 'pending');
+                    this.compiledComponent = this.createAdvancedComponent(transformedCode);
+                    this.updateCompilationStep('Component Creation', 'success');
+                    
+                    // Step 5: Rendering
+                    this.updateCompilationStep('Rendering', 'pending');
+                    this.renderComponentSafely();
+                    this.updateCompilationStep('Rendering', 'success');
+                    
+                    const compileTime = (performance.now() - this.compileStartTime).toFixed(2);
+                    this.showStatus('success', 'Compilation successful!', 
+                        `Component compiled and rendered in ${compileTime}ms`);
+                    
+                    document.getElementById('exportBtn').disabled = false;
+                    this.updateComponentMeta();
+                    
+                } catch (error) {
+                    this.handleCompilationError(error);
+                }
+            }
+
+            advancedCodeProcessing(code) {
+                // 1. Сохраняем все шаблонные строки
+                const templates = [];
+                let processed = code.replace(/`([^`\\]|\\.|\n)*?`/g, (match) => {
+                    templates.push(match);
+                    return `__TEMPLATE_${templates.length - 1}__`;
+                });
+
+                // 2. Удаляем импорт
+                processed = processed.replace(/import\s+\{[^}]*\}\s+from\s+['"]lucide-react['"];?\n?/g, '');
+
+                const iconMap = {
+                    Dumbbell: '🏋️',
+                    Trophy: '🏆',
+                    Calendar: '📅',
+                    Target: '🎯',
+                    Clock: '⏰',
+                    CheckCircle: '✅',
+                    Circle: '⚪',
+                    ChevronRight: '➡️',
+                    ChevronLeft: '⬅️',
+                    Star: '⭐',
+                    Flame: '🔥',
+                    Users: '👥',
+                };
+
+                try {
+                    // Parse code to AST
+                    const ast = window.Babel.parse(processed, {
+                        sourceType: 'module',
+                        plugins: ['jsx', 'typescript'],
+                        errorRecovery: true,
+                    });
+                    // Collect icon JSX element positions
+                    const iconNodes = [];
+                    function walk(node, parentType, parentParentType) {
+                        if (!node) return;
+                        if (node.type === 'JSXElement') {
+                            let tag = '';
+                            if (node.openingElement.name.type === 'JSXIdentifier') {
+                                tag = node.openingElement.name.name;
+                            } else if (node.openingElement.name.type === 'JSXMemberExpression') {
+                                tag = node.openingElement.name.property.name;
+                            }
+                            let emoji = null;
+                            if (iconMap[tag]) {
+                                emoji = iconMap[tag];
+                            } else if (
+                                node.openingElement.name.type === 'JSXMemberExpression' &&
+                                node.openingElement.name.property.name === 'icon'
+                            ) {
+                                emoji = '⭐';
+                            }
+                            if (emoji !== null) {
+                                // Only replace with emoji if parent is a JSXFragment or JSXElement (i.e., top-level child)
+                                // If inside JSXExpressionContainer or attribute, always remove (empty string)
+                                if (parentType === 'JSXFragment' || (parentType === 'JSXElement' && parentParentType !== 'JSXExpressionContainer')) {
+                                    iconNodes.push({ start: node.start, end: node.end, emoji });
+                                } else {
+                                    iconNodes.push({ start: node.start, end: node.end, emoji: '' });
+                                }
+                            }
+                        }
+                        for (const key in node) {
+                            if (node.hasOwnProperty(key)) {
+                                const child = node[key];
+                                if (Array.isArray(child)) {
+                                    child.forEach((c) => walk(c, node.type, parentType));
+                                } else if (child && typeof child.type === 'string') {
+                                    walk(child, node.type, parentType);
+                                }
+                            }
+                        }
+                    }
+                    walk(ast, null, null);
+                    // Replace from end to start
+                    iconNodes.sort((a, b) => b.start - a.start);
+                    for (const { start, end, emoji } of iconNodes) {
+                        processed = processed.slice(0, start) + emoji + processed.slice(end);
+                    }
+                } catch (e) {
+                    // Fallback: show error and return original code
+                    console.error('AST icon replacement failed:', e);
+                    this.showStatus('error', 'AST icon replacement failed', e.message);
+                    return code;
+                }
+
+                // 3. Восстанавливаем шаблонные строки
+                processed = processed.replace(/__TEMPLATE_(\d+)__/g, (_, n) => templates[Number(n)]);
+
+                return processed;
+            }
+
+            transformJSX(code) {
+                // Трансформируем JSX в JS с помощью Babel Standalone
+                try {
+                    const result = window.Babel.transform(code, {
+                        presets: [
+                            ["react", {"runtime": "automatic"}],
+                            ["env", {"targets": {"esmodules": true}}]
+                        ],
+                        plugins: [],
+                        filename: 'Component.js',
+                    });
+                    return result.code;
+                } catch (e) {
+                    throw new Error('JSX transformation failed: ' + e.message);
+                }
+            }
+
+            createAdvancedComponent(code) {
+                // Создаем React-компонент из JS-кода
+                try {
+                    // eslint-disable-next-line no-new-func
+                    const exports = {};
+                    const require = (name) => {
+                        if (name === 'react') return React;
+                        if (name === 'react-dom') return ReactDOM;
+                        throw new Error('Module not found: ' + name);
+                    };
+                    const ComponentFunc = new Function('React', 'ReactDOM', 'exports', 'require', code + '\nreturn typeof Component !== "undefined" ? Component : (typeof exports.default !== "undefined" ? exports.default : null);');
+                    const Component = ComponentFunc(React, ReactDOM, exports, require);
+                    if (!Component) throw new Error('Component not found in compiled code');
+                    return Component;
+                } catch (e) {
+                    throw new Error('Component creation failed: ' + e.message);
+                }
+            }
+
+            renderComponentSafely() {
+                // Рендерим компонент в область просмотра
+                try {
+                    const viewer = document.getElementById('viewer');
+                    const content = document.createElement('div');
+                    content.className = 'viewer-content fade-in';
+                    viewer.innerHTML = '';
+                    viewer.appendChild(content);
+                    const Component = this.compiledComponent;
+                    ReactDOM.render(React.createElement(Component), content);
+                } catch (e) {
+                    this.handleCompilationError(e);
+                }
+            }
+
+            handleCompilationError(error) {
+                // Implementation of handleCompilationError method
+                // This is a placeholder and should be replaced with the actual implementation
+            }
+
+            updateComponentMeta() {
+                // Implementation of updateComponentMeta method
+                // This is a placeholder and should be replaced with the actual implementation
+            }
+        }
+    </script>
+</body>
+</html>

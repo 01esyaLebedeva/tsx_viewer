@@ -1,0 +1,31 @@
+{
+  "name": "tsx-electron-viewer",
+  "version": "1.0.0",
+  "main": "electron/main.js",
+  "description": "TSX viewer application built with Electron and Vite.",
+  "author": "Kilo Code",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && electron-builder",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "@codesandbox/sandpack-react": "^2.20.0",
+    "lucide-react": "^0.309.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-resizable-panels": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "concurrently": "^8.2.0",
+    "electron": "^28.2.3",
+    "electron-builder": "^24.6.0",
+    "typescript": "^5.2.2",
+    "vite": "^7.0.0"
+  }
+}
