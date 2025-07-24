@@ -1,37 +1,37 @@
 # TSX Electron Viewer
 
-Минимальный десктопный вьювер для TSX-файлов на базе Electron + React + TypeScript + Vite.
+A minimal desktop viewer for TSX files, built with Electron, React, TypeScript, and Vite.
 
-## Возможности
-- Drag-n-drop или выбор TSX-файла
-- Компиляция и предпросмотр TSX-файлов с поддержкой npm-зависимостей
-- Минимальный интерфейс
+## Features
+- Drag-and-drop or select a TSX file
+- Compile and preview TSX files with npm dependencies support
+- Minimal and intuitive interface
 
-## Быстрый старт
+## Quick Start
 
-1. Клонируйте репозиторий и перейдите в папку проекта:
+1. Clone the repository and navigate to the project folder:
    ```bash
    git clone <your-repo-url> tsx-electron-viewer
    cd tsx-electron-viewer
    ```
-2. Установите зависимости:
+2. Install dependencies:
    ```bash
    npm install
    ```
-3. Запустите приложение:
+3. Run the application:
    ```bash
    npm run dev
    ```
 
-## Структура проекта
-- `electron/main.ts` — основной процесс Electron
-- `src/` — React-приложение (TypeScript, Vite)
-- `public/` — статические файлы
+## Project Structure
+- `electron/main.ts` — Electron main process
+- `src/` — React application (TypeScript, Vite)
+- `public/` — Static files
 
-## Примечания
-- Для поддержки любых npm-зависимостей (например, lucide-react) просто добавьте их через `npm install <package>` и используйте в TSX-файлах.
-- Интерфейс можно расширять по мере необходимости.
+## Notes
+- To use any npm dependencies (e.g., lucide-react), just add them via `npm install <package>` and use them in your TSX files.
+- The interface can be extended as needed.
 
 ---
 
-Если возникнут вопросы — пишите! 
+If you have any questions, feel free to ask!
