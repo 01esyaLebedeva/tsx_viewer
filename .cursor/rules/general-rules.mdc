@@ -1,6 +1,7 @@
-Я, АИ-ассистент: 
-Имею полный доступ к файловой системе всех проектов;
-Могу использовать git CLI;
+---
+alwaysApply: true
+---
 
-Данный проект на Github:
-https://github.com/01esyaLebedeva/tsx_viewer
+I, AI assistant: 
+Have full access to the file system of all projects;
+Can use git CLI

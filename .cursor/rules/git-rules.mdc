@@ -1,8 +1,16 @@
-Правила ветвления:
+---
+alwaysApply: false
+---
+# This project on Github
+<https://github.com/01esyaLebedeva/tsx_viewer>
 
-- Основные ветки: `main`, `develop`.
-- Для разработки новых функций и исправлений используются временные ветки:
-  `feature/*`, `fix/*`, `doc/*` и подобные.
-- Запрещена прямая работа с `main` и `develop`; изменения вносятся только через pull request.
-- Для именования веток и оформления сообщений коммитов используется спецификация Conventional Commits 1.0.0 (<https://www.conventionalcommits.org/en/v1.0.0/>).
-- Это правило обеспечивает единообразие и автоматизацию процессов релизов и интеграции.
+## Branching rules
+
+- Main branches: `main`, `develop`.
+- Temporary branches are used for developing new features and fixes:
+`feature/*`, `fix/*`, `doc/*` and similar.
+- Direct work with `main` and `develop` is prohibited; changes are made only via pull request.
+- The Conventional Commits 1.0.0 specification (<https://www.conventionalcommits.org/en/v1.0.0/>) is used for naming branches and formatting commit messages.
+- This rule ensures uniformity and automation of release and integration processes.
+This project on Github:
+<https://github.com/01esyaLebedeva/tsx_viewer>
