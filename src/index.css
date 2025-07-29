@@ -17,3 +17,28 @@ html, body, #root {
   display: flex;
   flex-direction: column;
 }
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 6px solid #1976d2;
+  border-top: 6px solid #e3e3e3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.sp-preview-actions {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  bottom: auto !important;
+  z-index: 20 !important;
+  background: rgba(255,255,255,0.85);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+}

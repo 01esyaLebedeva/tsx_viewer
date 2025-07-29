@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview } from "@codesandbox/sandpack-react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Upload, Code, Edit } from 'lucide-react';
+import './index.css';
 
 const PRELOAD_DEPENDENCIES = {
   "react": "^18.2.0",
@@ -19,10 +20,12 @@ const App: React.FC = () => {
   const [showSource, setShowSource] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
+    setIsLoading(true);
     const reader = new FileReader();
     reader.onload = (e) => {
       const code = e.target?.result as string;
@@ -32,8 +35,12 @@ const App: React.FC = () => {
       setShowSource(false);
       setShowEditor(false);
       setShowPreview(true);
+      setIsLoading(false);
     };
-    reader.onerror = () => setError('Ошибка чтения файла');
+    reader.onerror = () => {
+      setError('Ошибка чтения файла');
+      setIsLoading(false);
+    };
     reader.readAsText(file);
   };
 
@@ -204,6 +211,22 @@ const App: React.FC = () => {
         </SandpackProvider>
         {error && <div style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>Ошибка: {error}</div>}
       </div>
+      {isLoading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(255,255,255,0.7)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <div className="spinner" />
+        </div>
+      )}
     </>
   );
 };
