@@ -130,7 +130,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <>
+    <React.Fragment>
       {/* Универсальный Sandpack-прогрев для ускорения первой загрузки */}
       <SandpackProvider
         template="react-ts"
@@ -213,12 +213,12 @@ const App: React.FC = () => {
       </div>
       {isLoading && (
         <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          background: 'rgba(255,255,255,0.7)',
+          position: 'absolute',
+          top: '8px',
+          right: 'calc(60px + 16px)',
+          width: 'auto',
+          height: 'auto',
+          background: 'transparent',
           zIndex: 1000,
           display: 'flex',
           alignItems: 'center',
@@ -227,7 +227,7 @@ const App: React.FC = () => {
           <div className="spinner" />
         </div>
       )}
-    </>
+    </React.Fragment>
   );
 };
 

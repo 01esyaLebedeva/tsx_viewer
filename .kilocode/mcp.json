@@ -17,6 +17,14 @@
         "read_graph",
         "delete_relations"
       ]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/olesya/Документы/projects/"
+      ]
     }
   }
 }
