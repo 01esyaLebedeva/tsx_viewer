@@ -3,6 +3,7 @@ import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview }
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Upload, Code, Edit } from 'lucide-react';
 import './index.css';
+import { useTranslation, Trans } from 'react-i18next';
 
 const PRELOAD_DEPENDENCIES = {
   "react": "^18.2.0",
@@ -12,11 +13,12 @@ const PRELOAD_DEPENDENCIES = {
   "@types/react-dom": "^18.2.0"
 };
 
+
 const App: React.FC = () => {
+  const { t } = useTranslation();
   const [originalCode, setOriginalCode] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-
   const [showSource, setShowSource] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -89,13 +91,13 @@ const App: React.FC = () => {
         }}
       >
         <Upload size={64} className="mb-4" />
-        <h1 className="text-2xl font-bold">Перетащите TSX-файл сюда</h1>
-        <p className="text-lg">или</p>
+        <h1 className="text-2xl font-bold"><Trans i18nKey="drag_tsx_file">Перетащите TSX-файл сюда</Trans></h1>
+        <p className="text-lg">{t('or')}</p>
         <button
           onClick={triggerFileInput}
           className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
         >
-          Выберите файл
+          {t('choose_file')}
         </button>
         <input type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
       </div>
@@ -151,15 +153,15 @@ const App: React.FC = () => {
           color: 'white',
           flexShrink: 0
         }}>
-          <h1 className="text-base font-bold ml-auto">TSX Viewer: {fileName}</h1>
+          <h1 className="text-base font-bold ml-auto">{t('tsx_viewer')}: {fileName}</h1>
           <div className="flex items-center gap-4">
-            <button onClick={triggerFileInput} title="Загрузить новый файл" className="hover:text-blue-400 transition">
+            <button onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition">
               <Upload size={20} />
             </button>
-            <button onClick={() => setShowSource(!showSource)} title="Показать/скрыть исходный код" className={`hover:text-blue-400 transition ${showSource ? 'text-blue-400' : ''}`}>
+            <button onClick={() => setShowSource(!showSource)} title={t('show_hide_source_code')} className={`hover:text-blue-400 transition ${showSource ? 'text-blue-400' : ''}`}>
               <Code size={20} />
             </button>
-            <button onClick={() => setShowEditor(!showEditor)} title="Показать/скрыть редактор" className={`hover:text-blue-400 transition ${showEditor ? 'text-blue-400' : ''}`}>
+            <button onClick={() => setShowEditor(!showEditor)} title={t('show_hide_editor')} className={`hover:text-blue-400 transition ${showEditor ? 'text-blue-400' : ''}`}>
               <Edit size={20} />
             </button>
           </div>
@@ -210,7 +212,7 @@ const App: React.FC = () => {
               )}
           </div>
         </SandpackProvider>
-        {error && <div style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>Ошибка: {error}</div>}
+        {error && <div style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>{t('error')}: {error}</div>}
       </div>
       {isLoading && (
         <div style={{
