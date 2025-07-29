@@ -12,7 +12,6 @@ const PRELOAD_DEPENDENCIES = {
 };
 
 const App: React.FC = () => {
-  console.log('App component render START');
   const [originalCode, setOriginalCode] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +23,6 @@ const App: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
-    console.log('handleFile called');
     const reader = new FileReader();
     reader.onload = (e) => {
       const code = e.target?.result as string;
@@ -34,7 +32,6 @@ const App: React.FC = () => {
       setShowSource(false);
       setShowEditor(false);
       setShowPreview(true);
-      console.log('File loaded, setShowPreview(true)');
     };
     reader.onerror = () => setError('Ошибка чтения файла');
     reader.readAsText(file);
@@ -99,7 +96,6 @@ const App: React.FC = () => {
   }
 
   const visiblePanels = [showSource, showEditor, showPreview].filter(Boolean).length;
-  console.log('showSource', showSource, 'showEditor', showEditor, 'showPreview', showPreview, 'visiblePanels', visiblePanels);
 
   let singlePanel = null;
   if (visiblePanels === 1) {
@@ -171,38 +167,38 @@ const App: React.FC = () => {
             {visiblePanels === 1
               ? singlePanel
               : (
-                <PanelGroup
-                  direction="horizontal"
-                  style={{ flexGrow: 1, minHeight: 0 }}
-                >
-                  {showSource && (
-                    <>
-                      <Panel defaultSize={25} minSize={10}>
-                        <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
-                          <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
-                        </div>
-                      </Panel>
-                      <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
-                    </>
-                  )}
-                  {showEditor && (
-                    <>
-                      <Panel defaultSize={35} minSize={10}>
-                        <SandpackLayout>
-                          <SandpackCodeEditor showLineNumbers={true} />
-                        </SandpackLayout>
-                      </Panel>
-                      <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
-                    </>
-                  )}
-                  {showPreview && (
-                    <Panel defaultSize={100} minSize={10}>
-                      <SandpackLayout>
-                        <SandpackPreview style={{ height: '100%' }} />
-                      </SandpackLayout>
-                    </Panel>
-                  )}
-                </PanelGroup>
+          <PanelGroup
+            direction="horizontal"
+            style={{ flexGrow: 1, minHeight: 0 }}
+          >
+            {showSource && (
+              <>
+                <Panel defaultSize={25} minSize={10}>
+                  <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
+                    <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
+                  </div>
+                </Panel>
+                <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
+              </>
+            )}
+            {showEditor && (
+              <>
+                <Panel defaultSize={35} minSize={10}>
+                  <SandpackLayout>
+                    <SandpackCodeEditor showLineNumbers={true} />
+                  </SandpackLayout>
+                </Panel>
+                <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
+              </>
+            )}
+            {showPreview && (
+              <Panel defaultSize={100} minSize={10}>
+                <SandpackLayout>
+                  <SandpackPreview style={{ height: '100%' }} />
+                </SandpackLayout>
+              </Panel>
+            )}
+          </PanelGroup>
               )}
           </div>
         </SandpackProvider>
