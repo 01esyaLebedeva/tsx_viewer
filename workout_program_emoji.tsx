@@ -223,11 +223,11 @@ const WorkoutProgram = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
       <div className="max-w-6xl mx-auto p-6">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-4">
+        <div className="text-center mb-4">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2">
             🏋️‍♀️ ПРОГРАММА "КРАСИВЫЕ НОГИ"
           </h1>
-          <p className="text-xl text-gray-600 mb-6">4 недели к красивым и сильным ногам</p>
+          <p className="text-lg text-gray-600 mb-3">4 недели к красивым и сильным ногам</p>
           
           {/* Progress Bar */}
           <div className="bg-white rounded-lg p-4 shadow-sm mb-6">

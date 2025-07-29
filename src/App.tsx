@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview } from "@codesandbox/sandpack-react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Upload, Code, Edit } from 'lucide-react';
+import './index.css';
 
 const PRELOAD_DEPENDENCIES = {
   "react": "^18.2.0",
@@ -19,10 +20,12 @@ const App: React.FC = () => {
   const [showSource, setShowSource] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
+    setIsLoading(true);
     const reader = new FileReader();
     reader.onload = (e) => {
       const code = e.target?.result as string;
@@ -32,8 +35,12 @@ const App: React.FC = () => {
       setShowSource(false);
       setShowEditor(false);
       setShowPreview(true);
+      setIsLoading(false);
     };
-    reader.onerror = () => setError('Ошибка чтения файла');
+    reader.onerror = () => {
+      setError('Ошибка чтения файла');
+      setIsLoading(false);
+    };
     reader.readAsText(file);
   };
 
@@ -123,7 +130,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <>
+    <React.Fragment>
       {/* Универсальный Sandpack-прогрев для ускорения первой загрузки */}
       <SandpackProvider
         template="react-ts"
@@ -138,12 +145,13 @@ const App: React.FC = () => {
         <header style={{
           display: 'flex',
           alignItems: 'center',
-          padding: '8px 16px',
+          justifyContent: 'space-between',
+          padding: '4px 8px',
           backgroundColor: '#222',
           color: 'white',
           flexShrink: 0
         }}>
-          <h1 className="text-lg font-bold mr-auto">TSX Viewer: {fileName}</h1>
+          <h1 className="text-base font-bold ml-auto">TSX Viewer: {fileName}</h1>
           <div className="flex items-center gap-4">
             <button onClick={triggerFileInput} title="Загрузить новый файл" className="hover:text-blue-400 transition">
               <Upload size={20} />
@@ -204,7 +212,23 @@ const App: React.FC = () => {
         </SandpackProvider>
         {error && <div style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>Ошибка: {error}</div>}
       </div>
-    </>
+      {isLoading && (
+        <div style={{
+          position: 'absolute',
+          top: '8px',
+          right: 'calc(60px + 16px)',
+          width: 'auto',
+          height: 'auto',
+          background: 'transparent',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <div className="spinner" />
+        </div>
+      )}
+    </React.Fragment>
   );
 };
 
