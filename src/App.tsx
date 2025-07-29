@@ -145,12 +145,13 @@ const App: React.FC = () => {
         <header style={{
           display: 'flex',
           alignItems: 'center',
-          padding: '8px 16px',
+          justifyContent: 'space-between',
+          padding: '4px 8px',
           backgroundColor: '#222',
           color: 'white',
           flexShrink: 0
         }}>
-          <h1 className="text-lg font-bold mr-auto">TSX Viewer: {fileName}</h1>
+          <h1 className="text-base font-bold ml-auto">TSX Viewer: {fileName}</h1>
           <div className="flex items-center gap-4">
             <button onClick={triggerFileInput} title="Загрузить новый файл" className="hover:text-blue-400 transition">
               <Upload size={20} />
