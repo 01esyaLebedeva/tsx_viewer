@@ -10,6 +10,7 @@ alwaysApply: true
 - Main branches: `main`, `develop`.
 - Temporary branches are used for developing new features and fixes:
 `feature/*`, `fix/*`, `doc/*` and similar.
-- Direct work with `main` and `develop` is prohibited; changes are made only via pull request.
-- The Conventional Commits 1.0.0 specification (<https://www.conventionalcommits.org/en/v1.0.0/>) is used for naming branches and formatting commit messages.
+- Direct work with `main` and `develop` is prohibited - changes to them are made only through pull requests.
+- The Conventional Commits 1.0.0 specification (<https://www.conventionalcommits.org/en/v1.0.0/>) is used to name temporary branches and format commit messages.
+- Before each commit and push, it is necessary to check which branch is active: if the main or develop branch was active and changes were made to the project, it is necessary to create a temporary branch with a name corresponding to the meaning of the changes, go to it and make a commit or push in it.
 - This rule ensures uniformity and automation of release and integration processes.

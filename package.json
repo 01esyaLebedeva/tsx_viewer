@@ -1,6 +1,6 @@
 {
   "name": "tsx-electron-viewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "electron/main.js",
   "description": "TSX viewer application built with Electron and Vite.",
   "author": "Kilo Code",
@@ -31,5 +31,15 @@
     "electron-builder": "^24.6.0",
     "typescript": "^5.2.2",
     "vite": "^7.0.0"
+  },
+  "build": {
+    "appId": "io.github.OlesyaLebedeva.tsx_viewer",
+    "linux": {
+      "category": "Utility;Development;Viewer;",
+      "icon": "src/icons/tsx_viewer.png"
+    },
+    "win": {
+      "icon": "src/icons/tsx_viewer.ico"
+    }
   }
 }
