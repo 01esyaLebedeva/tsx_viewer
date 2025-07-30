@@ -1,14 +1,18 @@
 {
-  "name": "tsx-electron-viewer",
-  "version": "1.0.1",
+  "name": "tsx-viewer",
+  "version": "1.0.3",
   "main": "electron/main.js",
   "description": "TSX viewer application built with Electron and Vite.",
-  "author": "Kilo Code",
-  "private": true,
+  "author": {
+    "name": "Olesya Lebedeva",
+    "email": "olesya.andreevna.lebedeva@gmail.com"
+  },
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "vite",
     "build": "vite build && electron-builder",
-    "start": "electron ."
+    "start": "electron .",
+    "start:prod": "npm run build && npm run start"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
@@ -34,9 +38,18 @@
   },
   "build": {
     "appId": "io.github.OlesyaLebedeva.tsx_viewer",
-    "linux": {
+    "files": [
+      "dist/**",
+      "electron/**",
+      "package.json",
+      "!node_modules/**/.cache",
+      "node_modules/**"
+    ],
+      "linux": {
+      "desktop": "src/tsx_viewer.desktop",
       "category": "Utility;Development;Viewer;",
-      "icon": "src/icons/tsx_viewer.png"
+      "icon": "src/icons/tsx_viewer.png",
+      "target": ["snap", "AppImage", "deb", "pacman"]
     },
     "win": {
       "icon": "src/icons/tsx_viewer.ico"

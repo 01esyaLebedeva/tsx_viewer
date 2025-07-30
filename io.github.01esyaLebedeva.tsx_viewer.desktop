@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=TSX Viewer
-Comment=A viewer for TSX code
-Exec=tsx-viewer
-Icon=io.github.01esyaLebedeva.tsx_viewer
-Terminal=false
-Type=Application
-Categories=Utility;
-X-Flatpak-Startup-Notify=true
