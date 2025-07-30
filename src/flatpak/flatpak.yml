@@ -1,4 +1,4 @@
-app-id: io.github.01esyaLebedeva.tsx_viewer
+app-id: io.github.O1esyaLebedeva.tsx_viewer
 
 runtime: org.freedesktop.Platform
 runtime-version: '23.08'
@@ -6,11 +6,24 @@ sdk: org.freedesktop.Sdk
 command: tsx-viewer
 
 modules:
+  - name: node
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: https://nodejs.org/dist/v24.4.1/node-v24.4.1-linux-x64.tar.xz
+        sha256: 7e067b13cd0dc7ee8b239f4ebe1ae54f3bba3a6e904553fcb5f581530eb8306d
+    build-commands:
+      - mkdir -p /app/node
+      - mv ./* /app/node
+      - mv .* /app/node 2>/dev/null || true
+
   - name: tsx_viewer
     buildsystem: simple
     build-commands:
-      - npm install
-      - npm run build # если vite build указан в package.json
+      - |
+        export PATH=/app/node/bin:$PATH
+        npm install
+        npm run build
       - mkdir -p /app/share/tsx_viewer
       - cp -r dist/* /app/share/tsx_viewer/
       - mkdir -p /app/electron
@@ -25,10 +38,10 @@ modules:
     sources:
       - type: git
         url: https://github.com/01esyaLebedeva/tsx_viewer.git
-        commit: 43edb51e9cffc65f0c83018c974975fb8c0181c8
+        commit: 2c593545e64e832cf438c42b906ac1e71d1a7a97
 
 finish-args:
   - --share=network
   - --socket=x11
   - --socket=wayland
-  - --socket=session-dbus
+  - --socket=session-bus
