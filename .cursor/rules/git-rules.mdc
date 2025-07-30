@@ -1,7 +1,8 @@
 ---
-alwaysApply: false
+alwaysApply: true
 ---
 # This project on Github
+
 <https://github.com/01esyaLebedeva/tsx_viewer>
 
 ## Branching rules
@@ -12,5 +13,3 @@ alwaysApply: false
 - Direct work with `main` and `develop` is prohibited; changes are made only via pull request.
 - The Conventional Commits 1.0.0 specification (<https://www.conventionalcommits.org/en/v1.0.0/>) is used for naming branches and formatting commit messages.
 - This rule ensures uniformity and automation of release and integration processes.
-This project on Github:
-<https://github.com/01esyaLebedeva/tsx_viewer>

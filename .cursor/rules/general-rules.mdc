@@ -4,4 +4,4 @@ alwaysApply: true
 
 I, AI assistant: 
 Have full access to the file system of all projects;
-Can use git CLI
+Can use git CLI;

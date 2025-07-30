@@ -10,6 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.4/babel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typescript/5.2.2/typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
     
     <!-- Minimal Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -752,7 +753,7 @@
                 }
                 
                 html += '</div>';
-                statusPanel.innerHTML = html;
+                statusPanel.innerHTML = DOMPurify.sanitize(html);
             }
 
             showDetailedError(title, error, context = {}) {
@@ -981,8 +982,18 @@
                         if (name === 'react-dom') return ReactDOM;
                         throw new Error('Module not found: ' + name);
                     };
-                    const ComponentFunc = new Function('React', 'ReactDOM', 'exports', 'require', code + '\nreturn typeof Component !== "undefined" ? Component : (typeof exports.default !== "undefined" ? exports.default : null);');
-                    const Component = ComponentFunc(React, ReactDOM, exports, require);
+                    let Component;
+                    try {
+                        // Используем ReactDOM.renderToString для рендеринга компонента в строку
+                        const container = document.createElement('div');
+                        container.innerHTML = DOMPurify.sanitize(code);
+                        ReactDOM.render(code, container);
+                        Component = container.firstChild;
+
+                    } catch (e) {
+                        console.error("Error creating component:", e);
+                        throw new Error('Component creation failed: ' + e.message);
+                    }
                     if (!Component) throw new Error('Component not found in compiled code');
                     return Component;
                 } catch (e) {
