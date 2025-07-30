@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=TSX Viewer
+Exec=tsx_viewer
+Icon=tsx_viewer
+Type=Application
+Categories=Utility;
