@@ -1,0 +1,34 @@
+app-id: io.github.01esyaLebedeva.tsx_viewer
+
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: tsx-viewer
+
+modules:
+  - name: tsx_viewer
+    buildsystem: simple
+    build-commands:
+      - npm install
+      - npm run build # если vite build указан в package.json
+      - mkdir -p /app/share/tsx_viewer
+      - cp -r dist/* /app/share/tsx_viewer/
+      - mkdir -p /app/electron
+      - cp electron/main.js /app/electron/
+      - cp package.json /app/package.json
+      - |
+        echo '#!/bin/sh' > /app/bin/tsx-viewer
+        echo 'cd /app' >> /app/bin/tsx-viewer
+        echo 'exec electron /app/electron/main.js' >> /app/bin/tsx-viewer
+      - chmod +x /app/bin/tsx-viewer
+      - cp src/tsx_viewer.desktop /app/share/applications/
+    sources:
+      - type: git
+        url: https://github.com/01esyaLebedeva/tsx_viewer.git
+        commit: 43edb51e9cffc65f0c83018c974975fb8c0181c8
+
+finish-args:
+  - --share=network
+  - --socket=x11
+  - --socket=wayland
+  - --socket=session-dbus
