@@ -1,4 +1,4 @@
-app-id: io.github.O1esyaLebedeva.tsx_viewer
+app-id: io.github.OlesyaLebedeva.tsx_viewer
 
 runtime: org.freedesktop.Platform
 runtime-version: '23.08'
@@ -17,11 +17,22 @@ modules:
       - mv ./* /app/node
       - mv .* /app/node 2>/dev/null || true
 
+  - name: icons
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/share/icons/hicolor/256x256/apps
+      - cp src/icons/tsx_viewer.png /app/share/icons/hicolor/256x256/apps/io.github.OlesyaLebedeva.tsx_viewer.png
+    sources:
+      - type: git
+        url: https://github.com/01esyaLebedeva/tsx_viewer.git
+        commit: 2c593545e64e832cf438c42b906ac1e71d1a7a97
+
   - name: tsx_viewer
     buildsystem: simple
     build-commands:
       - |
         export PATH=/app/node/bin:$PATH
+        export ELECTRON_DISABLE_SANDBOX=1
         npm install
         npm run build
       - mkdir -p /app/share/tsx_viewer
@@ -45,3 +56,5 @@ finish-args:
   - --socket=x11
   - --socket=wayland
   - --socket=session-bus
+  - --filesystem=xdg-config/icons
+  - --filesystem=xdg-data/icons
