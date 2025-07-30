@@ -11,7 +11,8 @@ A minimal desktop viewer for TSX files, built with Electron, React, TypeScript, 
 
 1. Clone the repository and navigate to the project folder:
    ```bash
-   git clone <your-repo-url> tsx-electron-viewer
+   git clone https://github.com/01esyaLebedeva/tsx_viewer 
+   tsx-electron-viewer
    cd tsx-electron-viewer
    ```
 2. Install dependencies:
