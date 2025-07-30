@@ -35,6 +35,7 @@
   "build": {
     "appId": "io.github.OlesyaLebedeva.tsx_viewer",
     "linux": {
+      "desktop": "src/tsx_viewer.desktop",
       "category": "Utility;Development;Viewer;",
       "icon": "src/icons/tsx_viewer.png"
     },

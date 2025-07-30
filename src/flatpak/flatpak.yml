@@ -25,7 +25,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/01esyaLebedeva/tsx_viewer.git
-        commit: be812c1b2f94cb727d3f282ccbf2be0efb23dd29
+        commit: 1420764e7164571cde5d7640e0fde9cf1670c1c5
 
   - name: tsx_viewer
     buildsystem: simple
@@ -49,7 +49,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/01esyaLebedeva/tsx_viewer.git
-        commit: be812c1b2f94cb727d3f282ccbf2be0efb23dd29
+        commit: 1420764e7164571cde5d7640e0fde9cf1670c1c5
 
 finish-args:
   - --share=network
