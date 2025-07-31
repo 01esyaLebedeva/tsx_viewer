@@ -1,6 +1,6 @@
 # Release Notes
 
-## v1.0.0 - Initial Release
+## v1.0.3 - Initial Release
 
 ### ✨ Features
 
@@ -9,6 +9,13 @@
 *   **Resizable Layout:** The UI now includes resizable panels for a flexible workspace.
 *   **Cross-Platform Support:** The application is configured to build for Linux and Windows using Electron.
 *   **Internationalization:** Basic i18n setup with support for English and Russian.
+
+### 📦 Assets
+
+*   `tsx-viewer_1.0.3_amd64.deb`
+*   `tsx-viewer_1.0.3_amd64.snap`
+*   `tsx-viewer-1.0.3.AppImage`
+*   `tsx-viewer-1.0.3.pacman`
 
 ### 🛠️ Known Issues
 
