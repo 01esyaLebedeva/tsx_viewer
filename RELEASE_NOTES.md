@@ -17,7 +17,7 @@
 *   `tsx-viewer-1.0.3.AppImage`
 *   `tsx-viewer-1.0.3.pacman`
 
-### �️ Known Issues
+### 🛠️ Known Issues
 
 *   File saving is not yet implemented. Changes made in the editor cannot be saved.
 *   No advanced error handling for code compilation or runtime issues.
