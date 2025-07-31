@@ -1,6 +1,6 @@
 # TSX Viewer
 
-![TSX Viewer Screenshot](https://github.com/OlesyaCore/tsx_viewer/assets/103334168/85013931-31e6-4360-a031-1927c175c58c)
+![TSX Viewer Screenshot](https://github.com/01esyaLebedeva/tsx_viewer/assets/103334168/85013931-31e6-4360-a031-1927c175c58c)
 
 **TSX Viewer** — это минималистичное кроссплатформенное десктопное приложение для просмотра и интерактивного предпросмотра файлов `.tsx` (TypeScript с JSX). Оно служит легковесным инструментом для разработчиков, которым нужно быстро визуализировать React-компоненты без необходимости запускать полный проект.
 
@@ -25,7 +25,7 @@
 
 1.  **Клонируйте репозиторий:**
     ```bash
-    git clone https://github.com/OlesyaCore/tsx_viewer.git
+    git clone https://github.com/01esyaLebedeva/tsx_viewer.git
     cd tsx_viewer
     ```
 
