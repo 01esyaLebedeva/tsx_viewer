@@ -1,0 +1,105 @@
+name: tsx-viewer
+version: '1.0.3'
+summary: 'TSX viewer application built with Electron and Vite.'
+description: |
+  TSX viewer application built with Electron and Vite.
+  Автор: Olesya Lebedeva
+  Email: olesya.andreevna.lebedeva@gmail.com
+grade: stable
+confinement: strict
+base: core22
+
+apps:
+  tsx-viewer:
+    # Аналог "command: tsx-viewer" из flatpak: с помощью wrapper-скрипта
+    command: bin/tsx-viewer
+    desktop: tsx_viewer.desktop
+    plugs:
+      - desktop
+      - desktop-legacy
+      - x11
+      - wayland
+      - opengl
+      - home
+      - network
+      - gsettings
+      - dbus
+      - unity7
+      - browser-support
+      - pulseaudio
+      - audio-playback
+      - system-files
+      - clipboard
+      - removable-media
+
+parts:
+  nodejs:
+    plugin: dump
+    source: https://nodejs.org/dist/v24.4.1/node-v24.4.1-linux-x64.tar.xz
+    source-checksum: sha256/7e067b13cd0dc7ee8b239f4ebe1ae54f3bba3a6e904553fcb5f581530eb8306d
+    organize:
+      '*': node/
+
+  tsx-viewer:
+    after: [nodejs]
+    plugin: npm
+    source: .
+    npm-node-version: 24.4.1
+    override-build: |
+      export PATH="$SNAPCRAFT_PART_INSTALL/node/bin:$PATH"
+      npm install
+      npm run build
+      # Копируем весь dist и electron, подобно flatpak
+      mkdir -p $SNAPCRAFT_PART_INSTALL/share/tsx_viewer
+      cp -r dist/* $SNAPCRAFT_PART_INSTALL/share/tsx_viewer/
+      mkdir -p $SNAPCRAFT_PART_INSTALL/electron
+      cp electron/main.js $SNAPCRAFT_PART_INSTALL/electron/
+      cp package.json $SNAPCRAFT_PART_INSTALL/package.json
+      # Создаём wrapper-скрипт для запуска
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      echo '#!/bin/sh' > $SNAPCRAFT_PART_INSTALL/bin/tsx-viewer
+      echo 'cd $SNAP' >> $SNAPCRAFT_PART_INSTALL/bin/tsx-viewer
+      echo 'exec $SNAP/node/bin/electron $SNAP/electron/main.js' >> $SNAPCRAFT_PART_INSTALL/bin/tsx-viewer
+      chmod +x $SNAPCRAFT_PART_INSTALL/bin/tsx-viewer
+      # Копируем desktop-файл и иконку
+      cp src/tsx_viewer.desktop $SNAPCRAFT_PART_INSTALL/
+      mkdir -p $SNAPCRAFT_PART_INSTALL/share/icons/hicolor/256x256/apps
+      cp src/icons/tsx_viewer.png $SNAPCRAFT_PART_INSTALL/share/icons/hicolor/256x256/apps/io.github.OlesyaLebedeva.tsx_viewer.png
+    build-packages:
+      - python3
+      - make
+      - gcc
+      - g++
+      - libgtk-3-dev
+      - libnotify-dev
+      - libnss3-dev
+      - libxss-dev
+      - libxtst-dev
+      - libatk-bridge2.0-dev
+      - libdrm-dev
+      - libgbm-dev
+      - libasound2-dev
+      - libatk1.0-dev
+      - libcups2-dev
+    stage-packages:
+      - libnotify4
+      - libgtk-3-0
+      - libnss3
+      - libxss1
+      - libxtst6
+      - libatk-bridge2.0-0
+      - libdrm2
+      - libgbm1
+      - libasound2
+      - libatk1.0-0
+      - libcups2
+
+layout:
+  /app:
+    bind: $SNAP
+
+# Лицензия
+license: GPL-3.0-or-later
+
+# Идентификатор приложения — для Snap не обязателен, но можно прописать в desktop-файле:
+# app-id: io.github.OlesyaLebedeva.tsx_viewer
