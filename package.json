@@ -1,6 +1,6 @@
 {
   "name": "tsx-viewer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "electron/main.js",
   "description": "TSX viewer application built with Electron and Vite.",
   "author": {
