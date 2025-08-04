@@ -155,11 +155,11 @@ const App: React.FC = () => {
           color: 'white',
           flexShrink: 0
         }}>
-          <h1 id="file-name-header" className="text-base font-bold ml-auto">{t('tsx_viewer')}: {fileName}</h1>
+          <button id="upload-new-file-button" onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition">
+            <Upload size={20} />
+          </button>
+          <h1 id="file-name-header" className="text-base font-bold">{t('tsx_viewer')}: {fileName}</h1>
           <div className="flex items-center gap-4">
-            <button id="upload-new-file-button" onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition">
-              <Upload size={20} />
-            </button>
             <button id="toggle-source-code-button" onClick={() => setShowSource(!showSource)} title={t('show_hide_source_code')} className={`hover:text-blue-400 transition ${showSource ? 'text-blue-400' : ''}`}>
               <Code size={20} />
             </button>
