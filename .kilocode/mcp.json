@@ -37,8 +37,11 @@
         "search_files",
         "move_file",
         "directory_tree",
-        "list_directory_with_sizes"
-      ]
+        "list_directory_with_sizes",
+        "read_text_file",
+        "read_media_file"
+      ],
+      "disabled": true
     }
   }
 }
