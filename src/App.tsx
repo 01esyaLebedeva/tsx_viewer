@@ -106,32 +106,6 @@ const App: React.FC = () => {
     );
   }
 
-  const visiblePanels = [showSource, showEditor, showPreview].filter(Boolean).length;
-
-  let singlePanel = null;
-  if (visiblePanels === 1) {
-    if (showSource) {
-      singlePanel = (
-        <div style={{ flexGrow: 1, height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
-          <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
-        </div>
-      );
-    } else if (showEditor) {
-      singlePanel = (
-        <SandpackLayout style={{ flexGrow: 1, height: '100%' }}>
-          <SandpackCodeEditor showLineNumbers={true} />
-        </SandpackLayout>
-      );
-    } else if (showPreview) {
-      singlePanel = (
-        <div style={{ flexGrow: 1, minHeight: 0, minWidth: 0, width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <SandpackLayout style={{ flexGrow: 1, minHeight: 0, minWidth: 0, width: '100%', height: '100%' }}>
-            <SandpackPreview style={{ flexGrow: 1, minHeight: 0, minWidth: 0, width: '100%', height: '100%' }} />
-          </SandpackLayout>
-        </div>
-      );
-    }
-  }
 
   return (
     <React.Fragment>
@@ -176,42 +150,38 @@ const App: React.FC = () => {
           customSetup={{ dependencies: { "lucide-react": "^0.309.0" } }}
         >
           <div id="panels-container" style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-            {visiblePanels === 1
-              ? singlePanel
-              : (
-          <PanelGroup
-            direction="horizontal"
-            style={{ flexGrow: 1, minHeight: 0 }}
-          >
-            {showSource && (
-              <>
-                <Panel id="source-code-panel" defaultSize={25} minSize={10}>
-                  <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
-                    <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
-                  </div>
-                </Panel>
-                <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
-              </>
-            )}
-            {showEditor && (
-              <>
-                <Panel id="code-editor-panel" defaultSize={35} minSize={10}>
+            <PanelGroup
+              direction="horizontal"
+              style={{ flexGrow: 1, minHeight: 0 }}
+            >
+              {showSource && (
+                <>
+                  <Panel id="source-code-panel" defaultSize={25} minSize={10}>
+                    <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
+                      <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
+                    </div>
+                  </Panel>
+                  <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
+                </>
+              )}
+              {showEditor && (
+                <>
+                  <Panel id="code-editor-panel" defaultSize={35} minSize={10}>
+                    <SandpackLayout>
+                      <SandpackCodeEditor showLineNumbers={true} />
+                    </SandpackLayout>
+                  </Panel>
+                  <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
+                </>
+              )}
+              {showPreview && (
+                <Panel id="preview-panel" defaultSize={100} minSize={10}>
                   <SandpackLayout>
-                    <SandpackCodeEditor showLineNumbers={true} />
+                    <SandpackPreview style={{ height: '100%' }} />
                   </SandpackLayout>
                 </Panel>
-                <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
-              </>
-            )}
-            {showPreview && (
-              <Panel id="preview-panel" defaultSize={100} minSize={10}>
-                <SandpackLayout>
-                  <SandpackPreview style={{ height: '100%' }} />
-                </SandpackLayout>
-              </Panel>
-            )}
-          </PanelGroup>
               )}
+            </PanelGroup>
           </div>
         </SandpackProvider>
         {error && <div id="error-message-container" style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>{t('error')}: {error}</div>}
