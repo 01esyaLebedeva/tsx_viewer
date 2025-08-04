@@ -143,7 +143,7 @@ const App: React.FC = () => {
                 setIsSourceActive(!isSourceActive);
               }}
               title={t('show_hide_source_code')}
-              className={`hover:text-blue-400 transition ${isSourceActive ? 'active' : ''}`}
+              className={`p-1 rounded transition ${isSourceActive ? 'active' : ''}`}
             >
               <Code size={20} />
             </button>
@@ -154,7 +154,7 @@ const App: React.FC = () => {
                 setIsEditorActive(!isEditorActive);
               }}
               title={t('show_hide_editor')}
-              className={`hover:text-blue-400 transition ${isEditorActive ? 'active' : ''}`}
+              className={`p-1 rounded transition ${isEditorActive ? 'active' : ''}`}
             >
               <Edit size={20} />
             </button>
