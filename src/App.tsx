@@ -144,15 +144,16 @@ const App: React.FC = () => {
           <input id="file-input-header" type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
         </header>
 
-        <SandpackProvider
-          template="react-ts"
-          files={{ "/App.tsx": originalCode }}
-          customSetup={{ dependencies: { "lucide-react": "^0.309.0" } }}
-        >
-          <div id="panels-container" style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+          <SandpackProvider
+            template="react-ts"
+            files={{ "/App.tsx": originalCode }}
+            customSetup={{ dependencies: { "lucide-react": "^0.309.0" } }}
+            style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
+          >
             <PanelGroup
               direction="horizontal"
-              style={{ flexGrow: 1, minHeight: 0 }}
+              style={{ height: '100%' }}
             >
               {showSource && (
                 <>
@@ -182,8 +183,8 @@ const App: React.FC = () => {
                 </Panel>
               )}
             </PanelGroup>
-          </div>
-        </SandpackProvider>
+          </SandpackProvider>
+        </div>
         {error && <div id="error-message-container" style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>{t('error')}: {error}</div>}
       </div>
       {isLoading && (
