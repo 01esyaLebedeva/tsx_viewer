@@ -131,33 +131,33 @@ const App: React.FC = () => {
           color: 'white',
           flexShrink: 0
         }}>
-          <button id="upload-new-file-button" onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition">
-            <Upload size={20} />
-          </button>
+          <button id="upload-new-file-button" onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
+                    <Upload />
+                    </button>
           <h1 id="file-name-header" className="text-base font-bold">{t('tsx_viewer')}: {fileName}</h1>
           <div className="flex items-center gap-4">
             <button
-              id="toggle-source-code-button"
-              onClick={() => {
-                setShowSource(!showSource);
-                setIsSourceActive(!isSourceActive);
-              }}
-              title={t('show_hide_source_code')}
-              className={`p-1 rounded transition ${isSourceActive ? 'active' : ''}`}
-            >
-              <Code size={20} />
-            </button>
-            <button
-              id="toggle-editor-button"
-              onClick={() => {
-                setShowEditor(!showEditor);
-                setIsEditorActive(!isEditorActive);
-              }}
-              title={t('show_hide_editor')}
-              className={`p-1 rounded transition ${isEditorActive ? 'active' : ''}`}
-            >
-              <Edit size={20} />
-            </button>
+                          id="toggle-source-code-button"
+                          onClick={() => {
+                            setShowSource(!showSource);
+                            setIsSourceActive(!isSourceActive);
+                          }}
+                          title={t('show_hide_source_code')}
+                          className={`p-1 rounded transition header-icon-button ${isSourceActive ? 'active' : ''}`}
+                        >
+                          <Code />
+                        </button>
+                        <button
+                          id="toggle-editor-button"
+                          onClick={() => {
+                            setShowEditor(!showEditor);
+                            setIsEditorActive(!isEditorActive);
+                          }}
+                          title={t('show_hide_editor')}
+                          className={`p-1 rounded transition header-icon-button ${isEditorActive ? 'active' : ''}`}
+                        >
+                          <Edit />
+                        </button>
           </div>
           <input id="file-input-header" type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
         </header>
