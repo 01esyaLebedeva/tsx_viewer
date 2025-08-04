@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 html, body, #root {
   height: 100% !important;
   min-height: 100vh !important;
@@ -41,4 +44,15 @@ html, body, #root {
   padding: 2px 4px;
   display: flex;
   align-items: center;
+}
+
+button.active {
+  background-color: black;
+  color: white;
+}
+
+
+.header-icon-button svg {
+  width: 30px;
+  height: 30px;
 }
