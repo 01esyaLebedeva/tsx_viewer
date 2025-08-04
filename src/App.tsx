@@ -66,6 +66,7 @@ const App: React.FC = () => {
   if (!fileName) {
     return (
       <div
+        id="dropzone-container"
         onDrop={onDrop}
         onDragOver={e => e.preventDefault()}
         style={{
@@ -94,12 +95,13 @@ const App: React.FC = () => {
         <h1 className="text-2xl font-bold"><Trans i18nKey="drag_tsx_file">Перетащите TSX-файл сюда</Trans></h1>
         <p className="text-lg">{t('or')}</p>
         <button
+          id="choose-file-button"
           onClick={triggerFileInput}
           className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
         >
           {t('choose_file')}
         </button>
-        <input type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
+        <input id="file-input" type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
       </div>
     );
   }
@@ -143,8 +145,8 @@ const App: React.FC = () => {
         <SandpackPreview style={{ display: "none" }} />
       </SandpackProvider>
       {/* Основной интерфейс */}
-      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <header style={{
+      <div id="main-app-container" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <header id="app-header" style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -153,19 +155,19 @@ const App: React.FC = () => {
           color: 'white',
           flexShrink: 0
         }}>
-          <h1 className="text-base font-bold ml-auto">{t('tsx_viewer')}: {fileName}</h1>
+          <h1 id="file-name-header" className="text-base font-bold ml-auto">{t('tsx_viewer')}: {fileName}</h1>
           <div className="flex items-center gap-4">
-            <button onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition">
+            <button id="upload-new-file-button" onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition">
               <Upload size={20} />
             </button>
-            <button onClick={() => setShowSource(!showSource)} title={t('show_hide_source_code')} className={`hover:text-blue-400 transition ${showSource ? 'text-blue-400' : ''}`}>
+            <button id="toggle-source-code-button" onClick={() => setShowSource(!showSource)} title={t('show_hide_source_code')} className={`hover:text-blue-400 transition ${showSource ? 'text-blue-400' : ''}`}>
               <Code size={20} />
             </button>
-            <button onClick={() => setShowEditor(!showEditor)} title={t('show_hide_editor')} className={`hover:text-blue-400 transition ${showEditor ? 'text-blue-400' : ''}`}>
+            <button id="toggle-editor-button" onClick={() => setShowEditor(!showEditor)} title={t('show_hide_editor')} className={`hover:text-blue-400 transition ${showEditor ? 'text-blue-400' : ''}`}>
               <Edit size={20} />
             </button>
           </div>
-          <input type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
+          <input id="file-input-header" type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
         </header>
 
         <SandpackProvider
@@ -173,7 +175,7 @@ const App: React.FC = () => {
           files={{ "/App.tsx": originalCode }}
           customSetup={{ dependencies: { "lucide-react": "^0.309.0" } }}
         >
-          <div style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+          <div id="panels-container" style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
             {visiblePanels === 1
               ? singlePanel
               : (
@@ -183,7 +185,7 @@ const App: React.FC = () => {
           >
             {showSource && (
               <>
-                <Panel defaultSize={25} minSize={10}>
+                <Panel id="source-code-panel" defaultSize={25} minSize={10}>
                   <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
                     <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
                   </div>
@@ -193,7 +195,7 @@ const App: React.FC = () => {
             )}
             {showEditor && (
               <>
-                <Panel defaultSize={35} minSize={10}>
+                <Panel id="code-editor-panel" defaultSize={35} minSize={10}>
                   <SandpackLayout>
                     <SandpackCodeEditor showLineNumbers={true} />
                   </SandpackLayout>
@@ -202,7 +204,7 @@ const App: React.FC = () => {
               </>
             )}
             {showPreview && (
-              <Panel defaultSize={100} minSize={10}>
+              <Panel id="preview-panel" defaultSize={100} minSize={10}>
                 <SandpackLayout>
                   <SandpackPreview style={{ height: '100%' }} />
                 </SandpackLayout>
@@ -212,10 +214,10 @@ const App: React.FC = () => {
               )}
           </div>
         </SandpackProvider>
-        {error && <div style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>{t('error')}: {error}</div>}
+        {error && <div id="error-message-container" style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>{t('error')}: {error}</div>}
       </div>
       {isLoading && (
-        <div style={{
+        <div id="loading-spinner" style={{
           position: 'absolute',
           top: '8px',
           right: 'calc(60px + 16px)',
