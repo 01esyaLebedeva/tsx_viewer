@@ -99,7 +99,8 @@ const App: React.FC = () => {
         <button
           id="choose-file-button"
           onClick={triggerFileInput}
-          className="mt-4 px-16 py-8 text-3xl bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          style={{ width: '300px', height: '100px' }}
+          className="mt-4 px-32 py-16 text-9xl bg-blue-500 text-white rounded hover:bg-blue-600 transition" style={{ width: '300px', height: '100px' }}
         >
           {t('choose_file')}
         </button>
