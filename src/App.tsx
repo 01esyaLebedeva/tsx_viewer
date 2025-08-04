@@ -21,6 +21,8 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showSource, setShowSource] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
+  const [isSourceActive, setIsSourceActive] = useState(false);
+  const [isEditorActive, setIsEditorActive] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -97,7 +99,8 @@ const App: React.FC = () => {
         <button
           id="choose-file-button"
           onClick={triggerFileInput}
-          className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          style={{ width: '300px', height: '100px' }}
+          className="mt-4 px-32 py-16 text-9xl bg-blue-500 text-white rounded hover:bg-blue-600 transition" 
         >
           {t('choose_file')}
         </button>
@@ -129,17 +132,33 @@ const App: React.FC = () => {
           color: 'white',
           flexShrink: 0
         }}>
-          <button id="upload-new-file-button" onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition">
-            <Upload size={20} />
-          </button>
+          <button id="upload-new-file-button" onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
+                    <Upload />
+                    </button>
           <h1 id="file-name-header" className="text-base font-bold">{t('tsx_viewer')}: {fileName}</h1>
           <div className="flex items-center gap-4">
-            <button id="toggle-source-code-button" onClick={() => setShowSource(!showSource)} title={t('show_hide_source_code')} className={`hover:text-blue-400 transition ${showSource ? 'text-blue-400' : ''}`}>
-              <Code size={20} />
-            </button>
-            <button id="toggle-editor-button" onClick={() => setShowEditor(!showEditor)} title={t('show_hide_editor')} className={`hover:text-blue-400 transition ${showEditor ? 'text-blue-400' : ''}`}>
-              <Edit size={20} />
-            </button>
+            <button
+                          id="toggle-source-code-button"
+                          onClick={() => {
+                            setShowSource(!showSource);
+                            setIsSourceActive(!isSourceActive);
+                          }}
+                          title={t('show_hide_source_code')}
+                          className={`p-1 rounded transition header-icon-button ${isSourceActive ? 'active' : ''}`}
+                        >
+                          <Code />
+                        </button>
+                        <button
+                          id="toggle-editor-button"
+                          onClick={() => {
+                            setShowEditor(!showEditor);
+                            setIsEditorActive(!isEditorActive);
+                          }}
+                          title={t('show_hide_editor')}
+                          className={`p-1 rounded transition header-icon-button ${isEditorActive ? 'active' : ''}`}
+                        >
+                          <Edit />
+                        </button>
           </div>
           <input id="file-input-header" type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
         </header>
