@@ -21,6 +21,8 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showSource, setShowSource] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
+  const [isSourceActive, setIsSourceActive] = useState(false);
+  const [isEditorActive, setIsEditorActive] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -134,10 +136,26 @@ const App: React.FC = () => {
           </button>
           <h1 id="file-name-header" className="text-base font-bold">{t('tsx_viewer')}: {fileName}</h1>
           <div className="flex items-center gap-4">
-            <button id="toggle-source-code-button" onClick={() => setShowSource(!showSource)} title={t('show_hide_source_code')} className={`hover:text-blue-400 transition ${showSource ? 'text-blue-400' : ''}`}>
+            <button
+              id="toggle-source-code-button"
+              onClick={() => {
+                setShowSource(!showSource);
+                setIsSourceActive(!isSourceActive);
+              }}
+              title={t('show_hide_source_code')}
+              className={`hover:text-blue-400 transition ${isSourceActive ? 'active' : ''}`}
+            >
               <Code size={20} />
             </button>
-            <button id="toggle-editor-button" onClick={() => setShowEditor(!showEditor)} title={t('show_hide_editor')} className={`hover:text-blue-400 transition ${showEditor ? 'text-blue-400' : ''}`}>
+            <button
+              id="toggle-editor-button"
+              onClick={() => {
+                setShowEditor(!showEditor);
+                setIsEditorActive(!isEditorActive);
+              }}
+              title={t('show_hide_editor')}
+              className={`hover:text-blue-400 transition ${isEditorActive ? 'active' : ''}`}
+            >
               <Edit size={20} />
             </button>
           </div>

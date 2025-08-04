@@ -42,3 +42,9 @@ html, body, #root {
   display: flex;
   align-items: center;
 }
+
+button.active {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+}
