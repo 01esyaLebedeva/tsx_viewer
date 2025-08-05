@@ -41,7 +41,7 @@
         "read_text_file",
         "read_media_file"
       ],
-      "disabled": true
+      "disabled": false
     }
   }
 }
