@@ -71,6 +71,13 @@
           "puppeteer_fill",
           "puppeteer_hover"
         ]
+      },
+      "memory": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-memory"
+        ]
       }
     }
   }
