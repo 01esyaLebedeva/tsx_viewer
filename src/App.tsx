@@ -37,14 +37,14 @@ const App: React.FC = () => {
 
     // Check if ipcRenderer is available (it might not be in a non-Electron environment)
     // Assuming preload script exposes ipcRenderer as window.electron.ipcRenderer
-    if (window.electron?.ipcRenderer) {
-      window.electron.ipcRenderer.on('locale-update', handleLocaleUpdate);
+    if (window.Electron?.ipcRenderer) {
+      window.Electron.ipcRenderer.on('locale-update', handleLocaleUpdate);
     }
 
     // Cleanup function to remove the listener when the component unmounts
     return () => {
-      if (window.electron?.ipcRenderer) {
-        window.electron.ipcRenderer.removeListener('locale-update', handleLocaleUpdate);
+      if (window.Electron?.ipcRenderer) {
+        window.Electron.ipcRenderer.removeListener('locale-update', handleLocaleUpdate);
       }
     };
   }, []); // Empty dependency array means this effect runs once on mount and cleans up on unmount
@@ -118,12 +118,11 @@ const App: React.FC = () => {
       >
         <Upload size={64} className="mb-4" />
         <h1 className="text-2xl font-bold"><Trans i18nKey="drag_tsx_file">Перетащите TSX-файл сюда</Trans></h1>
-        <p className="text-lg">{t('or')}</p>
+        <p className="text-5xl my-4">{t('or')}</p>
         <button
           id="choose-file-button"
+          className="text-2xl py-4 px-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
           onClick={triggerFileInput}
-          style={{ width: '300px', height: '100px' }}
-          className="mt-4 px-32 py-16 text-9xl bg-blue-500 text-white rounded hover:bg-blue-600 transition" 
         >
           {t('choose_file')}
         </button>
