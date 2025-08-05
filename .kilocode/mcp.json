@@ -23,7 +23,7 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/home/olesya/Документы/projects/"
+        "/home/igor/Документы/Проекты/tsx_viewer/"
       ],
       "alwaysAllow": [
         "read_file",
