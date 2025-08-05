@@ -118,10 +118,11 @@ const App: React.FC = () => {
       >
         <Upload size={64} className="mb-4" />
         <h1 className="text-2xl font-bold"><Trans i18nKey="drag_tsx_file">Перетащите TSX-файл сюда</Trans></h1>
-        <p className="text-5xl my-4">{t('or')}</p>
+        <p style={{ fontSize: '3rem', margin: '0.5rem 0' }}>{t('or')}</p>
         <button
           id="choose-file-button"
-          className="text-2xl py-4 px-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          className="py-4 px-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          style={{ fontSize: '1.5rem', width: '300px', height: '100px' }}
           onClick={triggerFileInput}
         >
           {t('choose_file')}
