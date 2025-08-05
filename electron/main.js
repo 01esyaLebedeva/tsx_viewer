@@ -14,10 +14,33 @@ function createWindow() {
     },
   });
 
+  // Detect user's system locale
+  const locale = app.getLocale();
+
+  // Send the locale to the renderer process when the window is ready
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.send('locale-update', locale);
+  });
+
   if (isDev) {
     win.loadURL('https://localhost:8081/');
   } else {
     win.loadFile(path.join(__dirname, '../dist/index.html'));
+
+  // Detect user's system locale
+  const locale = app.getLocale();
+
+  // Send the locale to the renderer process when the window is ready
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.send('locale-update', locale);
+  });
+    // Detect user's system locale
+    const locale = app.getLocale();
+  
+    // Send the locale to the renderer process when the window is ready
+    win.webContents.on('did-finish-load', () => {
+      win.webContents.send('locale-update', locale);
+    });
   }
 }
 
