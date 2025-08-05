@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview } from "@codesandbox/sandpack-react";
+import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview, SandpackFiles } from "@codesandbox/sandpack-react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { Upload, Code, Edit } from 'lucide-react';
+import { Upload, Code, Edit, Save } from 'lucide-react';
 import './index.css';
 import { useTranslation, Trans } from 'react-i18next';
-import { ipcRenderer } from 'electron'; // Import ipcRenderer
 import i18n from './i18n'; // Import i18n instance
 
 const PRELOAD_DEPENDENCIES = {
@@ -19,6 +18,8 @@ const PRELOAD_DEPENDENCIES = {
 const App: React.FC = () => {
   const { t } = useTranslation();
   const [originalCode, setOriginalCode] = useState<string>('');
+  const [editedCode, setEditedCode] = useState<string>('');
+  const [isDirty, setIsDirty] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [showSource, setShowSource] = useState(false);
@@ -35,19 +36,16 @@ const App: React.FC = () => {
       i18n.changeLanguage(locale);
     };
 
-    // Check if ipcRenderer is available (it might not be in a non-Electron environment)
-    // Assuming preload script exposes ipcRenderer as window.electron.ipcRenderer
     if (window.Electron?.ipcRenderer) {
       window.Electron.ipcRenderer.on('locale-update', handleLocaleUpdate);
     }
 
-    // Cleanup function to remove the listener when the component unmounts
     return () => {
       if (window.Electron?.ipcRenderer) {
         window.Electron.ipcRenderer.removeListener('locale-update', handleLocaleUpdate);
       }
     };
-  }, []); // Empty dependency array means this effect runs once on mount and cleans up on unmount
+  }, []);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -57,6 +55,8 @@ const App: React.FC = () => {
     reader.onload = (e) => {
       const code = e.target?.result as string;
       setOriginalCode(code);
+      setEditedCode(code);
+      setIsDirty(false);
       setFileName(file.name);
       setError(null);
       setShowSource(false);
@@ -86,6 +86,21 @@ const App: React.FC = () => {
 
   const triggerFileInput = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleUpdate = (files: SandpackFiles) => {
+    const file = files["/App.tsx"];
+    if (file && typeof file === 'object') {
+        const newCode = file.code;
+        setEditedCode(newCode);
+        setIsDirty(newCode !== originalCode);
+    }
+  };
+
+  const handleSave = () => {
+    if (window.Electron?.ipcRenderer) {
+      window.Electron.ipcRenderer.send('save-file', { fileName, code: editedCode });
+    }
   };
 
   if (!fileName) {
@@ -135,16 +150,6 @@ const App: React.FC = () => {
 
   return (
     <React.Fragment>
-      {/* Универсальный Sandpack-прогрев для ускорения первой загрузки */}
-      <SandpackProvider
-        template="react-ts"
-        customSetup={{ dependencies: PRELOAD_DEPENDENCIES }}
-        files={{ "/App.tsx": "export default () => null;" }}
-        style={{ display: "none" }}
-      >
-        <SandpackPreview style={{ display: "none" }} />
-      </SandpackProvider>
-      {/* Основной интерфейс */}
       <div id="main-app-container" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
         <header id="app-header" style={{
           display: 'flex',
@@ -155,9 +160,14 @@ const App: React.FC = () => {
           color: 'white',
           flexShrink: 0
         }}>
-          <button id="upload-new-file-button" onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
-                    <Upload />
-                    </button>
+          <div className="flex items-center gap-4">
+            <button id="upload-new-file-button" onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
+              <Upload />
+            </button>
+            <button id="save-file-button" onClick={handleSave} title={t('save_file')} className={`hover:text-blue-400 transition header-icon-button ${!isDirty ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={!isDirty}>
+              <Save />
+            </button>
+          </div>
           <h1 id="file-name-header" className="text-base font-bold">{t('tsx_viewer')}: {fileName}</h1>
           <div className="flex items-center gap-4">
             <button
@@ -189,9 +199,10 @@ const App: React.FC = () => {
         <div style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
           <SandpackProvider
             template="react-ts"
-            files={{ "/App.tsx": originalCode }}
+            files={{ "/App.tsx": editedCode }}
             customSetup={{ dependencies: { "lucide-react": "^0.309.0" } }}
             style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
+            onUpdate={handleUpdate}
           >
             <PanelGroup
               direction="horizontal"
