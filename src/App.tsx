@@ -1,9 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview } from "@codesandbox/sandpack-react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Upload, Code, Edit } from 'lucide-react';
 import './index.css';
 import { useTranslation, Trans } from 'react-i18next';
+import { ipcRenderer } from 'electron'; // Import ipcRenderer
+import i18n from './i18n'; // Import i18n instance
 
 const PRELOAD_DEPENDENCIES = {
   "react": "^18.2.0",
@@ -25,6 +27,27 @@ const App: React.FC = () => {
   const [isEditorActive, setIsEditorActive] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // IPC Listener for locale updates
+  useEffect(() => {
+    const handleLocaleUpdate = (event: any, locale: string) => {
+      console.log('Received locale:', locale); // For debugging
+      i18n.changeLanguage(locale);
+    };
+
+    // Check if ipcRenderer is available (it might not be in a non-Electron environment)
+    // Assuming preload script exposes ipcRenderer as window.electron.ipcRenderer
+    if (window.electron?.ipcRenderer) {
+      window.electron.ipcRenderer.on('locale-update', handleLocaleUpdate);
+    }
+
+    // Cleanup function to remove the listener when the component unmounts
+    return () => {
+      if (window.electron?.ipcRenderer) {
+        window.electron.ipcRenderer.removeListener('locale-update', handleLocaleUpdate);
+      }
+    };
+  }, []); // Empty dependency array means this effect runs once on mount and cleans up on unmount
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
