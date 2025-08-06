@@ -204,8 +204,8 @@ const App: React.FC = () => {
           <PanelGroup direction="horizontal" style={{ flexGrow: 1, minHeight: 0 }}>
             {showSource && (
               <>
-                <Panel defaultSize={50}>
-                  <div style={{ height: '100%', overflow: 'auto', borderRight: '1px solid #ccc' }}>
+                <Panel id="source-panel-container" defaultSize={50}>
+                  <div id="source-code-panel" style={{ height: '100%', overflow: 'auto', borderRight: '1px solid #ccc' }}>
                     <pre><code>{originalCode}</code></pre>
                   </div>
                 </Panel>
@@ -214,8 +214,8 @@ const App: React.FC = () => {
             )}
             {showEditor && (
               <>
-                <Panel defaultSize={50}>
-                  <SandpackLayout>
+                <Panel id="editor-panel-container" defaultSize={50}>
+                  <SandpackLayout id="editor-panel">
                     <SandpackCodeEditor />
                   </SandpackLayout>
                 </Panel>
@@ -223,8 +223,8 @@ const App: React.FC = () => {
               </>
             )}
             {showPreview && (
-              <Panel defaultSize={50}>
-                <SandpackLayout>
+              <Panel id="preview-panel-container" defaultSize={50}>
+                <SandpackLayout id="preview-panel">
                   <SandpackPreview />
                 </SandpackLayout>
               </Panel>
