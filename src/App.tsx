@@ -173,6 +173,9 @@ const App: React.FC = () => {
                           onClick={() => {
                             setShowEditor(!showEditor);
                             setIsEditorActive(!isEditorActive);
+                            if (!showEditor) {
+                              setIsDirty(true);
+                            }
                           }}
                           title={t('show_hide_editor')}
                           className={`p-1 rounded transition header-icon-button ${isEditorActive ? 'active' : ''}`}
@@ -204,7 +207,7 @@ const App: React.FC = () => {
           <PanelGroup direction="horizontal" style={{ flexGrow: 1, minHeight: 0 }}>
             {showSource && (
               <>
-                <Panel id="source-panel-container" order={1} defaultSize={33}>
+                <Panel id="source-panel-container" order={1} defaultSize={showEditor ? 33 : 50}>
                   <div id="source-code-panel" style={{ height: '100%', overflow: 'auto', borderRight: '1px solid #ccc' }}>
                     <pre><code>{originalCode}</code></pre>
                   </div>
@@ -214,16 +217,16 @@ const App: React.FC = () => {
             )}
             {showEditor && (
               <>
-                <Panel id="editor-panel-container" order={2} defaultSize={33}>
+                <Panel id="editor-panel-container" order={2} defaultSize={showSource ? 33 : 50}>
                   <SandpackLayout id="editor-panel">
-                    <SandpackCodeEditor />
+                    <SandpackCodeEditor onUpdate={handleCodeChange} />
                   </SandpackLayout>
                 </Panel>
                 <PanelResizeHandle className="resize-handle" />
               </>
             )}
             {showPreview && (
-              <Panel id="preview-panel-container" order={3} defaultSize={34}>
+              <Panel id="preview-panel-container" order={3} defaultSize={showSource && showEditor ? 34 : (showSource || showEditor ? 50 : 100)}>
                 <SandpackLayout id="preview-panel">
                   <SandpackPreview />
                 </SandpackLayout>
