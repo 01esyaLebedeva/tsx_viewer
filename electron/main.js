@@ -16,10 +16,8 @@ function createWindow() {
     },
   });
 
-  // Detect user's system locale
   const locale = app.getLocale();
 
-  // Send the locale to the renderer process when the window is ready
   win.webContents.on('did-finish-load', () => {
     win.webContents.send('locale-update', locale);
   });
@@ -41,22 +39,46 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-ipcMain.on('save-file', (event, { fileName, code }) => {
+ipcMain.on('open-file-dialog', (event) => {
   const win = BrowserWindow.getFocusedWindow();
   if (!win) return;
 
-  dialog.showSaveDialog(win, {
-    defaultPath: fileName,
-    filters: [{ name: 'TSX Files', extensions: ['tsx'] }],
+  dialog.showOpenDialog(win, {
+    properties: ['openFile'],
+    filters: [{ name: 'TSX Files', extensions: ['tsx'] }]
   }).then(result => {
-    if (!result.canceled && result.filePath) {
-      fs.writeFile(result.filePath, code, (err) => {
+    if (!result.canceled && result.filePaths.length > 0) {
+      const filePath = result.filePaths[0];
+      fs.readFile(filePath, 'utf-8', (err, data) => {
         if (err) {
-          console.error('Failed to save the file', err);
+          console.error('Failed to read the file', err);
+          event.sender.send('file-open-error', err.message);
         } else {
-          console.log('File saved successfully');
+          event.sender.send('file-opened', {
+            path: filePath,
+            name: path.basename(filePath),
+            content: data
+          });
         }
       });
+    }
+  }).catch(err => {
+    console.error(err);
+  });
+});
+
+ipcMain.on('save-file', (event, { filePath, code }) => {
+  if (!filePath) {
+    console.error('File path is not available for saving.');
+    return;
+  }
+
+  fs.writeFile(filePath, code, (err) => {
+    if (err) {
+      console.error('Failed to save the file', err);
+    } else {
+      console.log('File saved successfully');
+      event.sender.send('file-saved-successfully');
     }
   });
 });

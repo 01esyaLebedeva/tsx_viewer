@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview } from '@codesandbox/sandpack-react';
+import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview, useActiveCode } from '@codesandbox/sandpack-react';
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Upload, Code, Edit, Save } from 'lucide-react';
 import * as lucide from 'lucide-react';
@@ -7,41 +7,74 @@ import './index.css';
 import { useTranslation, Trans } from 'react-i18next';
 import i18n from './i18n'; // Import i18n instance
 
+const CustomEditor = ({ onCodeChange }) => {
+  const { code } = useActiveCode();
+  useEffect(() => {
+    onCodeChange(code);
+  }, [code, onCodeChange]);
+
+  return <SandpackCodeEditor />;
+};
+
 const App: React.FC = () => {
   const { t } = useTranslation();
   const [originalCode, setOriginalCode] = useState<string>('');
   const [editedCode, setEditedCode] = useState<string>('');
   const [isDirty, setIsDirty] = useState<boolean>(false);
+  const [filePath, setFilePath] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [showSource, setShowSource] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [isSourceActive, setIsSourceActive] = useState(false);
   const [isEditorActive, setIsEditorActive] = useState(false);
-  const [showPreview, setShowPreview] = useState(true); // Show preview by default
+  const [showPreview, setShowPreview] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  // IPC Listener for locale updates
   useEffect(() => {
     const handleLocaleUpdate = (event: any, locale: string) => {
-      console.log('Received locale:', locale); // For debugging
+      console.log('Received locale:', locale);
       i18n.changeLanguage(locale);
+    };
+
+    const handleFileOpened = (event: any, { path, name, content }) => {
+      setOriginalCode(content);
+      setEditedCode(content);
+      setIsDirty(false);
+      setFilePath(path);
+      setFileName(name);
+      setError(null);
+      setShowSource(false);
+      setShowEditor(false);
+      setShowPreview(true);
+    };
+
+    const handleFileOpenError = (event: any, errorMessage: string) => {
+      setError(errorMessage);
+    };
+
+    const handleFileSaved = () => {
+      setIsDirty(false);
     };
 
     if (window.Electron?.ipcRenderer) {
       window.Electron.ipcRenderer.on('locale-update', handleLocaleUpdate);
+      window.Electron.ipcRenderer.on('file-opened', handleFileOpened);
+      window.Electron.ipcRenderer.on('file-open-error', handleFileOpenError);
+      window.Electron.ipcRenderer.on('file-saved-successfully', handleFileSaved);
     }
 
     return () => {
       if (window.Electron?.ipcRenderer) {
         window.Electron.ipcRenderer.removeListener('locale-update', handleLocaleUpdate);
+        window.Electron.ipcRenderer.removeListener('file-opened', handleFileOpened);
+        window.Electron.ipcRenderer.removeListener('file-open-error', handleFileOpenError);
+        window.Electron.ipcRenderer.removeListener('file-saved-successfully', handleFileSaved);
       }
     };
   }, []);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFile = (file: File) => {
+  const handleFile = (file: any) => {
     setIsLoading(true);
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -49,6 +82,7 @@ const App: React.FC = () => {
       setOriginalCode(code);
       setEditedCode(code);
       setIsDirty(false);
+      setFilePath(file.path || file.name);
       setFileName(file.name);
       setError(null);
       setShowSource(false);
@@ -70,28 +104,38 @@ const App: React.FC = () => {
     }
   };
 
-  const onInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleFile(e.target.files[0]);
+  const triggerFileDialog = () => {
+    if (window.Electron?.ipcRenderer) {
+      window.Electron.ipcRenderer.send('open-file-dialog');
+    } else {
+      // Fallback for web version
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.tsx';
+      input.onchange = (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          handleFile(file);
+        }
+      };
+      input.click();
     }
-  };
-
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
   };
 
   const handleCodeChange = (newCode: string) => {
     setEditedCode(newCode);
-    setIsDirty(newCode !== originalCode);
-  };
-
-  const handleSave = () => {
-    if (window.Electron?.ipcRenderer) {
-      window.Electron.ipcRenderer.send('save-file', { fileName, code: editedCode });
+    if (newCode !== originalCode) {
+      setIsDirty(true);
     }
   };
 
-  if (!fileName) {
+  const handleSave = () => {
+    if (window.Electron?.ipcRenderer && filePath) {
+      window.Electron.ipcRenderer.send('save-file', { filePath, code: editedCode });
+    }
+  };
+
+  if (!filePath) {
     return (
       <div
         id="dropzone-container"
@@ -126,11 +170,10 @@ const App: React.FC = () => {
           id="choose-file-button"
           className="py-4 px-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
           style={{ fontSize: '1.5rem', width: '300px', height: '100px' }}
-          onClick={triggerFileInput}
+          onClick={triggerFileDialog}
         >
           {t('choose_file')}
         </button>
-        <input id="file-input" type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
       </div>
     );
   }
@@ -148,7 +191,7 @@ const App: React.FC = () => {
           flexShrink: 0
         }}>
           <div className="flex items-center gap-4">
-            <button id="upload-new-file-button" onClick={triggerFileInput} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
+            <button id="upload-new-file-button" onClick={triggerFileDialog} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
               <Upload />
             </button>
             <button id="save-file-button" onClick={handleSave} title={t('save_file')} className={`hover:text-blue-400 transition header-icon-button ${!isDirty ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={!isDirty}>
@@ -173,9 +216,6 @@ const App: React.FC = () => {
                           onClick={() => {
                             setShowEditor(!showEditor);
                             setIsEditorActive(!isEditorActive);
-                            if (!showEditor) {
-                              setIsDirty(true);
-                            }
                           }}
                           title={t('show_hide_editor')}
                           className={`p-1 rounded transition header-icon-button ${isEditorActive ? 'active' : ''}`}
@@ -183,7 +223,6 @@ const App: React.FC = () => {
                           <Edit />
                         </button>
           </div>
-          <input id="file-input-header" type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
         </header>
 
         <SandpackProvider
@@ -219,7 +258,7 @@ const App: React.FC = () => {
               <>
                 <Panel id="editor-panel-container" order={2} defaultSize={showSource ? 33 : 50}>
                   <SandpackLayout id="editor-panel">
-                    <SandpackCodeEditor onUpdate={handleCodeChange} />
+                    <CustomEditor onCodeChange={handleCodeChange} />
                   </SandpackLayout>
                 </Panel>
                 <PanelResizeHandle className="resize-handle" />
