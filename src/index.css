@@ -19,6 +19,7 @@ html, body, #root {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  height: 100% !important;
 }
 .spinner {
   width: 48px;
@@ -55,4 +56,8 @@ button.active {
 .header-icon-button svg {
   width: 30px;
   height: 30px;
+}
+
+.sp-overlay, .sp-loading {
+    display: none !important;
 }
