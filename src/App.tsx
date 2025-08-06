@@ -1,19 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview, SandpackFiles } from "@codesandbox/sandpack-react";
+import { Sandpack } from '@codesandbox/sandpack-react';
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Upload, Code, Edit, Save } from 'lucide-react';
+import * as lucide from 'lucide-react';
 import './index.css';
 import { useTranslation, Trans } from 'react-i18next';
 import i18n from './i18n'; // Import i18n instance
-
-const PRELOAD_DEPENDENCIES = {
-  "react": "^18.2.0",
-  "react-dom": "^18.2.0",
-  "lucide-react": "^0.309.0",
-  "@types/react": "^18.2.0",
-  "@types/react-dom": "^18.2.0"
-};
-
 
 const App: React.FC = () => {
   const { t } = useTranslation();
@@ -26,7 +18,7 @@ const App: React.FC = () => {
   const [showEditor, setShowEditor] = useState(false);
   const [isSourceActive, setIsSourceActive] = useState(false);
   const [isEditorActive, setIsEditorActive] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true); // Show preview by default
   const [isLoading, setIsLoading] = useState(false);
 
   // IPC Listener for locale updates
@@ -53,7 +45,7 @@ const App: React.FC = () => {
     setIsLoading(true);
     const reader = new FileReader();
     reader.onload = (e) => {
-      const code = e.target?.result as string;
+      let code = e.target?.result as string;
       setOriginalCode(code);
       setEditedCode(code);
       setIsDirty(false);
@@ -88,13 +80,9 @@ const App: React.FC = () => {
     fileInputRef.current?.click();
   };
 
-  const handleUpdate = (files: SandpackFiles) => {
-    const file = files["/App.tsx"];
-    if (file && typeof file === 'object') {
-        const newCode = file.code;
-        setEditedCode(newCode);
-        setIsDirty(newCode !== originalCode);
-    }
+  const handleCodeChange = (newCode: string) => {
+    setEditedCode(newCode);
+    setIsDirty(newCode !== originalCode);
   };
 
   const handleSave = () => {
@@ -147,7 +135,6 @@ const App: React.FC = () => {
     );
   }
 
-
   return (
     <React.Fragment>
       <div id="main-app-container" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -197,46 +184,24 @@ const App: React.FC = () => {
         </header>
 
         <div style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <SandpackProvider
+          <Sandpack
             template="react-ts"
-            files={{ "/App.tsx": editedCode }}
-            customSetup={{ dependencies: { "lucide-react": "^0.309.0" } }}
-            style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
-            onUpdate={handleUpdate}
-          >
-            <PanelGroup
-              direction="horizontal"
-              style={{ height: '100%' }}
-            >
-              {showSource && (
-                <>
-                  <Panel id="source-code-panel" defaultSize={25} minSize={10}>
-                    <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
-                      <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
-                    </div>
-                  </Panel>
-                  <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
-                </>
-              )}
-              {showEditor && (
-                <>
-                  <Panel id="code-editor-panel" defaultSize={35} minSize={10}>
-                    <SandpackLayout>
-                      <SandpackCodeEditor showLineNumbers={true} />
-                    </SandpackLayout>
-                  </Panel>
-                  <PanelResizeHandle style={{ width: '4px', background: '#444' }} />
-                </>
-              )}
-              {showPreview && (
-                <Panel id="preview-panel" defaultSize={100} minSize={10}>
-                  <SandpackLayout>
-                    <SandpackPreview style={{ height: '100%' }} />
-                  </SandpackLayout>
-                </Panel>
-              )}
-            </PanelGroup>
-          </SandpackProvider>
+            files={{
+              '/App.tsx': editedCode,
+            }}
+            options={{
+              showLineNumbers: true,
+              showInlineErrors: true,
+              showTabs: !showSource && !showEditor,
+              editorHeight: '100vh',
+            }}
+            customSetup={{
+              dependencies: {
+                "lucide-react": "^0.536.0",
+                "react-resizable-panels": "^3.0.3",
+              }
+            }}
+          />
         </div>
         {error && <div id="error-message-container" style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>{t('error')}: {error}</div>}
       </div>
