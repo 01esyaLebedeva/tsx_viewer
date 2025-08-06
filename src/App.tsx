@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sandpack } from '@codesandbox/sandpack-react';
+import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview } from '@codesandbox/sandpack-react';
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Upload, Code, Edit, Save } from 'lucide-react';
 import * as lucide from 'lucide-react';
@@ -184,7 +184,7 @@ const App: React.FC = () => {
         </header>
 
         <div style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <Sandpack
+          <SandpackProvider
             template="react-ts"
             files={{
               '/App.tsx': editedCode,
@@ -201,7 +201,12 @@ const App: React.FC = () => {
                 "react-resizable-panels": "^3.0.3",
               }
             }}
-          />
+          >
+            <SandpackLayout>
+              <SandpackCodeEditor />
+              <SandpackPreview />
+            </SandpackLayout>
+          </SandpackProvider>
         </div>
         {error && <div id="error-message-container" style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>{t('error')}: {error}</div>}
       </div>
