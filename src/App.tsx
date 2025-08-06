@@ -197,26 +197,26 @@ const App: React.FC = () => {
               }
             }}
           >
-            <PanelGroup direction="horizontal">
+            <PanelGroup id="main-panel-group" direction="horizontal">
               {showSource && (
                 <>
-                  <Panel order={1} defaultSize={25}>
+                  <Panel id="source-code-panel" order={1} defaultSize={25}>
                     <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
                       <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
                     </div>
                   </Panel>
-                  <PanelResizeHandle className="resize-handle" />
+                  <PanelResizeHandle id="source-editor-resize-handle" className="resize-handle" />
                 </>
               )}
               {showEditor && (
                 <>
-                  <Panel order={2} defaultSize={35}>
+                  <Panel id="editor-panel" order={2} defaultSize={35}>
                     <SandpackCodeEditor showLineNumbers />
                   </Panel>
-                  <PanelResizeHandle className="resize-handle" />
+                  <PanelResizeHandle id="editor-preview-resize-handle" className="resize-handle" />
                 </>
               )}
-              <Panel order={3}>
+              <Panel id="preview-panel" order={3}>
                 <SandpackPreview />
               </Panel>
             </PanelGroup>
