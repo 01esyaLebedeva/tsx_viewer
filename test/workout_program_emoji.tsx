@@ -377,4 +377,4 @@ const WorkoutProgram = () => {
   );
 };
 
-export default WorkoutProgram; 
+export default WorkoutProgram;

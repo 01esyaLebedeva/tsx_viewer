@@ -27,7 +27,7 @@ modules:
         url: https://github.com/01esyaLebedeva/tsx_viewer.git
         commit: 1420764e7164571cde5d7640e0fde9cf1670c1c5
 
-  - name: tsx_viewer
+  - name: tsx_view_edit
     buildsystem: simple
     build-commands:
       - |
