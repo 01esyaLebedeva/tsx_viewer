@@ -53,7 +53,7 @@
     ],
     "linux": {
       "desktop": "src/tsx_viewer.desktop",
-      "category": "Utility;Development;Viewer;",
+      "category": "Utility;Development;Viewer;Editor",
       "icon": "src/icons/tsx_viewer.png",
       "target": [
         "snap",

@@ -205,7 +205,7 @@ const App: React.FC = () => {
                       <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
                     </div>
                   </Panel>
-                  <PanelResizeHandle />
+                  <PanelResizeHandle className="resize-handle" />
                 </>
               )}
               {showEditor && (
@@ -213,7 +213,7 @@ const App: React.FC = () => {
                   <Panel defaultSize={35}>
                     <SandpackCodeEditor showLineNumbers />
                   </Panel>
-                  <PanelResizeHandle />
+                  <PanelResizeHandle className="resize-handle" />
                 </>
               )}
               <Panel defaultSize={showSource || showEditor ? 40 : 100}>

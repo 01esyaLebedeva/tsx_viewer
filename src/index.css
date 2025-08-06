@@ -58,6 +58,17 @@ button.active {
   height: 30px;
 }
 
+.resize-handle {
+  width: 4px;
+  background: #444;
+  transition: all 0.1s ease-in-out;
+}
+
+.resize-handle:hover {
+  background: #007bff;
+  box-shadow: 0 0 5px #007bff;
+}
+
 .sp-overlay, .sp-loading {
     display: none !important;
 }
