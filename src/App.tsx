@@ -132,6 +132,18 @@ const App: React.FC = () => {
   const handleSave = () => {
     if (window.Electron?.ipcRenderer && filePath) {
       window.Electron.ipcRenderer.send('save-file', { filePath, code: editedCode });
+    } else {
+      // Fallback for web version
+      const blob = new Blob([editedCode], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName || 'edited-file.tsx';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setIsDirty(false);
     }
   };
 
