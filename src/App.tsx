@@ -183,31 +183,54 @@ const App: React.FC = () => {
           <input id="file-input-header" type="file" ref={fileInputRef} onChange={onInput} accept=".tsx" style={{ display: 'none' }} />
         </header>
 
-        <div style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <SandpackProvider
-            template="react-ts"
-            files={{
-              '/App.tsx': editedCode,
-            }}
-            options={{
-              showLineNumbers: true,
-              showInlineErrors: true,
-              showTabs: !showSource && !showEditor,
-              editorHeight: '100vh',
-            }}
-            customSetup={{
-              dependencies: {
-                "lucide-react": "^0.536.0",
-                "react-resizable-panels": "^3.0.3",
-              }
-            }}
-          >
-            <SandpackLayout>
-              <SandpackCodeEditor />
-              <SandpackPreview />
-            </SandpackLayout>
-          </SandpackProvider>
-        </div>
+        <SandpackProvider
+          template="react-ts"
+          files={{
+            '/App.tsx': editedCode,
+          }}
+          options={{
+            showLineNumbers: true,
+            showInlineErrors: true,
+            showTabs: !showSource && !showEditor,
+            editorHeight: '100vh',
+          }}
+          customSetup={{
+            dependencies: {
+              "lucide-react": "^0.536.0",
+              "react-resizable-panels": "^3.0.3",
+            }
+          }}
+        >
+          <PanelGroup direction="horizontal" style={{ flexGrow: 1, minHeight: 0 }}>
+            {showSource && (
+              <>
+                <Panel defaultSize={50}>
+                  <div style={{ height: '100%', overflow: 'auto', borderRight: '1px solid #ccc' }}>
+                    <pre><code>{originalCode}</code></pre>
+                  </div>
+                </Panel>
+                <PanelResizeHandle style={{ width: '4px', background: '#ccc' }} />
+              </>
+            )}
+            {showEditor && (
+              <>
+                <Panel defaultSize={50}>
+                  <SandpackLayout>
+                    <SandpackCodeEditor />
+                  </SandpackLayout>
+                </Panel>
+                <PanelResizeHandle style={{ width: '4px', background: '#ccc' }} />
+              </>
+            )}
+            {showPreview && (
+              <Panel defaultSize={50}>
+                <SandpackLayout>
+                  <SandpackPreview />
+                </SandpackLayout>
+              </Panel>
+            )}
+          </PanelGroup>
+        </SandpackProvider>
         {error && <div id="error-message-container" style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>{t('error')}: {error}</div>}
       </div>
       {isLoading && (
