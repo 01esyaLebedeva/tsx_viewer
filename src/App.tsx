@@ -209,7 +209,7 @@ const App: React.FC = () => {
                     <pre><code>{originalCode}</code></pre>
                   </div>
                 </Panel>
-                <PanelResizeHandle className="resize-handle" style={{ width: '4px', background: '#ccc' }} />
+                <PanelResizeHandle className="resize-handle" />
               </>
             )}
             {showEditor && (
@@ -219,7 +219,7 @@ const App: React.FC = () => {
                     <SandpackCodeEditor />
                   </SandpackLayout>
                 </Panel>
-                <PanelResizeHandle className="resize-handle" style={{ width: '4px', background: '#ccc' }} />
+                <PanelResizeHandle className="resize-handle" />
               </>
             )}
             {showPreview && (
