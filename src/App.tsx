@@ -200,7 +200,7 @@ const App: React.FC = () => {
             <PanelGroup direction="horizontal">
               {showSource && (
                 <>
-                  <Panel defaultSize={25}>
+                  <Panel order={1} defaultSize={25}>
                     <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
                       <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
                     </div>
@@ -210,13 +210,13 @@ const App: React.FC = () => {
               )}
               {showEditor && (
                 <>
-                  <Panel defaultSize={35}>
+                  <Panel order={2} defaultSize={35}>
                     <SandpackCodeEditor showLineNumbers />
                   </Panel>
                   <PanelResizeHandle className="resize-handle" />
                 </>
               )}
-              <Panel defaultSize={showSource || showEditor ? 40 : 100}>
+              <Panel order={3}>
                 <SandpackPreview />
               </Panel>
             </PanelGroup>
