@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sandpack } from '@codesandbox/sandpack-react';
+import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview } from '@codesandbox/sandpack-react';
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Upload, Code, Edit, Save } from 'lucide-react';
 import * as lucide from 'lucide-react';
@@ -184,16 +184,11 @@ const App: React.FC = () => {
         </header>
 
         <div style={{ flexGrow: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-          <Sandpack
+          <SandpackProvider
+            key={fileName}
             template="react-ts"
             files={{
               '/App.tsx': editedCode,
-            }}
-            options={{
-              showLineNumbers: true,
-              showInlineErrors: true,
-              showTabs: !showSource && !showEditor,
-              editorHeight: '100vh',
             }}
             customSetup={{
               dependencies: {
@@ -201,7 +196,31 @@ const App: React.FC = () => {
                 "react-resizable-panels": "^3.0.3",
               }
             }}
-          />
+          >
+            <PanelGroup direction="horizontal">
+              {showSource && (
+                <>
+                  <Panel defaultSize={25}>
+                    <div style={{ height: '100%', overflow: 'auto', backgroundColor: '#1e1e1e' }}>
+                      <pre style={{ color: '#d4d4d4', padding: 16, margin: 0 }}>{originalCode}</pre>
+                    </div>
+                  </Panel>
+                  <PanelResizeHandle />
+                </>
+              )}
+              {showEditor && (
+                <>
+                  <Panel defaultSize={35}>
+                    <SandpackCodeEditor showLineNumbers />
+                  </Panel>
+                  <PanelResizeHandle />
+                </>
+              )}
+              <Panel defaultSize={showSource || showEditor ? 40 : 100}>
+                <SandpackPreview />
+              </Panel>
+            </PanelGroup>
+          </SandpackProvider>
         </div>
         {error && <div id="error-message-container" style={{ color: 'red', position: 'fixed', bottom: 0, left: 0, right: 0, background: 'black', padding: '8px' }}>{t('error')}: {error}</div>}
       </div>

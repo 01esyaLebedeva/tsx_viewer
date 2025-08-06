@@ -1,9 +1,9 @@
 {
-  "name": "tsx-viewer",
+  "name": "tsx-view-edit",
   "version": "1.0.5",
   "type": "module",
   "main": "electron/main.js",
-  "description": "TSX viewer application built with Electron and Vite.",
+  "description": "TSX view/edit application built with Electron and Vite.",
   "author": {
     "name": "Olesya Lebedeva",
     "email": "olesya.andreevna.lebedeva@gmail.com"
