@@ -14,7 +14,8 @@
     "build": "vite build && electron-builder",
     "start": "electron .",
     "start:prod": "npm run build && npm run start",
-    "graph:audit": "node project_graph/scripts/graph_auditor.mjs"
+    "graph:audit": "node project_graph/scripts/graph_auditor.mjs",
+    "graph:commit": "node scripts/ai_committer.mjs"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
