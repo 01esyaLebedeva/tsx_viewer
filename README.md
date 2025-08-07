@@ -108,10 +108,16 @@ This system allows the AI assistant to quickly build a "mental map" of the proje
     ```bash
     npm run graph:audit
     ```
-4.  **Automate Commits:** To create clean, atomic commits based on the graph's rules, use the AI Committer script. It will automatically group and commit your staged changes:
+4.  **Automate Commits:** To create clean, atomic commits based on the graph's rules. Ensure your changes are staged (`git add .`) before running this command:
     ```bash
     npm run graph:commit
     ```
+5.  **Synchronize AI Commands:** To update the rule files for various AI assistants with the latest command definitions:
+    ```bash
+    npm run sync:ai-commands
+    ```
+
+For details on how to configure your AI assistant to use these commands, refer to the [AI Assistant Command Mapping section in `project_graph/README.md`](project_graph/README.md#ai-assistant-command-mapping).
 
 ## 📄 License
 

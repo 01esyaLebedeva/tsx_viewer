@@ -26,6 +26,17 @@
                 'run committer',
             ],
         },
+        {
+            name: 'sync-ai-commands',
+            npmCommand: 'npm run sync:ai-commands',
+            description: 'Synchronizes AI command definitions across various AI assistant rule files.',
+            triggerPhrases: [
+                'sync-ai-commands',
+                'sync ai',
+                'update ai rules',
+                'sync assistant commands',
+            ],
+        },
     ],
 
     // Define how these commands should be presented for different AI platforms

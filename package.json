@@ -15,7 +15,8 @@
     "start": "electron .",
     "start:prod": "npm run build && npm run start",
     "graph:audit": "node project_graph/scripts/graph_generator.mjs",
-    "graph:commit": "node scripts/ai_committer.mjs"
+    "graph:commit": "node scripts/ai_committer.mjs",
+    "sync:ai-commands": "node scripts/sync_ai_commands.mjs"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
