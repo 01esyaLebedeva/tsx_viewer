@@ -1,5 +1,27 @@
 # Release Notes
 
+## v1.0.6 - Feature Update
+
+### ✨ Features
+
+*   **File Opening:** Implemented multiple ways to open files:
+    *   Native file dialog in Electron.
+    *   File System Access API in modern web browsers.
+    *   Standard file input as a fallback.
+    *   Drag and drop functionality.
+*   **File Saving:** Implemented file saving capabilities:
+    *   Directly to the file path in Electron.
+    *   Using the File System Access API in modern web browsers.
+    *   As a download in older web browsers.
+*   **State Management:** Improved `isDirty` state management to accurately track file modifications.
+*   **UI Enhancements:** Added loading spinners and error messages for better user feedback.
+
+### 🛠️ Fixes
+
+*   Resolved multiple TypeScript errors.
+*   Fixed a cyclic dependency issue that caused infinite re-renders in the editor.
+*   Refactored the editor component for better state management.
+
 ## v1.0.3 - Initial Release
 
 ### ✨ Features

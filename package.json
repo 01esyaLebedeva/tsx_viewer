@@ -1,9 +1,9 @@
 {
   "name": "tsx-view-edit",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "main": "electron/main.js",
-  "description": "TSX view/edit application built with Electron and Vite.",
+  "description": "TSX viewer application built with Electron and Vite.",
   "author": {
     "name": "Olesya Lebedeva",
     "email": "olesya.andreevna.lebedeva@gmail.com"
@@ -32,6 +32,7 @@
     "@types/node": "^20.0.0",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-basic-ssl": "^2.1.0",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.21",
     "concurrently": "^8.2.0",
@@ -51,9 +52,9 @@
       "!node_modules/**/.cache",
       "node_modules/**"
     ],
-    "linux": {
+    "_linux": {
       "desktop": "src/tsx_viewer.desktop",
-      "category": "Utility;Development;Viewer;Editor",
+      "category": "Utility;Development;Viewer;",
       "icon": "src/icons/tsx_viewer.png",
       "target": [
         "snap",

@@ -1,23 +1,27 @@
-# Product Context: tsx_viewer
+# Project Context for TSX Viewer/Editor
 
-## 1. Проблема
+## Project Overview
+This project is a TSX viewer and editor application, supporting both web and Electron environments.
 
-React-разработчики часто работают с отдельными UI-компонентами в `.tsx` файлах. Для того чтобы увидеть, как компонент выглядит и работает, им обычно необходимо:
-*   Запускать полноценный проект разработки (например, через Create React App или Vite).
-*   Интегрировать компонент в существующую страницу.
-*   Ждать, пока сервер разработки запустится и соберет изменения.
+## Key Features
 
-Этот процесс может быть избыточным и медленным, если нужно просто быстро взглянуть на компонент, внести небольшие правки или поделиться им. Существующие онлайн-"песочницы" (как CodeSandbox, StackBlitz) мощные, но требуют подключения к интернету и могут быть излишни для простого локального просмотра.
+### 1. File Opening
+- **Electron:** Uses `ipcRenderer.send('open-file-dialog')` to trigger a native file dialog.
+- **Web (Modern Browsers):** Uses the File System Access API (`window.showOpenFilePicker`) for a more integrated experience.
+- **Web (Fallback):** Uses a standard HTML `<input type="file">` element for older browsers.
+- **Drag and Drop:** Files can be opened by dragging and dropping them onto the application window.
 
-## 2. Решение
+### 2. File Saving
+- **Electron:** Uses `ipcRenderer.send('save-file')` to save content to the original file path.
+- **Web (Modern Browsers):** Uses the File System Access API (`fileHandle.createWritable()`) to save changes directly to the file.
+- **Web (Fallback):** Downloads the edited content as a new file using a `Blob` and `URL.createObjectURL`.
 
-`tsx_viewer` предлагает решение этой проблемы, предоставляя легковесное десктопное приложение, которое выступает в роли "просмотрщика" для локальных `.tsx` файлов. Оно устраняет необходимость в настройке и запуске окружения для разработки, позволяя мгновенно визуализировать компоненты.
+### 3. Code Editing and Preview
+- **Editor:** Uses `@codesandbox/sandpack-react` to provide a code editor with live preview.
+- **State Management:** The `isDirty` state is used to track whether the file has been modified since it was last saved.
 
-Ключевая ценность — это скорость и простота. Пользователь может открыть файл и сразу же увидеть результат, как если бы он открыл изображение или текстовый документ.
-
-## 3. Цели пользовательского опыта (UX Goals)
-
-*   **Мгновенный отклик:** Приложение должно запускаться быстро, а предпросмотр обновляться в реальном времени по мере ввода кода.
-*   **Простота и интуитивность:** Интерфейс должен быть минималистичным и не перегруженным функциями. Основные действия (открыть файл, редактировать, видеть результат) должны быть очевидны.
-*   **Гибкость рабочего пространства:** Пользователь должен иметь возможность настраивать размер панелей редактора и предпросмотра для комфортной работы.
-*   **"Просто работает":** Приложение должно само обрабатывать зависимости, избавляя пользователя от ручной установки пакетов для простого просмотра.
+## Key Files Involved:
+- `src/App.tsx`: Contains the core React component logic, state management, and UI.
+- `electron/main.js`: Handles IPC communications for file operations in the Electron environment.
+- `vite.config.ts`: Vite build configuration.
+- `tsconfig.json`: TypeScript compiler options.

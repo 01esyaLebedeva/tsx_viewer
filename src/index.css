@@ -60,13 +60,22 @@ button.active {
 
 .resize-handle {
   width: 4px;
-  background: #444;
+  background: #ccc;
   transition: all 0.1s ease-in-out;
 }
 
 .resize-handle:hover {
   background: #007bff;
   box-shadow: 0 0 5px #007bff;
+}
+
+.resize-handle[data-resize-handle-state="drag"] {
+  background: #0056b3;
+  box-shadow: 0 0 10px #0056b3;
+}
+
+.sp-overlay, .sp-loading {
+    display: none !important;
 }
 
 .sp-overlay, .sp-loading {
