@@ -154,7 +154,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleCodeChange = useCallback((newCode: string) => {
+  const handleCodeChange = (newCode: string) => {
     setEditedCode(newCode);
     console.log('editedCode updated:', newCode.substring(0, 50) + '...'); // Log first 50 chars
     // Only set isDirty to true if the new code is different from the original code
@@ -162,7 +162,7 @@ const App: React.FC = () => {
     if (newCode !== originalCode) {
       setIsDirty(true);
     }
-  }, [originalCode]);
+  };
 
   const handleSave = async () => {
     if (window.Electron?.ipcRenderer && filePath) {
@@ -217,7 +217,7 @@ root.render(
         "lucide-react": "latest",
       },
     }),
-  }), [editedCode]);
+  }), [originalCode]);
 
   if (!filePath) {
     return (
