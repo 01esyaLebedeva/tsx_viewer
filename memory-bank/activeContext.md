@@ -1,19 +1,16 @@
 # Active Context
 
-## 1. Текущий фокус
+## 1. Current Focus
 
-Основное внимание в настоящее время уделяется созданию и заполнению "банка памяти" (`memory-bank/`) в соответствии с правилами, изложенными в `.cursor/rules/memory-bank.mdc`.
+The current focus is on ensuring the `memory-bank` is up-to-date and accurately reflects the current state of the `tsx_viewer` project.
 
-## 2. Недавние изменения
+## 2. Recent Changes
 
-*   Проведен первоначальный анализ проекта `tsx_viewer` для понимания его целей, архитектуры и технологического стека.
-*   Созданы следующие файлы "банка памяти":
-    *   `projectbrief.md`
-    *   `productContext.md`
-    *   `techContext.md`
-    *   `systemPatterns.md`
+- The `memory-bank` has been updated to reflect the latest changes in the project, including:
+    - A more detailed `productContext.md` that outlines the key features of the application.
+    - A more concise `techContext.md` that removes redundant information.
+    - An updated `progress.md` that includes the latest changes.
 
-## 3. Следующие шаги
+## 3. Next Steps
 
-1.  Создать файл `progress.md`, чтобы задокументировать текущий статус функциональности проекта.
-2.  Завершить задачу по первоначальному заполнению "банка памяти".
+- Continue to keep the `memory-bank` up-to-date as the project evolves.

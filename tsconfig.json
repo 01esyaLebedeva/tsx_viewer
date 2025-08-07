@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "lib": ["DOM", "ESNext"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "react-jsx",
     "moduleResolution": "Node",
     "esModuleInterop": true,
@@ -15,4 +15,4 @@
   },
   "include": ["src", "electron"],
   "exclude": ["node_modules"]
-} 
+}

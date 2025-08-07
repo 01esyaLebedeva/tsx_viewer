@@ -5,3 +5,4 @@ alwaysApply: true
 I, AI assistant: 
 Have full access to the file system of all projects;
 Can use git CLI;
+At the beginning of each session, read and parse `project_graph.jsonnet` to build a mental model of the project's architecture and dependencies.
