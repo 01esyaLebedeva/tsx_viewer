@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview, useActiveCode } from '@codesandbox/sandpack-react';
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Upload, Code, Edit, Save } from 'lucide-react';
@@ -154,7 +154,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleCodeChange = (newCode: string) => {
+  const handleCodeChange = useCallback((newCode: string) => {
     setEditedCode(newCode);
     console.log('editedCode updated:', newCode.substring(0, 50) + '...'); // Log first 50 chars
     // Only set isDirty to true if the new code is different from the original code
@@ -162,7 +162,7 @@ const App: React.FC = () => {
     if (newCode !== originalCode) {
       setIsDirty(true);
     }
-  };
+  }, [originalCode]);
 
   const handleSave = async () => {
     if (window.Electron?.ipcRenderer && filePath) {
@@ -195,7 +195,7 @@ const App: React.FC = () => {
   };
 
   const sandpackFiles = useMemo(() => ({
-    '/App.tsx': editedCode,
+    '/App.tsx': originalCode,
     '/index.tsx': {
       code: `import React from 'react';
 import { createRoot } from 'react-dom/client';
