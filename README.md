@@ -2,7 +2,9 @@
 
 ![TSX View/Edit Screenshot](https://github.com/01esyaLebedeva/tsx_viewer/blob/7eb05d71a16647c4a9a5a6cd98b48c17cbf7274c/docs/images/screen_03_TSX_edit.png?raw=true)
 
-**TSX View/Edit** is a minimalist, cross-platform desktop application for viewing and interactively previewing `.tsx` (TypeScript with JSX) files. It serves as a lightweight tool for developers who need to quickly visualize React components without running a full development project.
+**TSX View/Edit** is a minimalist, cross-platform desktop application for viewing and interactively previewing `.tsx` files. It positions the TSX file as a new, self-contained format for interactive content, similar to what Flash animations once were.
+
+With the rise of AI services like Anthropic's Claude, which can generate UI components as downloadable TSX "artifacts," this tool empowers not just developers, but also regular users to open, view, and interact with these new forms of content without needing a full development environment.
 
 ## 🚀 Features
 
@@ -100,7 +102,12 @@ This file allows the AI assistant to quickly build a "mental map" of the project
 
 **How to work with it?**
 1.  **Keep it updated:** When adding new key components or changing interaction logic, please update `project_graph.jsonnet`.
-2.  **Use Jsonnet:** You may need [Jsonnet](https://jsonnet.org/) to work with the file. You can install it via a package manager (e.g., `sudo apt-get install jsonnet`).
+2.  **Use Jsonnet:** You may need [Jsonnet](https://jsonnet.org/) to work with the file.
+3.  **Audit the Graph:** To ensure the graph is in sync with the actual project files, run the audit script:
+    ```bash
+    npm run graph:audit
+    ```
+4.  **Let the AI Commit:** To create clean, atomic commits based on the graph's rules, ask your AI assistant to run the committer script. It will automatically group and commit your changes.
 
 ## 📄 License
 

@@ -13,9 +13,26 @@
         type: 'MetaDirectory',
         purpose: 'Contains the modular parts of the project graph.',
       },
-      'scripts/graph_validator.mjs': {
+      'scripts/graph_auditor.mjs': {
         type: 'UtilityScript',
-        purpose: 'A script to validate the integrity and accuracy of the project graph against the source code. (Future implementation)',
+        purpose: 'Audits the project graph by comparing its file-based entities against the actual file system, reporting any discrepancies.',
+        interactions: [
+            { type: 'EXECUTES', target: 'jsonnet' },
+            { type: 'READS', target: 'project_graph.jsonnet' },
+            { type: 'SCANS', target: 'FileSystem' },
+        ],
+      },
+      'scripts/ai_committer.mjs': {
+        type: 'UtilityScript',
+        purpose: 'Automates the creation of atomic commits by grouping changed files based on rules defined in projectPolicies.commitGroups.',
+        interactions: [
+            { type: 'READS', target: 'projectPolicies.commitGroups' },
+            { type: 'EXECUTES', target: 'git' },
+        ],
+      },
+      '_graph_parts/templates.jsonnet': {
+        type: 'MetaTemplateFile',
+        purpose: 'Defines reusable helper functions (templates) for creating entities within the graph, ensuring consistency.',
       },
       'metadata_block': {
         type: 'MetaConcept',
