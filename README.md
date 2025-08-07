@@ -89,26 +89,30 @@ To re-enable the Linux build, simply rename the key back to `linux`.
 
 ## 🤖 AI Assistant Integration
 
-This project is configured for effective collaboration with AI assistants like Gemini. To facilitate a deep understanding of the project's structure, it uses a `project_graph.jsonnet` file.
+This project is configured for effective collaboration with AI assistants like Gemini. To facilitate a deep understanding of the project's structure, it uses a `project_graph` system.
 
-**What is it?**
-`project_graph.jsonnet` is a structured description of the project, including:
+**What is the Project Graph?**
+The `project_graph` system, defined in the `project_graph/` directory, is a structured description of the project, including:
 *   Key files and components.
 *   Their purpose and dependencies.
 *   Interaction channels (e.g., IPC messages in Electron).
+*   Rules for automated commit categorization.
 
 **Why is it needed?**
-This file allows the AI assistant to quickly build a "mental map" of the project, leading to more accurate and context-aware coding, refactoring, and analysis.
+This system allows the AI assistant to quickly build a "mental map" of the project, leading to more accurate and context-aware coding, refactoring, and analysis. It also enables automated workflows for maintaining code quality and consistency.
 
 **How to work with it?**
-1.  **Keep it updated:** When adding new key components or changing interaction logic, please update `project_graph.jsonnet`.
-2.  **Use Jsonnet:** You may need [Jsonnet](https://jsonnet.org/) to work with the file.
+1.  **Keep it updated:** When adding new key components or changing interaction logic, please update `project_graph/project_graph.jsonnet`.
+2.  **Use Jsonnet:** You may need [Jsonnet](https://jsonnet.org/) to work with the files within the `project_graph/` directory.
 3.  **Audit the Graph:** To ensure the graph is in sync with the actual project files, run the audit script:
     ```bash
     npm run graph:audit
     ```
-4.  **Let the AI Commit:** To create clean, atomic commits based on the graph's rules, ask your AI assistant to run the committer script. It will automatically group and commit your changes.
+4.  **Automate Commits:** To create clean, atomic commits based on the graph's rules, use the AI Committer script. It will automatically group and commit your staged changes:
+    ```bash
+    npm run graph:commit
+    ```
 
 ## 📄 License
 
-This project is licensed under the [GPL-3.0 license](LICENSE).
+This project is licensed under the [GPL-3.0 license](LICENSE)
