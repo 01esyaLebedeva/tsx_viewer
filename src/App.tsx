@@ -7,6 +7,22 @@ import './index.css';
 import { useTranslation, Trans } from 'react-i18next';
 import i18n from './i18n'; // Import i18n instance
 
+interface FileOpenedPayload {
+  path: string;
+  name: string;
+  content: string;
+}
+
+const Editor: React.FC<{ onCodeChange: (newCode: string) => void }> = ({ onCodeChange }) => {
+  const { code, updateCode } = useActiveCode();
+
+  useEffect(() => {
+    onCodeChange(code);
+  }, [code, onCodeChange]);
+
+  return <SandpackCodeEditor showLineNumbers showInlineErrors />;
+};
+
 const App: React.FC = () => {
   const { t } = useTranslation();
   const [originalCode, setOriginalCode] = useState<string>('');
@@ -33,7 +49,7 @@ const App: React.FC = () => {
       i18n.changeLanguage(locale);
     };
 
-    const handleFileOpened = (event: any, { path, name, content }) => {
+    const handleFileOpened = (event: any, { path, name, content }: { path: string, name: string, content: string }) => {
       setOriginalCode(content);
       setEditedCode(content);
       setIsDirty(false);
@@ -257,7 +273,7 @@ root.render(
           backgroundColor: '#222',
           color: 'white',
           flexShrink: 0
-        }}> 
+        }}>
           <div className="flex items-center gap-4">
             <button id="upload-new-file-button" onClick={triggerFileDialog} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
               <Upload />
@@ -299,14 +315,6 @@ root.render(
           key={filePath}
           template="react-ts"
           files={sandpackFiles}
-          options={{
-            activeFile: "/App.tsx",
-            showLineNumbers: true,
-            showInlineErrors: true,
-            showTabs: !showSource && !showEditor,
-            editorHeight: '100vh',
-          }}
-          onCodeChange={handleCodeChange}
         >
           <PanelGroup direction="horizontal" style={{ flexGrow: 1, minHeight: 0 }}>
             {showSource && (
@@ -323,7 +331,7 @@ root.render(
               <>
                 <Panel id="editor-panel-container" order={2} defaultSize={showSource ? 33 : 50}>
                   <SandpackLayout id="editor-panel">
-                    <SandpackCodeEditor />
+                    <Editor onCodeChange={handleCodeChange} />
                   </SandpackLayout>
                 </Panel>
                 <PanelResizeHandle className="resize-handle" />
