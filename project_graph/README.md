@@ -15,7 +15,7 @@ The goal of this system is to:
 
 *   `project_graph.jsonnet`
     *   The root file that assembles the entire graph, including project metadata, entities, relations, policies, and commit grouping rules.
-*   `_graph_parts/`
+*   `graph_parts/`
     *   `entities.jsonnet`: Defines all the core components, files, and resources of the project.
     *   `relations.jsonnet`: Defines the relationships *between* the entities (e.g., which component uses which, IPC channels).
     *   `templates.jsonnet`: Reusable schemas for different types of entities.
@@ -49,6 +49,36 @@ To interact with the project graph system, use the following npm scripts:
 
 ## Configuration
 
+### `settings.json`
+
+This file (`project_graph/settings.json`) is automatically generated the first time `npm run graph:audit` is executed. It contains user-configurable options that influence the behavior of the project graph scripts. All scripts will read the current settings from this file.
+
+Each option within `settings.json` includes a `value` and a `description` to make it self-documenting.
+
+Example `settings.json` structure:
+
+```json
+{
+  "settingsFileMetadata": {
+    "fileName": "settings.json",
+    "filePath": "project_graph/settings.json",
+    "description": "Configuration file for project-specific settings, including AI agent behaviors."
+  },
+  "options": {
+    "audit_after_commit": {
+      "value": false,
+      "description": "Automatically run a focused audit on committed files after each `graph:commit` operation."
+    },
+    "update_memory_bank_on_audit": {
+      "value": true,
+      "description": "Log audit results to the memory-bank/audit_logs.md file."
+    }
+  }
+}
+```
+
+### `commitGroups`
+
 The `commitGroups` in `project_graph.jsonnet` define how files are categorized for automated commits. Each group specifies:
 *   `name`: A short, descriptive name for the commit type (e.g., `feat`, `docs`).
 *   `patterns`: An array of glob patterns that match files belonging to this group.
@@ -59,7 +89,7 @@ Files that do not match any specific pattern will be assigned to the `chore` gro
 
 ## AI Assistant Command Mapping
 
-To streamline interaction with AI assistants, you can configure them to trigger `npm run graph:audit` and `npm run graph:commit` using simpler, more conversational commands. Below are examples of how to set this up for various AI assistants, based on the definitions in `_graph_parts/ai_commands.jsonnet`.
+To streamline interaction with AI assistants, you can configure them to trigger `npm run graph:audit` and `npm run graph:commit` using simpler, more conversational commands. Below are examples of how to set this up for various AI assistants, based on the definitions in `graph_parts/ai_commands.jsonnet`.
 
 **Important:** The exact syntax and capabilities may vary between AI assistants. Refer to your specific AI's documentation for precise configuration details.
 
@@ -127,3 +157,7 @@ To streamline interaction with AI assistants, you can configure them to trigger 
 - **Action:** Run `npm run sync:ai-commands`
 - **Description:** Synchronizes AI command definitions across various AI assistant rule files.
 ```
+
+## For LLMs (Large Language Models)
+
+For guidelines on how LLMs can best understand and utilize the `project_graph` system, refer to [`LLM_GUIDELINES.md`](LLM_GUIDELINES.md).
