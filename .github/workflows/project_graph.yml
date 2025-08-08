@@ -1,0 +1,45 @@
+name: Project Graph CI
+
+on:
+  pull_request:
+  push:
+    branches: [ feature/**, fix/**, doc/** ]
+
+jobs:
+  project-graph:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Jsonnet
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jsonnet
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Generate Graph
+        run: node project_graph/scripts/graph_generator.mjs --keep-compiled
+
+      - name: Validate Graph
+        run: node project_graph/scripts/graph_validator.mjs
+
+      - name: Upload compiled graph
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-graph
+          path: |
+            project_graph/.cache/graph.json
+            project_graph/.cache/history/**
+            memory-bank/diagrams/**
+            memory-bank/drift.md
+            memory-bank/plans/**
+
+

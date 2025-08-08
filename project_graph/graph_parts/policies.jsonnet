@@ -2,6 +2,13 @@
 // This part defines project-wide development policies.
 
 {
+    graphUsage: {
+      graphUsagePolicy: {
+        rule: 'An AI assistant MUST read and parse this entire file, including all imported parts, at the beginning of a session. The assistant MUST consider the `metadata` block of each entity to assess the reliability of the information.',
+        appliesTo: ['AIAssistant'],
+      },
+    },
+
     documentationSync: {
       rule: 'All changes to user-facing features or the build process must be documented in both the primary README.md and all localized versions (e.g., README.ru.md).',
       files: ['README.md', 'README.ru.md'],
@@ -15,31 +22,67 @@
         files: ['memory-bank/'],
     },
 
+    // Single source of truth for commit groups
     commitGroups: {
+        feat: {
+          id: 'feat',
+          description: 'New feature or significant enhancement.',
+          patterns: ['src/**/*.tsx', 'src/**/*.ts', 'electron/**/*.js'],
+          messagePrefix: 'feat:',
+        },
+        fix: {
+          id: 'fix',
+          description: 'Bug fix.',
+          patterns: ['src/**/*.tsx', 'src/**/*.ts', 'electron/**/*.js'],
+          messagePrefix: 'fix:',
+        },
         docs: {
-          prefix: 'docs',
-          description: 'Changes related to user-facing documentation.',
-          patterns: ['*.md', '*.mdc'],
+          id: 'docs',
+          description: 'Documentation only changes.',
+          patterns: ['**/*.md', 'docs/**'],
+          messagePrefix: 'docs:',
         },
-        rules: {
-          prefix: 'chore(rules)',
-          description: 'Changes to AI assistant rule files.',
-          patterns: ['.gemini/**', '.cursor/**', '.kilocode/**', '.roo/**'],
+        style: {
+          id: 'style',
+          description: 'Code style changes (formatting, whitespace, etc.).',
+          patterns: ['src/**/*.css', 'tailwind.config.js', 'postcss.config.cjs'],
+          messagePrefix: 'style:',
         },
-        graph: {
-            prefix: 'chore(graph)',
-            description: 'Changes to the project graph system itself.',
-            patterns: ['project_graph.jsonnet', 'graph_parts/**', 'scripts/graph*.mjs'],
+        refactor: {
+          id: 'refactor',
+          description: 'A code change that neither fixes a bug nor adds a feature.',
+          patterns: ['src/**/*.tsx', 'src/**/*.ts', 'electron/**/*.js'],
+          messagePrefix: 'refactor:',
         },
-        core: {
-          prefix: 'feat',
-          description: 'Core application source code changes.',
-          patterns: ['src/**', 'electron/**'],
+        test: {
+          id: 'test',
+          description: 'Adding missing tests or correcting existing tests.',
+          patterns: ['test/**'],
+          messagePrefix: 'test:',
         },
         build: {
-            prefix: 'build',
-            description: 'Changes to build configuration and dependencies.',
-            patterns: ['package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'tailwind.config.js'],
+          id: 'build',
+          description: 'Changes that affect the build system or external dependencies.',
+          patterns: ['package.json', 'package-lock.json', 'vite.config.ts', 'electron-builder.json', 'snapcraft.yaml', 'flatpak.yml'],
+          messagePrefix: 'build:',
+        },
+        ci: {
+          id: 'ci',
+          description: 'Changes to CI configuration files and scripts.',
+          patterns: ['.github/**'],
+          messagePrefix: 'ci:',
+        },
+        chore: {
+          id: 'chore',
+          description: "Other changes that don't modify src or test files.",
+          patterns: ['.gitignore', '.vscode/**', '.cursorrules', '.gemini/**', '.kilocode/**', '.roo/**', 'project_graph/**', 'scripts/**', 'public/**'],
+          messagePrefix: 'chore:',
+        },
+        revert: {
+          id: 'revert',
+          description: 'Reverts a previous commit.',
+          patterns: [],
+          messagePrefix: 'revert:',
         },
     },
 }

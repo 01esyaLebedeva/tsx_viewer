@@ -28,11 +28,14 @@ Traditional documentation is often unstructured and difficult for AI to parse co
 3.  **Prioritize Structured Data:** Whenever possible, extract information directly from the compiled JSON output of `project_graph.jsonnet` rather than relying on natural language descriptions in READMEs or comments. This provides the most precise and unambiguous context.
 
 4.  **Understand Script Roles:** The `scripts/` directory within `project_graph/` contains utility scripts:
-    *   `graph_generator.mjs`: Generates `project_graph/README.md` and performs project audits. Understand that `project_graph/README.md` is a *generated* human-readable summary, not the primary source for programmatic understanding.
-    *   `ai_committer.mjs`: Automates Git commits based on `commitGroups`.
-    *   `sync_ai_commands.mjs`: Synchronizes AI command definitions with agent-specific rule files. This script is key for keeping AI agents aligned with project commands.
+    *   `graph_generator.mjs`: Compiles the Jsonnet graph, attaches an `observed` graph via adapters, computes drift, writes snapshots and events, generates diagrams, and updates README sections.
+    *   `ai_committer.mjs`: Automates Git commits based on `commitGroups`, creating atomic commits per group for parent-project files; commits project_graph and AI rule files separately.
+    *   `sync_ai_commands.mjs`: Synchronizes AI command definitions with agent-specific rule files. Appends a synced section with timestamps.
+    *   `graph_validator.mjs`: Validates the compiled graph against the schema and checks platform mappings.
 
 5.  **Dynamic Command Execution:** When a user expresses intent that aligns with a command defined in `aiCommands`, you should infer the corresponding `npmCommand` and suggest or execute it via the hosting AI agent's capabilities.
+
+6.  **Drift and Plans Awareness:** Prefer the compiled `project_graph/.cache/graph.json`. It includes `observed` (adapter output) and `drift`. Reference `memory-bank/plans/` markdown for human-facing plan summaries; edit `graph_parts/plans.jsonnet` for canonical plan definitions.
 
 ## Your Role in Maintaining This System:
 

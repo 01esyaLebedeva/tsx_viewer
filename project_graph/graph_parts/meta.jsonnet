@@ -13,21 +13,23 @@
         type: 'MetaDirectory',
         purpose: 'Contains the modular parts of the project graph.',
       },
-      'scripts/graph_auditor.mjs': {
+      'project_graph/scripts/graph_generator.mjs': {
         type: 'UtilityScript',
-        purpose: 'Audits the project graph by comparing its file-based entities against the actual file system, reporting any discrepancies.',
+        purpose: 'Compiles the Jsonnet graph, writes compiled JSON to a cache for AI agents, updates README sections, and audits against the file system.',
         interactions: [
             { type: 'EXECUTES', target: 'jsonnet' },
             { type: 'READS', target: 'project_graph.jsonnet' },
             { type: 'SCANS', target: 'FileSystem' },
+            { type: 'WRITES', target: 'project_graph/.cache/graph.json' },
         ],
       },
-      'scripts/ai_committer.mjs': {
+      'project_graph/scripts/graph_validator.mjs': {
         type: 'UtilityScript',
-        purpose: 'Automates the creation of atomic commits by grouping changed files based on rules defined in projectPolicies.commitGroups.',
+        purpose: 'Validates the compiled graph against the schema and checks referenced platform config files.',
         interactions: [
-            { type: 'READS', target: 'projectPolicies.commitGroups' },
-            { type: 'EXECUTES', target: 'git' },
+            { type: 'READS', target: 'project_graph/.cache/graph.json' },
+            { type: 'READS', target: 'graph_parts/schema.jsonnet' },
+            { type: 'SCANS', target: 'FileSystem' },
         ],
       },
       'graph_parts/templates.jsonnet': {
@@ -40,10 +42,5 @@
       },
     },
     
-    projectPolicies: {
-      graphUsagePolicy: {
-        rule: 'An AI assistant MUST read and parse this entire file, including all imported parts, at the beginning of a session. The assistant MUST consider the `metadata` block of each entity to assess the reliability of the information.',
-        appliesTo: ['AIAssistant'],
-      },
-    },
+    // TODO: Consider adding a dedicated schema block for validation.
 }
