@@ -129,6 +129,31 @@ This will:
 - Update `package.json` with ProjectGraphAgent metadata
 - Create appropriate `.gitignore`
 
+### Standalone Publication Workflow
+
+1. **Copy to separate directory**:
+   ```bash
+   mkdir -p /home/igor/Документы/Проекты/ProjectGraphAgent
+   cp -r ProjectGraphAgent/* /home/igor/Документы/Проекты/ProjectGraphAgent/
+   ```
+
+2. **Run cleanup**:
+   ```bash
+   cd /home/igor/Документы/Проекты/ProjectGraphAgent
+   npm run clean
+   ```
+
+3. **Publish to GitHub**:
+   ```bash
+   git init
+   git remote add origin https://github.com/LebedevIV/ProjectGraphAgent.git
+   git add -A
+   git commit -m "Initial commit: ProjectGraphAgent v0.1.0-alpha"
+   git push -u origin main
+   ```
+
+See `CLEANUP_INSTRUCTIONS.md` for detailed instructions.
+
 ## Alpha Status
 
 ⚠️ **Early Alpha**: This system is in active development.
