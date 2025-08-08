@@ -26,7 +26,8 @@ ProjectGraphAgent/
 │   ├── graph_generator.mjs       # Main generator (audit, drift, diagrams)
 │   ├── graph_validator.mjs       # Schema validation
 │   ├── ai_committer.mjs          # Grouped commits (planned)
-│   └── sync_ai_commands.mjs      # AI command sync (planned)
+│   ├── sync_ai_commands.mjs      # AI command sync (planned)
+│   └── clean_project.mjs         # Clean from parent project data
 ├── adapters/                      # Language-specific adapters
 │   ├── typescript.mjs            # TS/JS file analysis
 │   └── python.mjs                # Python file analysis
@@ -108,6 +109,25 @@ Results are written to:
 - Compiled graph (`ProjectGraphAgent/.cache/graph.json`)
 - Drift report (`memory-bank/drift.md`)
 - README summary
+
+## Cleaning from Parent Project Data
+
+When you copy ProjectGraphAgent from a parent project, you can clean it to remove parent-specific data:
+
+```bash
+# Clean from parent project data
+npm run clean
+
+# Or directly
+node scripts/clean_project.mjs
+```
+
+This will:
+- Reset `project_graph.jsonnet` to template values
+- Clean `graph_parts/entities.jsonnet` to universal examples
+- Remove `.cache/`, `memory-bank/`, `settings.json`
+- Update `package.json` with ProjectGraphAgent metadata
+- Create appropriate `.gitignore`
 
 ## Alpha Status
 
