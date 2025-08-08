@@ -1,4 +1,4 @@
-// _graph_parts/ai_commands.jsonnet
+// graph_parts/ai_commands.jsonnet
 // This file defines mappings for AI assistant commands.
 
 {

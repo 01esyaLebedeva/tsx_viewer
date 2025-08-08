@@ -1,4 +1,4 @@
-// _graph_parts/meta.jsonnet
+// graph_parts/meta.jsonnet
 // This part defines the graph's own structure and rules.
 
 {
@@ -9,7 +9,7 @@
         type: 'MetaGraphFile',
         purpose: 'The root file that imports all graph parts to provide a holistic, machine-readable representation of the project.',
       },
-      '_graph_parts/': {
+      'graph_parts/': {
         type: 'MetaDirectory',
         purpose: 'Contains the modular parts of the project graph.',
       },
@@ -30,7 +30,7 @@
             { type: 'EXECUTES', target: 'git' },
         ],
       },
-      '_graph_parts/templates.jsonnet': {
+      'graph_parts/templates.jsonnet': {
         type: 'MetaTemplateFile',
         purpose: 'Defines reusable helper functions (templates) for creating entities within the graph, ensuring consistency.',
       },

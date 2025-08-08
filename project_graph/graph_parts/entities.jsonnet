@@ -1,4 +1,4 @@
-// _graph_parts/entities.jsonnet
+// graph_parts/entities.jsonnet
 // This part defines the core entities of the project.
 
 local templates = import 'templates.jsonnet';

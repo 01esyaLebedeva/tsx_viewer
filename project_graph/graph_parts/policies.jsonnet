@@ -1,4 +1,4 @@
-// _graph_parts/policies.jsonnet
+// graph_parts/policies.jsonnet
 // This part defines project-wide development policies.
 
 {
@@ -29,7 +29,7 @@
         graph: {
             prefix: 'chore(graph)',
             description: 'Changes to the project graph system itself.',
-            patterns: ['project_graph.jsonnet', '_graph_parts/**', 'scripts/graph*.mjs'],
+            patterns: ['project_graph.jsonnet', 'graph_parts/**', 'scripts/graph*.mjs'],
         },
         core: {
           prefix: 'feat',

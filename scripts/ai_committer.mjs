@@ -2,12 +2,13 @@
 import { exec } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
-import { minimatch } from 'minimatch';
+import minimatch from 'minimatch';
 
 const PROJECT_ROOT = process.cwd();
 const PROJECT_GRAPH_DIR = path.join(PROJECT_ROOT, 'project_graph');
 const GRAPH_SOURCE = path.join(PROJECT_GRAPH_DIR, 'project_graph.jsonnet');
 const COMPILED_GRAPH = path.join(PROJECT_GRAPH_DIR, 'graph.json');
+const SETTINGS_PATH = path.join(PROJECT_GRAPH_DIR, 'settings.json');
 
 // Function to run shell commands
 const run = (cmd, options = {}) => new Promise((resolve, reject) => {
@@ -81,6 +82,7 @@ async function runCommitter() {
 
     // 4. Create commits for each group
     console.log('\nCreating commits...');
+    const committedFiles = [];
     for (const groupName in groupedFiles) {
         const { files, messagePrefix, description } = groupedFiles[groupName];
         if (files.length === 0) continue;
@@ -99,12 +101,28 @@ async function runCommitter() {
         // Commit the files
         await run(`git commit -m "${commitMessage}"`);
         console.log(`  Successfully committed group: ${groupName}`);
+        committedFiles.push(...files);
     }
 
     // 5. Ensure all files are unstaged after committing
     await run('git reset');
 
-    // 6. Cleanup
+    // 6. Read settings and perform audit if configured
+    try {
+        const settingsContent = await fs.readFile(SETTINGS_PATH, 'utf-8');
+        const settings = JSON.parse(settingsContent);
+
+        if (settings.options.audit_after_commit.value) {
+            console.log('\nPerforming audit of committed files...');
+            // Dynamically import graph_generator.mjs and call its audit function
+            const { performAudit } = await import('./graph_generator.mjs');
+            await performAudit(graph, committedFiles);
+        }
+    } catch (settingsError) {
+        console.warn(`Could not read settings.json or perform post-commit audit: ${settingsError.message}`);
+    }
+
+    // 7. Cleanup
     await fs.unlink(COMPILED_GRAPH);
     console.log('\nAI Committer finished successfully.');
 }

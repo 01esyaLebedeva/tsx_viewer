@@ -8,18 +8,18 @@
     projectUrl: 'https://github.com/01esyaLebedeva/tsx_viewer',
     description: 'TSX viewer and editor application, supporting both web and Electron environments.',
 
-    meta: (import '_graph_parts/meta.jsonnet'),
+    meta: (import 'graph_parts/meta.jsonnet'),
 
-    entities: import '_graph_parts/entities.jsonnet',
+    entities: import 'graph_parts/entities.jsonnet',
 
     // Relationships between entities
-    relations: import '_graph_parts/relations.jsonnet',
+    relations: import 'graph_parts/relations.jsonnet',
 
     // Policies and conventions
-    policies: import '_graph_parts/policies.jsonnet',
+    policies: import 'graph_parts/policies.jsonnet',
 
     // AI Command Mappings
-    aiCommands: import '_graph_parts/ai_commands.jsonnet',
+    aiCommands: import 'graph_parts/ai_commands.jsonnet',
 
     // Commit Grouping Rules for AI Committer
     commitGroups: [

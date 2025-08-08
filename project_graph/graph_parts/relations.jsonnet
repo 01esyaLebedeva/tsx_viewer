@@ -1,4 +1,4 @@
-// _graph_parts/relations.jsonnet
+// graph_parts/relations.jsonnet
 // This file defines relationships between entities in the project graph.
 // Add your relations here.
 
