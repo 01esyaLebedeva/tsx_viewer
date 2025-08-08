@@ -27,7 +27,9 @@ ProjectGraphAgent/
 │   ├── graph_validator.mjs       # Schema validation
 │   ├── ai_committer.mjs          # Grouped commits (planned)
 │   ├── sync_ai_commands.mjs      # AI command sync (planned)
-│   └── clean_project.mjs         # Clean from parent project data
+│   ├── clean_project.mjs         # Clean from parent project data
+│   ├── sync_to_standalone.mjs    # Sync to standalone directory
+│   └── publish_workflow.mjs      # Complete publish workflow
 ├── adapters/                      # Language-specific adapters
 │   ├── typescript.mjs            # TS/JS file analysis
 │   └── python.mjs                # Python file analysis
@@ -109,6 +111,85 @@ Results are written to:
 - Compiled graph (`ProjectGraphAgent/.cache/graph.json`)
 - Drift report (`memory-bank/drift.md`)
 - README summary
+
+## Development Workflow
+
+### Dual Directory Setup
+
+This ProjectGraphAgent is designed to work in two modes:
+
+1. **Parent Project Mode** (`/home/igor/Документы/Проекты/tsx_viewer/ProjectGraphAgent/`)
+   - Contains project-specific data (TSX-viewer entities, settings)
+   - Used for active development and testing
+   - Manages the parent project (TSX-viewer)
+
+2. **Standalone Mode** (`/home/igor/Документы/Проекты/ProjectGraphAgent/`)
+   - Clean, universal template
+   - Ready for publication on GitHub
+   - Used for distribution and reuse
+
+### Synchronization Workflow
+
+1. **Develop in Parent Project**:
+   ```bash
+   # Work in tsx_viewer/ProjectGraphAgent/
+   # Make changes to scripts, graph_parts, adapters, etc.
+   ```
+
+2. **Sync to Standalone**:
+   ```bash
+   # From tsx_viewer/ProjectGraphAgent/
+   npm run sync
+   ```
+
+3. **Clean Standalone for Publication**:
+   ```bash
+   cd /home/igor/Документы/Проекты/ProjectGraphAgent
+   npm run clean
+   ```
+
+4. **Publish to GitHub**:
+   ```bash
+   cd /home/igor/Документы/Проекты/ProjectGraphAgent
+   git add -A
+   git commit -m "feat: new feature"
+   git push origin main
+   ```
+
+### Automated Publish Workflow
+
+For convenience, use the automated publish workflow:
+
+```bash
+# From tsx_viewer/ProjectGraphAgent/
+npm run publish
+```
+
+This will:
+1. Sync changes to standalone directory
+2. Clean standalone from parent project data
+3. Prepare Git commit
+4. Show push instructions
+
+To auto-push to GitHub:
+```bash
+npm run publish -- --push
+```
+
+### What Gets Synced
+
+**Synced Files** (from parent to standalone):
+- `scripts/` - All automation scripts
+- `graph_parts/` - Templates, policies, schemas (excluding entities)
+- `adapters/` - Language adapters
+- `README.md`, `README_PUBLISH.md`, `CHANGELOG.md`, `LLM_GUIDELINES.md`
+- `LICENSE`, `package.json`, `.gitignore`
+
+**Excluded Files** (parent-specific):
+- `project_graph.jsonnet` - Contains parent project data
+- `graph_parts/entities.jsonnet` - Contains parent project entities
+- `settings.json` - Parent project settings
+- `.cache/`, `memory-bank/` - Generated artifacts
 
 ## Cleaning from Parent Project Data
 
