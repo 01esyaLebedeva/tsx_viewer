@@ -56,7 +56,7 @@
       "!node_modules/**/.cache",
       "node_modules/**"
     ],
-    "_linux": {
+    "linux": {
       "desktop": "src/tsx_viewer.desktop",
       "category": "Utility;Development;Viewer;",
       "icon": "src/icons/tsx_viewer.png",
