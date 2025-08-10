@@ -238,14 +238,16 @@ root.render(
           <button
             id="choose-file-button"
             className="py-4 px-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-            style={{ fontSize: '1.5rem', width: '300px', height: '100px' }}
+            style={{ fontSize: '1.5rem', width: '300px', height: '100px', cursor: 'pointer', transition: 'transform 0.2s ease-in-out' }}
+            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
             onClick={triggerFileDialog}
           >
             {t('choose_file')}
           </button>
         </div>
         <div className="absolute z-20 flex flex-row items-center gap-4" style={{ top: '5px', right: '10px' }}>
-          <a href="https://github.com/01esyaLebedeva/tsx_viewer" target="_blank" rel="noopener noreferrer" className="app-link flex flex-row items-baseline no-underline" style={{ color: 'inherit' }}>
+          <a href="https://github.com/01esyaLebedeva/tsx_viewer" target="_blank" rel="noopener noreferrer" className="app-link flex flex-row items-baseline no-underline" style={{ color: 'inherit', marginRight: '5px' }}>
             <span className="text-base font-bold">TSX Viewer</span>
             <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
           </a>
@@ -297,7 +299,7 @@ root.render(
             <span className="text-base font-bold" style={{ color: '#f4f4f5' }}>{fileName}</span>
           </div>
           <div className="flex-1 flex justify-end items-center gap-4">
-            <a href="https://github.com/01esyaLebedeva/tsx_viewer" target="_blank" rel="noopener noreferrer" className="app-link flex flex-row items-baseline no-underline" style={{ color: '#f4f4f5' }}>
+            <a href="https://github.com/01esyaLebedeva/tsx_viewer" target="_blank" rel="noopener noreferrer" className="app-link flex flex-row items-baseline no-underline" style={{ color: '#f4f4f5', marginRight: '5px' }}>
               <span className="text-base font-bold">TSX Viewer</span>
               <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
             </a>
