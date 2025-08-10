@@ -123,3 +123,16 @@ button.active {
 .app-link:hover {
   transform: scale(1.1);
 }
+
+.dark .sp-cm .cm-content, .dark .sp-cm .cm-line {
+  color: #f4f4f5 !important;
+}
+
+.dark .sp-cm .cm-gutters {
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+}
+
+.dark .sp-editor {
+  background-color: #18181b !important;
+}

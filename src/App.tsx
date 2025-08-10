@@ -8,7 +8,6 @@ import { useTranslation, Trans } from 'react-i18next';
 import i18n from './i18n'; // Import i18n instance
 import { ThemeToggle } from './components/theme-toggle'
 import { useTheme } from './hooks/use-theme';
-
 interface FileOpenedPayload {
   path: string;
   name: string;
@@ -311,6 +310,7 @@ root.render(
           key={filePath}
           template="react-ts"
           files={sandpackFiles}
+          theme={theme}
         >
           <PanelGroup direction="horizontal" style={{ flexGrow: 1, minHeight: 0 }}>
             {showSource && (
@@ -322,7 +322,9 @@ root.render(
                     style={{
                       height: '100%',
                       overflow: 'auto',
-                      borderRight: '1px solid #ccc'
+                      borderRight: '1px solid #ccc',
+                      color: theme === 'dark' ? '#f4f4f5' : '#18181b',
+                      backgroundColor: theme === 'dark' ? '#18181b' : '#ffffff'
                     }}
                   >
                     <pre><code>{originalCode}</code></pre>
