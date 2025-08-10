@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const Store = require('electron-store')
+const store = new Store()
 
 const isDev = !app.isPackaged;
 
@@ -20,6 +22,8 @@ function createWindow() {
 
   win.webContents.on('did-finish-load', () => {
     win.webContents.send('locale-update', locale);
+    const theme = store.get('theme', 'light')
+    win.webContents.send('set-theme', theme)
   });
 
   if (isDev) {
@@ -82,3 +86,7 @@ ipcMain.on('save-file', (event, { filePath, code }) => {
     }
   });
 });
+
+ipcMain.on('set-theme', (event, theme) => {
+  store.set('theme', theme)
+})
