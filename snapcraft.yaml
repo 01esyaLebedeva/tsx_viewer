@@ -1,5 +1,5 @@
 name: tsx-view-edit
-version: '1.0.5'
+version: '1.0.6'
 summary: 'TSX view/edit application built with Electron and Vite.'
 description: |
   TSX view/edit application built with Electron and Vite.
