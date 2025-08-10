@@ -230,10 +230,6 @@ root.render(
           className="flex flex-col justify-center items-center min-h-screen h-screen w-screen fixed inset-0 border-4 border-dashed rounded-lg bg-gray-100 text-gray-700 dark:bg-zinc-900 dark:text-gray-100 text-center transition-colors z-10"
           style={{ borderColor: '#333' }}
         >
-          <div className="absolute top-4 left-0 w-full flex flex-col items-center pointer-events-none select-none">
-            <h1 className="text-2xl font-bold tracking-tight">TSX Viewer</h1>
-            <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">v{__APP_VERSION__}</span>
-          </div>
           <Upload size={64} className="mb-4" />
           <h1 className="text-2xl font-bold"><Trans i18nKey="drag_tsx_file">Перетащите TSX-файл сюда</Trans></h1>
           <p style={{ fontSize: '3rem', margin: '0.5rem 0' }}>{t('or')}</p>
@@ -246,7 +242,11 @@ root.render(
             {t('choose_file')}
           </button>
         </div>
-        <div className="absolute z-20" style={{ top: '5px', right: '10px' }}>
+        <div className="absolute z-20 flex flex-row items-center gap-4" style={{ top: '5px', right: '10px' }}>
+          <div className="flex flex-row items-baseline">
+            <span className="text-base font-bold">TSX Viewer</span>
+            <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
+          </div>
           <ThemeToggle />
         </div>
       </div>
@@ -256,11 +256,8 @@ root.render(
   return (
     <React.Fragment>
       <div id="main-app-container" style={{ height: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-        <div className="absolute z-20" style={{ top: '5px', right: '10px' }}>
-          <ThemeToggle />
-        </div>
-        <header className="relative flex flex-col py-6 min-h-[80px]" style={{ backgroundColor: '#18181b', color: '#f4f4f5' }}>
-          <div className="flex flex-row items-center justify-between w-full px-4">
+        <header className="relative flex flex-row items-center justify-between w-full px-4 py-6 min-h-[80px]" style={{ backgroundColor: '#18181b', color: '#f4f4f5' }}>
+          <div className="flex-1 flex items-center gap-4">
             <div className="flex items-center">
               <button id="upload-new-file-button" onClick={triggerFileDialog} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
                 <Upload />
@@ -293,13 +290,17 @@ root.render(
                 <Edit />
               </button>
             </div>
-            <div className="flex flex-row items-baseline gap-2">
-              <span className="text-base font-bold">TSX Viewer</span>
-              <span className="text-xs" style={{ color: '#f4f4f5' }}>v{__APP_VERSION__}</span>
-            </div>
-            <div style={{ width: 36 }} />
           </div>
-          <span className="text-9xl font-bold mt-2 text-center w-full" style={{ fontSize: '2rem', lineHeight: 1, display: 'block', color: '#f4f4f5' }}>{fileName}</span>
+          <div className="flex-1 flex justify-center">
+            <span className="text-base font-bold" style={{ color: '#f4f4f5' }}>{fileName}</span>
+          </div>
+          <div className="flex-1 flex justify-end items-center gap-4">
+            <div className="flex flex-row items-baseline">
+              <span className="text-base font-bold">TSX Viewer</span>
+              <span className="text-xs" style={{ color: '#f4f4f5' }}>&nbsp;v{__APP_VERSION__}</span>
+            </div>
+            <ThemeToggle />
+          </div>
         </header>
 
         <SandpackProvider

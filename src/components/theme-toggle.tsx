@@ -14,11 +14,11 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label="Toggle dark mode"
       className="p-0 bg-transparent border-none outline-none flex items-center justify-center self-center ml-2 transition hover:scale-110"
-      style={{ width: 60, height: 60 }}
+      style={{ width: 52, height: 52 }}
     >
       {theme === 'dark'
-        ? <Moon size={48} stroke="white" />
-        : <Sun size={48} stroke="black" />
+        ? <Moon size={40} stroke="white" />
+        : <Sun size={40} stroke="black" />
       }
     </button>
   )
