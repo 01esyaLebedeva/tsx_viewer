@@ -14,14 +14,14 @@ interface FileOpenedPayload {
   content: string;
 }
 
-const Editor: React.FC<{ onCodeChange: (newCode: string) => void }> = ({ onCodeChange }) => {
+const Editor: React.FC<{ onCodeChange: (newCode: string) => void, theme: 'light' | 'dark' }> = ({ onCodeChange, theme }) => {
   const { code, updateCode } = useActiveCode();
 
   useEffect(() => {
     onCodeChange(code);
   }, [code, onCodeChange]);
 
-  return <SandpackCodeEditor showLineNumbers showInlineErrors />;
+  return <SandpackCodeEditor key={theme} showLineNumbers showInlineErrors />;
 };
 
 const App: React.FC = () => {
@@ -88,6 +88,11 @@ const App: React.FC = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    setOriginalCode(editedCode);
+    setEditedCode(editedCode);
+  }, [theme]);
 
   const handleFile = (file: any) => {
     setIsLoading(true);
@@ -307,7 +312,7 @@ root.render(
         </header>
 
         <SandpackProvider
-          key={filePath}
+          key={`${filePath}-${theme}`}
           template="react-ts"
           files={sandpackFiles}
           theme={theme}
@@ -337,7 +342,7 @@ root.render(
               <>
                 <Panel id="editor-panel-container" order={2} defaultSize={showSource ? 33 : 50}>
                   <SandpackLayout id="editor-panel">
-                    <Editor onCodeChange={handleCodeChange} />
+                    <Editor onCodeChange={handleCodeChange} theme={theme} />
                   </SandpackLayout>
                 </Panel>
                 <PanelResizeHandle className="resize-handle" />
