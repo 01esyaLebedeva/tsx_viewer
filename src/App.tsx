@@ -229,7 +229,11 @@ root.render(
         className="flex flex-col justify-center items-center min-h-screen h-screen w-screen fixed inset-0 border-4 border-dashed rounded-lg bg-gray-100 text-gray-700 dark:bg-zinc-900 dark:text-gray-100 text-center transition-colors z-10"
         style={{ borderColor: '#333' }}
       >
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 left-0 w-full flex flex-col items-center pointer-events-none select-none">
+          <h1 className="text-2xl font-bold tracking-tight">TSX Viewer</h1>
+          <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">v{__APP_VERSION__}</span>
+        </div>
+        <div className="absolute top-4 right-4 pointer-events-auto">
           <ThemeToggle />
         </div>
         <Upload size={64} className="mb-4" />
@@ -250,51 +254,51 @@ root.render(
   return (
     <React.Fragment>
       <div id="main-app-container" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <header id="app-header" style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '4px 8px',
-          backgroundColor: '#222',
-          color: 'white',
-          flexShrink: 0
-        }}>
-          <div className="flex items-center gap-4">
-            <button id="upload-new-file-button" onClick={triggerFileDialog} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
-              <Upload />
-            </button>
-            <button id="save-file-button" onClick={handleSave} title={t('save_file')} className={`hover:text-blue-400 transition header-icon-button ${!isDirty ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={!isDirty}>
-              <Save />
-            </button>
+        <header
+          id="app-header"
+          className="flex flex-col bg-[#222] text-white py-4"
+        >
+          <div className="flex flex-row items-center justify-between w-full px-4">
+            <div className="flex items-center gap-4">
+              <button id="upload-new-file-button" onClick={triggerFileDialog} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
+                <Upload />
+              </button>
+              <button id="save-file-button" onClick={handleSave} title={t('save_file')} className={`hover:text-blue-400 transition header-icon-button ${!isDirty ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={!isDirty}>
+                <Save />
+              </button>
+            </div>
+            <div className="flex flex-row items-baseline gap-2">
+              <span className="text-base font-bold">TSX Viewer</span>
+              <span className="text-xs text-gray-400">v{__APP_VERSION__}</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              <button
+                id="toggle-source-code-button"
+                onClick={() => {
+                  setShowSource(!showSource);
+                  setIsSourceActive(!isSourceActive);
+                }}
+                title={t('show_hide_source_code')}
+                className={`p-1 rounded transition header-icon-button ${isSourceActive ? 'active' : ''}`}
+              >
+                <Code />
+              </button>
+              <button
+                id="toggle-editor-button"
+                onClick={() => {
+                  setShowEditor(!showEditor);
+                  setIsEditorActive(!isEditorActive);
+                  setIsDirty(true);
+                }}
+                title={t('show_hide_editor')}
+                className={`p-1 rounded transition header-icon-button ${isEditorActive ? 'active' : ''}`}
+              >
+                <Edit />
+              </button>
+            </div>
           </div>
-          <h1 id="file-name-header" className="text-base font-bold">{t('tsx_viewer')}: {fileName}</h1>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <button
-                          id="toggle-source-code-button"
-                          onClick={() => {
-                            setShowSource(!showSource);
-                            setIsSourceActive(!isSourceActive);
-                          }}
-                          title={t('show_hide_source_code')}
-                          className={`p-1 rounded transition header-icon-button ${isSourceActive ? 'active' : ''}`}
-                        >
-                          <Code />
-                        </button>
-                        <button
-                          id="toggle-editor-button"
-                          onClick={() => {
-                            setShowEditor(!showEditor);
-                            setIsEditorActive(!isEditorActive);
-                            // Activate save button when editor is shown
-                            setIsDirty(true);
-                          }}
-                          title={t('show_hide_editor')}
-                          className={`p-1 rounded transition header-icon-button ${isEditorActive ? 'active' : ''}`}
-                        >
-                          <Edit />
-                        </button>
-          </div>
+          <span className="text-7xl font-bold text-gray-100 mt-2 text-center w-full">{fileName}</span>
         </header>
 
         <SandpackProvider
