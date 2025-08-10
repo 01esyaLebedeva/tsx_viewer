@@ -104,3 +104,13 @@ button.active {
   background-color: #27272a;
   color: #f4f4f5;
 }
+
+.source-code-panel {
+  background-color: #ffffff;
+  color: #18181b;
+}
+
+.dark .source-code-panel {
+  background-color: #18181b;
+  color: #f4f4f5;
+}

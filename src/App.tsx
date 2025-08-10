@@ -7,6 +7,7 @@ import './index.css';
 import { useTranslation, Trans } from 'react-i18next';
 import i18n from './i18n'; // Import i18n instance
 import { ThemeToggle } from './components/theme-toggle'
+import { useTheme } from './hooks/use-theme';
 
 interface FileOpenedPayload {
   path: string;
@@ -26,6 +27,7 @@ const Editor: React.FC<{ onCodeChange: (newCode: string) => void }> = ({ onCodeC
 
 const App: React.FC = () => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
   const [originalCode, setOriginalCode] = useState<string>('');
   const [editedCode, setEditedCode] = useState<string>('');
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -312,7 +314,15 @@ root.render(
             {showSource && (
               <>
                 <Panel id="source-panel-container" order={1} defaultSize={showEditor ? 33 : 50}>
-                  <div id="source-code-panel" style={{ height: '100%', overflow: 'auto', borderRight: '1px solid #ccc' }}>
+                  <div
+                    id="source-code-panel"
+                    className="source-code-panel"
+                    style={{
+                      height: '100%',
+                      overflow: 'auto',
+                      borderRight: '1px solid #ccc'
+                    }}
+                  >
                     <pre><code>{originalCode}</code></pre>
                   </div>
                 </Panel>
