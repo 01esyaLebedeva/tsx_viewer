@@ -245,10 +245,10 @@ root.render(
           </button>
         </div>
         <div className="absolute z-20 flex flex-row items-center gap-4" style={{ top: '5px', right: '10px' }}>
-          <div className="flex flex-row items-baseline">
+          <a href="https://github.com/01esyaLebedeva/tsx_viewer" target="_blank" rel="noopener noreferrer" className="app-link flex flex-row items-baseline no-underline" style={{ color: 'inherit' }}>
             <span className="text-base font-bold">TSX Viewer</span>
             <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
-          </div>
+          </a>
           <ThemeToggle />
         </div>
       </div>
@@ -297,10 +297,10 @@ root.render(
             <span className="text-base font-bold" style={{ color: '#f4f4f5' }}>{fileName}</span>
           </div>
           <div className="flex-1 flex justify-end items-center gap-4">
-            <div className="flex flex-row items-baseline">
+            <a href="https://github.com/01esyaLebedeva/tsx_viewer" target="_blank" rel="noopener noreferrer" className="app-link flex flex-row items-baseline no-underline" style={{ color: '#f4f4f5' }}>
               <span className="text-base font-bold">TSX Viewer</span>
-              <span className="text-xs" style={{ color: '#f4f4f5' }}>&nbsp;v{__APP_VERSION__}</span>
-            </div>
+              <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
+            </a>
             <ThemeToggle />
           </div>
         </header>

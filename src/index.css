@@ -114,3 +114,11 @@ button.active {
   background-color: #18181b;
   color: #f4f4f5;
 }
+
+.app-link {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.app-link:hover {
+  opacity: 0.8;
+}
