@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const PROJECT_ROOT = process.cwd();
-const PROJECT_GRAPH_DIR = path.join(PROJECT_ROOT, 'project_graph');
+const PROJECT_GRAPH_DIR = PROJECT_ROOT; // Changed from path.join(PROJECT_ROOT, 'project_graph')
 const CACHE_DIR = path.join(PROJECT_GRAPH_DIR, '.cache');
 const COMPILED_GRAPH = path.join(CACHE_DIR, 'graph.json');
 

@@ -54,7 +54,7 @@
         metadata: metadata,
     },
 
-    ProjectSettings(auditAfterCommit=false, updateMemoryBankOnAudit=false, keepCompiledGraph=true, auditExcludePatterns=["**/*.map", "**/*.log"], auditChangedOnly=false, adapters={ typescript: { enabled: true }, python: { enabled: false } }):: {
+    ProjectSettings(auditAfterCommit=false, keepCompiledGraph=true, auditExcludePatterns=["**/*.map", "**/*.log"], auditChangedOnly=false, adapters={ typescript: { enabled: true }, python: { enabled: false } }, memoryBankEnabled=false, memoryBankInstructionPath=null, memoryBankUpdateOnAudit=true):: {
         settingsFileMetadata: {
             fileName: 'settings.json',
             filePath: 'project_graph/settings.json', // Relative to project root
@@ -64,10 +64,6 @@
             audit_after_commit: {
                 value: auditAfterCommit,
                 description: 'Automatically run a focused audit on committed files after each `graph:commit` operation.',
-            },
-            update_memory_bank_on_audit: {
-                value: updateMemoryBankOnAudit,
-                description: 'Log audit results to the memory-bank/audit_logs.md file.',
             },
             keep_compiled_graph: {
                 value: keepCompiledGraph,
@@ -84,6 +80,14 @@
             adapters: {
                 value: adapters,
                 description: 'Language adapters to populate observed graph (typescript, python).',
+            },
+            memory_bank: {
+                description: 'Configuration for the memory-bank system. `update_on_audit` logs results to audit_logs.md. `instruction_path` is the path to the instruction file.',
+                value: {
+                    enabled: memoryBankEnabled,
+                    instruction_path: memoryBankInstructionPath,
+                    update_on_audit: memoryBankUpdateOnAudit,
+                },
             },
         },
     },

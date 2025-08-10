@@ -3,9 +3,10 @@ import { exec } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
 import minimatch from 'minimatch';
+import readline from 'readline';
 
 const PROJECT_ROOT = process.cwd();
-const PROJECT_GRAPH_DIR = path.join(PROJECT_ROOT, 'project_graph');
+const PROJECT_GRAPH_DIR = path.join(PROJECT_ROOT, 'ProjectGraphAgent');
 const GRAPH_SOURCE = path.join(PROJECT_GRAPH_DIR, 'project_graph.jsonnet');
 const CACHE_DIR = path.join(PROJECT_GRAPH_DIR, '.cache');
 const COMPILED_GRAPH = path.join(CACHE_DIR, 'graph.json');
@@ -19,6 +20,18 @@ const PLANS_DIR = path.join(PROJECT_ROOT, 'memory-bank', 'plans');
 const DIAGRAMS_DIR = path.join(PROJECT_ROOT, 'memory-bank', 'diagrams');
 const ADAPTERS_DIR = path.join(PROJECT_GRAPH_DIR, 'adapters');
 
+// Function to ask a question in the console
+const askQuestion = (query) => {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+    });
+    return new Promise(resolve => rl.question(query, ans => {
+        rl.close();
+        resolve(ans);
+    }));
+};
+
 // Function to run shell commands
 const run = (cmd, options = {}) => new Promise((resolve, reject) => {
     exec(cmd, options, (error, stdout, stderr) => {
@@ -29,6 +42,39 @@ const run = (cmd, options = {}) => new Promise((resolve, reject) => {
         resolve(stdout.trim());
     });
 });
+
+async function handleMemoryBankSettings(settings) {
+    try {
+        await fs.access(MEMORY_BANK_DIR);
+    } catch (e) {
+        // memory-bank directory doesn't exist, do nothing.
+        return settings;
+    }
+
+    if (settings.options.memory_bank.value.enabled) {
+        return settings; // Already enabled and configured.
+    }
+
+    console.log('\n--- Memory Bank Configuration ---');
+    const enable = await askQuestion('Found a `memory-bank` directory. Do you want to enable ProjectGraphAgent integration? (y/N) ');
+
+    if (enable.toLowerCase() !== 'y') {
+        console.log('Skipping memory-bank integration.');
+        return settings;
+    }
+
+    const instructionPath = await askQuestion('Please provide the project-relative path to your memory-bank instruction file: ');
+
+    const newSettings = { ...settings };
+    newSettings.options.memory_bank.value.enabled = true;
+    newSettings.options.memory_bank.value.instruction_path = instructionPath;
+    newSettings.options.memory_bank.value.update_on_audit = true; // Enable logging by default when integrating
+
+    await fs.writeFile(SETTINGS_PATH, JSON.stringify(newSettings, null, 2));
+    console.log(`Updated ${SETTINGS_PATH} with memory-bank configuration.`);
+    console.log('----------------------------------\n');
+    return newSettings;
+}
 
 async function getAllFiles(dirPath, arrayOfFiles = []) {
     const files = await fs.readdir(dirPath);
@@ -45,51 +91,25 @@ async function getAllFiles(dirPath, arrayOfFiles = []) {
     return arrayOfFiles;
 }
 
-async function generateSettingsFile(graph) {
-    console.log('Checking for project_graph/settings.json...');
-    const settingsFilePath = path.join(PROJECT_GRAPH_DIR, 'settings.json');
-
+async function generateSettingsFile() {
+    console.log('Checking for ProjectGraphAgent/settings.json...');
     try {
-        await fs.access(settingsFilePath);
-        console.log('project_graph/settings.json already exists. Skipping generation.');
+        await fs.access(SETTINGS_PATH);
+        console.log('ProjectGraphAgent/settings.json already exists. Skipping generation.');
+        return JSON.parse(await fs.readFile(SETTINGS_PATH, 'utf-8'));
     } catch (error) {
-        console.log('project_graph/settings.json not found. Generating default settings...');
-        
-        // Compile default settings from Jsonnet, since functions are not preserved in compiled JSON
+        console.log('ProjectGraphAgent/settings.json not found. Generating default settings...');
         const jsonnetSnippet = "local templates = import 'graph_parts/templates.jsonnet'; templates.ProjectSettings()";
-        let defaultSettings;
         try {
             const compiledSettings = await run(`jsonnet -J ${PROJECT_GRAPH_DIR} -e "${jsonnetSnippet}"`);
-            defaultSettings = JSON.parse(compiledSettings);
+            const defaultSettings = JSON.parse(compiledSettings);
+            await fs.writeFile(SETTINGS_PATH, JSON.stringify(defaultSettings, null, 2));
+            console.log(`Generated default settings file at ${SETTINGS_PATH}`);
+            return defaultSettings;
         } catch (jsonnetError) {
             console.error(`Error compiling Jsonnet for default settings: ${jsonnetError.message}`);
             throw jsonnetError;
         }
-
-        let updateMemoryBankOnAuditOption = { ...defaultSettings.options.update_memory_bank_on_audit };
-
-        try {
-            const stats = await fs.stat(MEMORY_BANK_DIR);
-            if (stats.isDirectory()) {
-                updateMemoryBankOnAuditOption.value = true; // Set to true if memory-bank directory exists
-                console.log('Memory-bank directory detected. Setting update_memory_bank_on_audit to true.');
-            }
-        } catch (memBankError) {
-            console.log('Memory-bank directory not found. update_memory_bank_on_audit remains default.');
-        }
-
-        const settingsContent = JSON.stringify({
-            settingsFileMetadata: defaultSettings.settingsFileMetadata,
-            options: {
-                audit_after_commit: defaultSettings.options.audit_after_commit,
-                update_memory_bank_on_audit: updateMemoryBankOnAuditOption,
-                keep_compiled_graph: defaultSettings.options.keep_compiled_graph || { value: true, description: 'Keep the compiled graph JSON at project_graph/.cache/graph.json' },
-                audit_exclude_patterns: defaultSettings.options.audit_exclude_patterns || { value: ["**/*.map", "**/*.log"], description: 'Glob patterns to exclude from audits' },
-            },
-        }, null, 2);
-
-        await fs.writeFile(settingsFilePath, settingsContent);
-        console.log(`Generated default settings file at ${settingsFilePath}`);
     }
 }
 
@@ -269,12 +289,8 @@ async function writePlansMarkdown(graph) {
     }
 }
 
-async function runAdapters(graph) {
+async function runAdapters(graph, settings) {
     const observed = { entities: {}, relations: {} };
-    let settings = null;
-    try {
-        settings = JSON.parse(await fs.readFile(SETTINGS_PATH, 'utf-8'));
-    } catch {}
     const adapters = (settings && settings.options && settings.options.adapters && settings.options.adapters.value) || { typescript: { enabled: true }, python: { enabled: false } };
     const results = [];
     if (adapters.typescript && adapters.typescript.enabled) {
@@ -399,19 +415,13 @@ async function getChangedFiles() {
     }
 }
 
-async function performAudit(graph, fileList = null) {
+async function performAudit(graph, settings, fileList = null) {
     console.log('\n--- Performing Project Graph Audit ---');
-    // Apply exclude patterns from settings if present
-    let excludePatterns = [];
-    try {
-        const settingsContent = await fs.readFile(SETTINGS_PATH, 'utf-8');
-        const settings = JSON.parse(settingsContent);
-        const configured = settings.options && settings.options.audit_exclude_patterns && settings.options.audit_exclude_patterns.value;
-        if (Array.isArray(configured)) excludePatterns = configured;
-        const changedOnly = settings.options && settings.options.audit_changed_only && settings.options.audit_changed_only.value;
-        if (!fileList && changedOnly) fileList = await getChangedFiles();
-    } catch {}
-    // Normalize graph entity paths to use forward slashes
+    const excludePatterns = (settings.options.audit_exclude_patterns && settings.options.audit_exclude_patterns.value) || [];
+    let changedOnly = settings.options.audit_changed_only && settings.options.audit_changed_only.value;
+    if (!fileList && changedOnly) {
+        fileList = await getChangedFiles();
+    }
 
     const normalizedGraphEntities = new Set(
         Object.keys(graph.entities).map(entityPath => entityPath.replace(/\\/g, '/'))
@@ -419,11 +429,11 @@ async function performAudit(graph, fileList = null) {
 
     let filesToAudit = [];
     if (fileList) {
-        filesToAudit = fileList.map(file => file.replace(/\\/g, '/')); // Normalize input fileList
+        filesToAudit = fileList.map(file => file.replace(/\\/g, '/'));
     } else {
         for (const dir of AUDIT_DIRECTORIES) {
-            const files = await getAllFiles(dir); // getAllFiles now returns relative paths with native separators
-            filesToAudit.push(...files.map(file => file.replace(/\\/g, '/'))); // Normalize to forward slashes
+            const files = await getAllFiles(dir);
+            filesToAudit.push(...files.map(file => file.replace(/\\/g, '/')));
         }
     }
     if (excludePatterns.length) {
@@ -439,8 +449,7 @@ async function performAudit(graph, fileList = null) {
 
     const missingFromProject = [];
     normalizedGraphEntities.forEach(entityPath => {
-        // Only check entities that look like file paths and are in the audit directories
-        if (entityPath.includes('/') && AUDIT_DIRECTORIES.some(dir => entityPath.startsWith(dir))) { 
+        if (entityPath.includes('/') && AUDIT_DIRECTORIES.some(dir => entityPath.startsWith(dir))) {
             if (!filesToAudit.includes(entityPath)) {
                 missingFromProject.push(entityPath);
             }
@@ -462,38 +471,38 @@ async function performAudit(graph, fileList = null) {
     }
     console.log('----------------------------------');
 
-    // Read settings to decide on memory-bank update
-    try {
-        const settingsContent = await fs.readFile(SETTINGS_PATH, 'utf-8');
-        const settings = JSON.parse(settingsContent);
-
-        if (settings.options.update_memory_bank_on_audit.value) {
+    if (settings.options.memory_bank && settings.options.memory_bank.value.update_on_audit) {
+        try {
+            await ensureDir(MEMORY_BANK_DIR);
             const logEntry = `Audit performed on ${new Date().toISOString()}. Scope: ${fileList ? 'Committed Files' : 'Full Project'}. Status: ${missingFromGraph.length === 0 && missingFromProject.length === 0 ? 'OK' : 'WARNINGS'}.\n`;
             await fs.appendFile(path.join(MEMORY_BANK_DIR, 'audit_logs.md'), logEntry);
             console.log('Audit results logged to memory-bank/audit_logs.md');
+        } catch (logError) {
+            console.warn(`Could not update memory-bank audit log: ${logError.message}`);
         }
-    } catch (settingsError) {
-        console.warn(`Could not read settings.json or update memory-bank: ${settingsError.message}`);
     }
 }
 
 async function runGenerator() {
     console.log('Starting Project Graph Generator...');
 
-    // 1. Compile Jsonnet to JSON
+    // 1. Generate settings.json if it doesn't exist and load it
+    let settings = await generateSettingsFile();
+
+    // 2. Handle Memory Bank configuration interactively
+    settings = await handleMemoryBankSettings(settings);
+
+    // 3. Compile Jsonnet to JSON
     console.log(`Compiling ${GRAPH_SOURCE}...`);
     await fs.mkdir(CACHE_DIR, { recursive: true });
     await run(`jsonnet -J ${PROJECT_GRAPH_DIR} --ext-str timestamp='${new Date().toISOString()}' -o ${COMPILED_GRAPH} ${GRAPH_SOURCE}`);
     const graph = JSON.parse(await fs.readFile(COMPILED_GRAPH, 'utf-8'));
 
-    // 2. Generate settings.json if it doesn't exist
-    await generateSettingsFile(graph);
-
-    // 3. Generate README.md
+    // 4. Generate README.md
     await generateReadme(graph);
 
-    // 4. Run adapters to get observed graph and attach to compiled JSON on disk
-    const observed = await runAdapters(graph);
+    // 5. Run adapters
+    const observed = await runAdapters(graph, settings);
     try {
         const compiled = JSON.parse(await fs.readFile(COMPILED_GRAPH, 'utf-8'));
         compiled.observed = observed;
@@ -502,28 +511,20 @@ async function runGenerator() {
         console.warn('Could not attach observed graph to compiled output:', e.message);
     }
 
-    // 5. Perform Full Audit
-    await performAudit(graph);
+    // 6. Perform Full Audit
+    await performAudit(graph, settings);
 
-    // 6. Drift, snapshot, event, diagrams
+    // 7. Post-audit artifacts
     const drift = await writeDriftArtifacts(COMPILED_GRAPH);
     await snapshotGraph();
     await appendEvent({ event: 'graph_generated', observedCounts: { entities: Object.keys(observed.entities).length, relations: Object.keys(observed.relations).length }, drift });
     await writeRelationsDiagram(COMPILED_GRAPH);
     await updateReadmeDriftSection(COMPILED_GRAPH);
-
-    // 7. Write plans markdown
     await writePlansMarkdown(graph);
 
-    // 8. Cleanup or keep compiled graph based on settings or CLI flag
-    let keepCompiled = false;
-    try {
-        const settingsContent = await fs.readFile(SETTINGS_PATH, 'utf-8');
-        const settings = JSON.parse(settingsContent);
-        keepCompiled = !!(settings.options && settings.options.keep_compiled_graph && settings.options.keep_compiled_graph.value);
-    } catch {}
-    const keepViaCli = process.argv.includes('--keep-compiled');
-    if (keepCompiled || keepViaCli) {
+    // 8. Cleanup
+    const keepCompiled = (settings.options.keep_compiled_graph && settings.options.keep_compiled_graph.value) || process.argv.includes('--keep-compiled');
+    if (keepCompiled) {
         console.log(`Compiled graph kept at ${COMPILED_GRAPH}`);
     } else {
         await fs.unlink(COMPILED_GRAPH).catch(() => {});

@@ -9,10 +9,6 @@
       "description": "Automatically run a focused audit on committed files after each `graph:commit` operation.",
       "value": false
     },
-    "update_memory_bank_on_audit": {
-      "description": "Log audit results to the memory-bank/audit_logs.md file.",
-      "value": true
-    },
     "keep_compiled_graph": {
       "description": "Keep the compiled graph JSON at project_graph/.cache/graph.json after the generator finishes.",
       "value": true
@@ -23,6 +19,14 @@
         "**/*.map",
         "**/*.log"
       ]
+    },
+    "memory_bank": {
+      "description": "Configuration for the memory-bank system. `update_on_audit` logs results to audit_logs.md. `instruction_path` is the path to the instruction file.",
+      "value": {
+        "enabled": false,
+        "instruction_path": null,
+        "update_on_audit": true
+      }
     }
   }
 }

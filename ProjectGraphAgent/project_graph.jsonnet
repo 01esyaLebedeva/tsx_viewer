@@ -4,9 +4,9 @@
 
 {
     schemaVersion: '1.7',
-    projectName: 'your-project-name',
-    projectUrl: 'https://github.com/your-username/your-project',
-    description: 'Your project description here.',
+    projectName: 'tsx_viewer',
+    projectUrl: 'https://github.com/01esyaLebedeva/tsx_viewer',
+    description: 'TSX viewer and editor application, supporting both web and Electron environments.',
 
     meta: (import 'graph_parts/meta.jsonnet'),
 

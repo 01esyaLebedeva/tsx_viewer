@@ -6,8 +6,10 @@ import fs from 'fs/promises'
 import path from 'path'
 
 const PROJECT_ROOT = process.cwd()
-const PROJECT_GRAPH_DIR = path.join(PROJECT_ROOT, 'project_graph')
-const GRAPH_SOURCE = path.join(PROJECT_GRAPH_DIR, 'project_graph.jsonnet')
+const PROJECT_GRAPH_DIR = PROJECT_ROOT; // Changed from path.join(PROJECT_ROOT, 'project_graph')
+const GRAPH_SOURCE = path.join(PROJECT_GRAPH_DIR, 'project_graph.jsonnet');
+const COMPILED_GRAPH = path.join(PROJECT_GRAPH_DIR, '.cache', 'graph.json');
+const SETTINGS_PATH = path.join(PROJECT_GRAPH_DIR, 'settings.json');
 
 const run = (cmd, options = {}) => new Promise((resolve, reject) => {
   exec(cmd, options, (error, stdout, stderr) => {

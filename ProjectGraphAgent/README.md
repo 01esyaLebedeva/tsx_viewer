@@ -9,36 +9,28 @@ ProjectGraphAgent is a Jsonnet-driven project control system designed for AI age
 - **Automation**: Grouped commits, AI command synchronization, CI workflow integration
 - **Multi-Language Support**: TypeScript/JavaScript and Python adapters (extensible)
 
+
+
 ## Structure
 
-```
-ProjectGraphAgent/
-├── project_graph.jsonnet          # Root configuration
-├── graph_parts/                   # Modular graph components
-│   ├── entities.jsonnet          # Project entities
-│   ├── relations.jsonnet         # Entity relationships
-│   ├── policies.jsonnet          # Development policies
-│   ├── ai_commands.jsonnet       # AI command mappings
-│   ├── templates.jsonnet         # Reusable templates
-│   ├── plans.jsonnet             # Project plans/roadmaps
-│   └── schema.jsonnet            # Validation schema
-├── scripts/                       # Node.js automation scripts
-│   ├── graph_generator.mjs       # Main generator (audit, drift, diagrams)
-│   ├── graph_validator.mjs       # Schema validation
-│   ├── ai_committer.mjs          # Grouped commits (planned)
-│   ├── sync_ai_commands.mjs      # AI command sync (planned)
-│   ├── clean_project.mjs         # Clean from parent project data
-│   ├── sync_to_standalone.mjs    # Sync to standalone directory
-│   └── publish_workflow.mjs      # Complete publish workflow
-├── adapters/                      # Language-specific adapters
-│   ├── typescript.mjs            # TS/JS file analysis
-│   └── python.mjs                # Python file analysis
-├── .cache/                        # Generated artifacts (git-ignored)
-│   ├── graph.json                # Compiled graph (observed + drift)
-│   ├── history/                   # Timestamped snapshots
-│   └── events.ndjson             # Event log
-└── README.md                      # This file
-```
+*   `project_graph.jsonnet`
+    *   The root file that assembles the entire graph, including project metadata, entities, relations, policies, and commit grouping rules.
+*   `graph_parts/`
+    *   `entities.jsonnet`: Defines all the core components, files, and resources of the project.
+    *   `relations.jsonnet`: Defines the relationships *between* the entities (e.g., which component uses which, IPC channels).
+    *   `templates.jsonnet`: Reusable schemas for different types of entities.
+    *   `policies.jsonnet`: Defines architectural rules and conventions for the project.
+    *   `meta.jsonnet`: Contains metadata about the project graph itself.
+    *   `ai_commands.jsonnet`: Defines mappings for AI assistant commands.
+*   `scripts/`
+    *   `ai_committer.mjs`: The script that automates the creation of categorized Git commits based on the `commitGroups` defined in `project_graph.jsonnet`.
+    *   `clean_project.mjs`: A script related to the project graph.
+    *   `graph_generator.mjs`: The script that generates this README and compares the graph to the live project files and reports any drift.
+    *   `graph_validator.mjs`: (Future) A script to validate the graph against the policies defined in `policies.jsonnet`.
+    *   `publish_workflow.mjs`: A script related to the project graph.
+    *   `sync_ai_commands.mjs`: The script that synchronizes AI command definitions across various AI assistant rule files.
+    *   `sync_to_standalone.mjs`: A script related to the project graph.
+
 
 ## Usage
 
@@ -89,28 +81,89 @@ Add to `.github/workflows/*.yml`:
   run: node ProjectGraphAgent/scripts/graph_validator.mjs
 ```
 
+
+
 ## AI Assistant Command Mapping
 
-The system maps conversational commands to npm scripts:
+To streamline interaction with AI assistants, you can configure them to trigger `npm run graph:audit` and `npm run graph:commit` using simpler, more conversational commands. Below are examples of how to set this up for various AI assistants, based on the definitions in `graph_parts/ai_commands.jsonnet`.
 
-| Platform | Command | Action |
-|----------|---------|--------|
-| Gemini | `graph-audit` | `node ProjectGraphAgent/scripts/graph_generator.mjs` |
-| Cursor | `graph-audit` | `node ProjectGraphAgent/scripts/graph_generator.mjs` |
-| Kilocode | `graph-audit` | `node ProjectGraphAgent/scripts/graph_generator.mjs` |
-| Roo | `graph-audit` | `node ProjectGraphAgent/scripts/graph_generator.mjs` |
+**Important:** The exact syntax and capabilities may vary between AI assistants. Refer to your specific AI's documentation for precise configuration details.
+
+### For Cursor (`.cursor/rules/general-rules.mdc`)
+
+```markdown
+## Graph Audit
+- **Trigger Phrase:** "graph-audit"
+- **Action:** Run `node project_graph/scripts/graph_generator.mjs`
+- **Description:** Executes the project graph audit script to check for discrepancies between the graph definition and actual project files.
+
+## Graph Commit
+- **Trigger Phrase:** "graph-commit"
+- **Action:** Run `npm run graph:commit`
+- **Description:** Executes the AI Committer script to automatically categorize and commit staged changes based on project_graph.jsonnet rules.
+
+## Sync Ai Commands
+- **Trigger Phrase:** "sync-ai-commands"
+- **Action:** Run `npm run sync:ai-commands`
+- **Description:** Synchronizes AI command definitions across various AI assistant rule files.
+
+```
+
+### For Gemini Code Assistant (`.gemini/GEMINI.md`)
+
+```markdown
+- **Command Aliases:** When the user requests "graph-audit" or "audit graph" or "check graph" or "run audit", execute `node project_graph/scripts/graph_generator.mjs`.
+- **Command Aliases:** When the user requests "graph-commit" or "commit graph" or "auto commit" or "run committer", execute `npm run graph:commit`.
+- **Command Aliases:** When the user requests "sync-ai-commands" or "sync ai" or "update ai rules" or "sync assistant commands", execute `npm run sync:ai-commands`.
+```
+
+### For Kilocode (`.kilocode/rules/general-rules.md`)
+
+```markdown
+## Graph Audit
+- **Trigger Phrase:** "graph-audit"
+- **Action:** Run `node project_graph/scripts/graph_generator.mjs`
+- **Description:** Executes the project graph audit script to check for discrepancies between the graph definition and actual project files.
+
+## Graph Commit
+- **Trigger Phrase:** "graph-commit"
+- **Action:** Run `npm run graph:commit`
+- **Description:** Executes the AI Committer script to automatically categorize and commit staged changes based on project_graph.jsonnet rules.
+
+## Sync Ai Commands
+- **Trigger Phrase:** "sync-ai-commands"
+- **Action:** Run `npm run sync:ai-commands`
+- **Description:** Synchronizes AI command definitions across various AI assistant rule files.
+
+```
+
+### For Roo (`.roo/rules/rules.md`)
+
+```markdown
+## Graph Audit
+- **Trigger Phrase:** "graph-audit"
+- **Action:** Run `node project_graph/scripts/graph_generator.mjs`
+- **Description:** Executes the project graph audit script to check for discrepancies between the graph definition and actual project files.
+
+## Graph Commit
+- **Trigger Phrase:** "graph-commit"
+- **Action:** Run `npm run graph:commit`
+- **Description:** Executes the AI Committer script to automatically categorize and commit staged changes based on project_graph.jsonnet rules.
+
+## Sync Ai Commands
+- **Trigger Phrase:** "sync-ai-commands"
+- **Action:** Run `npm run sync:ai-commands`
+- **Description:** Synchronizes AI command definitions across various AI assistant rule files.
+
+```
+
+
 
 ## Drift
 
-The system automatically computes drift between declared (Jsonnet) and observed (adapters) entities:
+- observedNotDeclared: 0
+- declaredNotObserved: 13
 
-- **missingDeclared**: Files in codebase not declared in graph
-- **missingObserved**: Declared entities not found in codebase
-
-Results are written to:
-- Compiled graph (`ProjectGraphAgent/.cache/graph.json`)
-- Drift report (`memory-bank/drift.md`)
-- README summary
 
 ## Development Workflow
 

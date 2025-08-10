@@ -6,6 +6,7 @@ import * as lucide from 'lucide-react';
 import './index.css';
 import { useTranslation, Trans } from 'react-i18next';
 import i18n from './i18n'; // Import i18n instance
+import { ThemeToggle } from './components/theme-toggle'
 
 interface FileOpenedPayload {
   path: string;
@@ -284,6 +285,7 @@ root.render(
           </div>
           <h1 id="file-name-header" className="text-base font-bold">{t('tsx_viewer')}: {fileName}</h1>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <button
                           id="toggle-source-code-button"
                           onClick={() => {

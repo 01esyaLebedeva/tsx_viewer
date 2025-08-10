@@ -23,38 +23,28 @@ local DefaultMetadata = templates.DefaultMetadata;
             { name: 'build', purpose: 'Configuration for electron-builder to package the application for different OS.' },
         ],
     },
-
-    // --- Project Graph System Files ---
-    'ProjectGraphAgent/project_graph.jsonnet': FileEntity(
-        'JsonnetConfiguration',
-        'ProjectGraphAgent/project_graph.jsonnet',
-        'Root configuration file for the project graph system.',
-        DefaultMetadata()
-    ),
-    'ProjectGraphAgent/README.md': FileEntity(
-        'Documentation',
-        'ProjectGraphAgent/README.md',
-        'Main documentation for the project graph system.',
-        DefaultMetadata()
-    ),
-    'ProjectGraphAgent/LLM_GUIDELINES.md': FileEntity(
-        'Documentation',
-        'ProjectGraphAgent/LLM_GUIDELINES.md',
-        'Guidelines for Large Language Models on how to interpret and utilize the project graph system.',
-        DefaultMetadata()
-    ),
-
-    // --- Example Source Files (replace with your project's files) ---
     'src/App.tsx': Component(
         name='App.tsx',
         path='src/App.tsx',
         purpose='The main application component, defines the overall layout and routes.',
         metadata=DefaultMetadata()
     ),
-    'src/main.tsx': FileEntity(
-        kind='EntryPoint',
-        path='src/main.tsx',
-        purpose='The main entry point for the React application.',
+    'src/i18n.ts': FileEntity(
+        kind='I18nConfiguration',
+        path='src/i18n.ts',
+        purpose='Internationalization setup using i18next.',
+        metadata=DefaultMetadata()
+    ),
+    'src/icons/tsx_viewer.ico': FileEntity(
+        kind='Asset',
+        path='src/icons/tsx_viewer.ico',
+        purpose='Application icon in ICO format.',
+        metadata=DefaultMetadata()
+    ),
+    'src/icons/tsx_viewer.png': FileEntity(
+        kind='Asset',
+        path='src/icons/tsx_viewer.png',
+        purpose='Application icon in PNG format.',
         metadata=DefaultMetadata()
     ),
     'src/index.css': FileEntity(
@@ -63,40 +53,83 @@ local DefaultMetadata = templates.DefaultMetadata;
         purpose='Global CSS styles for the application.',
         metadata=DefaultMetadata()
     ),
-
-    // --- Example Test Files ---
-    'test/example.test.tsx': FileEntity(
-        kind='TestFile',
-        path='test/example.test.tsx',
-        purpose='Example test file for React components.',
+    'src/main.tsx': FileEntity(
+        kind='EntryPoint',
+        path='src/main.tsx',
+        purpose='The main entry point for the React application.',
         metadata=DefaultMetadata()
     ),
-
-    // --- Example Public Files ---
+    'src/tsx_viewer.desktop': FileEntity(
+        kind='DesktopEntry',
+        path='src/tsx_viewer.desktop',
+        purpose='Desktop entry file for Linux systems.',
+        metadata=DefaultMetadata()
+    ),
+    'src/window.d.ts': FileEntity(
+        kind='TypeScriptDefinition',
+        path='src/window.d.ts',
+        purpose='TypeScript declaration file for window object.',
+        metadata=DefaultMetadata()
+    ),
+    'electron/main.js': FileEntity(
+        kind='ElectronMainProcess',
+        path='electron/main.js',
+        purpose='The main process for the Electron application.',
+        metadata=DefaultMetadata()
+    ),
+    'electron/preload.js': FileEntity(
+        kind='ElectronPreloadScript',
+        path='electron/preload.js',
+        purpose='Preload script for the Electron application, used for secure IPC.',
+        metadata=DefaultMetadata()
+    ),
+    'test/emoji.json': FileEntity(
+        kind='TestData',
+        path='test/emoji.json',
+        purpose='Test data in JSON format.',
+        metadata=DefaultMetadata()
+    ),
+    'test/simple-test.tsx': FileEntity(
+        kind='TestFile',
+        path='test/simple-test.tsx',
+        purpose='A simple test file for a React component.',
+        metadata=DefaultMetadata()
+    ),
+    'test/test-component.tsx': FileEntity(
+        kind='TestComponent',
+        path='test/test-component.tsx',
+        purpose='A React component used for testing purposes.',
+        metadata=DefaultMetadata()
+    ),
+    'test/workout_program.tsx': FileEntity(
+        kind='TestFile',
+        path='test/workout_program.tsx',
+        purpose='A test file for a workout program component.',
+        metadata=DefaultMetadata()
+    ),
+    'test/workout_program_emoji.tsx': FileEntity(
+        kind='TestFile',
+        path='test/workout_program_emoji.tsx',
+        purpose='A test file for a workout program component with emojis.',
+        metadata=DefaultMetadata()
+    ),
     'public/index.html': FileEntity(
         kind='HTML',
         path='public/index.html',
         purpose='The main HTML file for the application.',
         metadata=DefaultMetadata()
     ),
-
-    // --- Example Configuration Files ---
-    'tsconfig.json': FileEntity(
-        kind='TypeScriptConfiguration',
-        path='tsconfig.json',
-        purpose='TypeScript configuration file.',
+    'public/locales/en/translation.json': FileEntity(
+        kind='Locale',
+        path='public/locales/en/translation.json',
+        purpose='English translation file.',
         metadata=DefaultMetadata()
     ),
-    '.gitignore': FileEntity(
-        kind='GitConfiguration',
-        path='.gitignore',
-        purpose='Git ignore rules for the project.',
+    'public/locales/ru/translation.json': FileEntity(
+        kind='Locale',
+        path='public/locales/ru/translation.json',
+        purpose='Russian translation file.',
         metadata=DefaultMetadata()
     ),
-    'README.md': FileEntity(
-        kind='Documentation',
-        path='README.md',
-        purpose='Main project documentation.',
-        metadata=DefaultMetadata()
-    ),
+    // ... other entities
 }
