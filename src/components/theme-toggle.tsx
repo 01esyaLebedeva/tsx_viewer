@@ -14,7 +14,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label="Toggle dark mode"
       className="p-0 bg-transparent border-none outline-none flex items-center justify-center self-center ml-2 transition hover:scale-110"
-      style={{ width: 52, height: 52 }}
+      style={{ width: 52, height: 52, cursor: 'pointer' }}
     >
       {theme === 'dark'
         ? <Moon size={40} stroke="white" />
