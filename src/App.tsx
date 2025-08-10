@@ -254,25 +254,15 @@ root.render(
   return (
     <React.Fragment>
       <div id="main-app-container" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <header
-          id="app-header"
-          className="flex flex-col bg-[#222] text-white py-4"
-        >
+        <header className="relative flex flex-col bg-[#222] text-white py-6 min-h-[80px]">
           <div className="flex flex-row items-center justify-between w-full px-4">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center">
               <button id="upload-new-file-button" onClick={triggerFileDialog} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
                 <Upload />
               </button>
-              <button id="save-file-button" onClick={handleSave} title={t('save_file')} className={`hover:text-blue-400 transition header-icon-button ${!isDirty ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={!isDirty}>
+              <button id="save-file-button" onClick={handleSave} title={t('save_file')} className={`hover:text-blue-400 transition header-icon-button ${!isDirty ? 'opacity-50 cursor-not-allowed' : ''} mr-6`} disabled={!isDirty}>
                 <Save />
               </button>
-            </div>
-            <div className="flex flex-row items-baseline gap-2">
-              <span className="text-base font-bold">TSX Viewer</span>
-              <span className="text-xs text-gray-400">v{__APP_VERSION__}</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <ThemeToggle />
               <button
                 id="toggle-source-code-button"
                 onClick={() => {
@@ -297,8 +287,16 @@ root.render(
                 <Edit />
               </button>
             </div>
+            <div className="flex flex-row items-baseline gap-2">
+              <span className="text-base font-bold">TSX Viewer</span>
+              <span className="text-xs text-gray-400">v{__APP_VERSION__}</span>
+            </div>
+            <div style={{ width: 36 }} />
           </div>
-          <span className="text-7xl font-bold text-gray-100 mt-2 text-center w-full">{fileName}</span>
+          <span className="text-9xl font-bold text-gray-100 mt-2 text-center w-full" style={{ fontSize: '2rem', lineHeight: 1, display: 'block' }}>{fileName}</span>
+          <div className="absolute top-4 right-4">
+            <ThemeToggle />
+          </div>
         </header>
 
         <SandpackProvider
