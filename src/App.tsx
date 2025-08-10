@@ -226,28 +226,12 @@ root.render(
         id="dropzone-container"
         onDrop={onDrop}
         onDragOver={e => e.preventDefault()}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
-          height: '100vh',
-          width: '100vw',
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          border: '4px dashed #333',
-          borderRadius: 8,
-          backgroundColor: '#f0f0f0',
-          color: '#555',
-          textAlign: 'center',
-          transition: 'background-color 0.3s',
-          zIndex: 10
-        }}
+        className="flex flex-col justify-center items-center min-h-screen h-screen w-screen fixed inset-0 border-4 border-dashed rounded-lg bg-gray-100 text-gray-700 dark:bg-zinc-900 dark:text-gray-100 text-center transition-colors z-10"
+        style={{ borderColor: '#333' }}
       >
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
         <Upload size={64} className="mb-4" />
         <h1 className="text-2xl font-bold"><Trans i18nKey="drag_tsx_file">Перетащите TSX-файл сюда</Trans></h1>
         <p style={{ fontSize: '3rem', margin: '0.5rem 0' }}>{t('or')}</p>
