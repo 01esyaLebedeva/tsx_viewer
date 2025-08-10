@@ -13,7 +13,11 @@
     "dev": "vite",
     "build": "vite build && electron-builder",
     "start": "electron .",
-    "start:prod": "npm run build && npm run start"
+    "start:prod": "npm run build && npm run start",
+    "graph:audit": "node ProjectGraphAgent/scripts/graph_generator.mjs",
+    "graph:commit": "node ProjectGraphAgent/scripts/ai_committer.mjs",
+    "sync:ai-commands": "node ProjectGraphAgent/scripts/sync_ai_commands.mjs",
+    "graph:validate": "node ProjectGraphAgent/scripts/graph_validator.mjs"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",

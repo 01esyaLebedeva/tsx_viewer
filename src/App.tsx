@@ -6,25 +6,27 @@ import * as lucide from 'lucide-react';
 import './index.css';
 import { useTranslation, Trans } from 'react-i18next';
 import i18n from './i18n'; // Import i18n instance
-
+import { ThemeToggle } from './components/theme-toggle'
+import { useTheme } from './hooks/use-theme';
 interface FileOpenedPayload {
   path: string;
   name: string;
   content: string;
 }
 
-const Editor: React.FC<{ onCodeChange: (newCode: string) => void }> = ({ onCodeChange }) => {
+const Editor: React.FC<{ onCodeChange: (newCode: string) => void, theme: 'light' | 'dark' }> = ({ onCodeChange, theme }) => {
   const { code, updateCode } = useActiveCode();
 
   useEffect(() => {
     onCodeChange(code);
   }, [code, onCodeChange]);
 
-  return <SandpackCodeEditor showLineNumbers showInlineErrors />;
+  return <SandpackCodeEditor key={theme} showLineNumbers showInlineErrors />;
 };
 
 const App: React.FC = () => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
   const [originalCode, setOriginalCode] = useState<string>('');
   const [editedCode, setEditedCode] = useState<string>('');
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -86,6 +88,11 @@ const App: React.FC = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    setOriginalCode(editedCode);
+    setEditedCode(editedCode);
+  }, [theme]);
 
   const handleFile = (file: any) => {
     setIsLoading(true);
@@ -221,106 +228,110 @@ root.render(
 
   if (!filePath) {
     return (
-      <div
-        id="dropzone-container"
-        onDrop={onDrop}
-        onDragOver={e => e.preventDefault()}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
-          height: '100vh',
-          width: '100vw',
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          border: '4px dashed #333',
-          borderRadius: 8,
-          backgroundColor: '#f0f0f0',
-          color: '#555',
-          textAlign: 'center',
-          transition: 'background-color 0.3s',
-          zIndex: 10
-        }}
-      >
-        <Upload size={64} className="mb-4" />
-        <h1 className="text-2xl font-bold"><Trans i18nKey="drag_tsx_file">Перетащите TSX-файл сюда</Trans></h1>
-        <p style={{ fontSize: '3rem', margin: '0.5rem 0' }}>{t('or')}</p>
-        <button
-          id="choose-file-button"
-          className="py-4 px-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-          style={{ fontSize: '1.5rem', width: '300px', height: '100px' }}
-          onClick={triggerFileDialog}
+      <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+        <div
+          id="dropzone-container"
+          onDrop={onDrop}
+          onDragOver={e => e.preventDefault()}
+          className="flex flex-col justify-center items-center min-h-screen h-screen w-screen fixed inset-0 border-4 border-dashed rounded-lg bg-gray-100 text-gray-700 dark:bg-zinc-900 dark:text-gray-100 text-center transition-colors z-10"
+          style={{ borderColor: '#333' }}
         >
-          {t('choose_file')}
-        </button>
+          <Upload size={64} className="mb-4" />
+          <h1 className="text-2xl font-bold"><Trans i18nKey="drag_tsx_file">Перетащите TSX-файл сюда</Trans></h1>
+          <p style={{ fontSize: '3rem', margin: '0.5rem 0' }}>{t('or')}</p>
+          <button
+            id="choose-file-button"
+            className="py-4 px-8 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+            style={{ fontSize: '1.5rem', width: '300px', height: '100px', cursor: 'pointer', transition: 'transform 0.2s ease-in-out' }}
+            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+            onClick={triggerFileDialog}
+          >
+            {t('choose_file')}
+          </button>
+        </div>
+        <div className="absolute z-20 flex flex-row items-center gap-4" style={{ top: '5px', right: '10px' }}>
+          <a href="https://github.com/01esyaLebedeva/tsx_viewer" target="_blank" rel="noopener noreferrer" className="app-link flex flex-row items-baseline no-underline" style={{ color: 'inherit', marginRight: '5px' }}>
+            <span className="text-base font-bold">TSX Viewer</span>
+            <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
+          </a>
+          <ThemeToggle />
+        </div>
       </div>
     );
   }
 
   return (
     <React.Fragment>
-      <div id="main-app-container" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <header id="app-header" style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '4px 8px',
-          backgroundColor: '#222',
-          color: 'white',
-          flexShrink: 0
-        }}>
-          <div className="flex items-center gap-4">
-            <button id="upload-new-file-button" onClick={triggerFileDialog} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
-              <Upload />
-            </button>
-            <button id="save-file-button" onClick={handleSave} title={t('save_file')} className={`hover:text-blue-400 transition header-icon-button ${!isDirty ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={!isDirty}>
-              <Save />
-            </button>
+      <div id="main-app-container" style={{ height: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        <header className="relative flex flex-row items-center justify-between w-full px-4 py-6 min-h-[80px]" style={{ backgroundColor: '#18181b', color: '#f4f4f5' }}>
+          <div className="flex-1 flex items-center gap-4">
+            <div className="flex items-center">
+              <button id="upload-new-file-button" onClick={triggerFileDialog} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
+                <Upload />
+              </button>
+              <button id="save-file-button" onClick={handleSave} title={t('save_file')} className={`hover:text-blue-400 transition header-icon-button ${!isDirty ? 'opacity-50 cursor-not-allowed' : ''} mr-6`} disabled={!isDirty}>
+                <Save />
+              </button>
+              <button
+                id="toggle-source-code-button"
+                style={{ marginLeft: '10px' }}
+                onClick={() => {
+                  setShowSource(!showSource);
+                  setIsSourceActive(!isSourceActive);
+                }}
+                title={t('show_hide_source_code')}
+                className={`p-1 rounded transition header-icon-button ${isSourceActive ? 'active' : ''}`}
+              >
+                <Code />
+              </button>
+              <button
+                id="toggle-editor-button"
+                onClick={() => {
+                  setShowEditor(!showEditor);
+                  setIsEditorActive(!isEditorActive);
+                  setIsDirty(true);
+                }}
+                title={t('show_hide_editor')}
+                className={`p-1 rounded transition header-icon-button ${isEditorActive ? 'active' : ''}`}
+              >
+                <Edit />
+              </button>
+            </div>
           </div>
-          <h1 id="file-name-header" className="text-base font-bold">{t('tsx_viewer')}: {fileName}</h1>
-          <div className="flex items-center gap-4">
-            <button
-                          id="toggle-source-code-button"
-                          onClick={() => {
-                            setShowSource(!showSource);
-                            setIsSourceActive(!isSourceActive);
-                          }}
-                          title={t('show_hide_source_code')}
-                          className={`p-1 rounded transition header-icon-button ${isSourceActive ? 'active' : ''}`}
-                        >
-                          <Code />
-                        </button>
-                        <button
-                          id="toggle-editor-button"
-                          onClick={() => {
-                            setShowEditor(!showEditor);
-                            setIsEditorActive(!isEditorActive);
-                            // Activate save button when editor is shown
-                            setIsDirty(true);
-                          }}
-                          title={t('show_hide_editor')}
-                          className={`p-1 rounded transition header-icon-button ${isEditorActive ? 'active' : ''}`}
-                        >
-                          <Edit />
-                        </button>
+          <div className="flex-1 flex justify-center">
+            <span className="text-base font-bold" style={{ color: '#f4f4f5' }}>{fileName}</span>
+          </div>
+          <div className="flex-1 flex justify-end items-center gap-4">
+            <a href="https://github.com/01esyaLebedeva/tsx_viewer" target="_blank" rel="noopener noreferrer" className="app-link flex flex-row items-baseline no-underline" style={{ color: '#f4f4f5', marginRight: '5px' }}>
+              <span className="text-base font-bold">TSX Viewer</span>
+              <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
+            </a>
+            <ThemeToggle />
           </div>
         </header>
 
         <SandpackProvider
-          key={filePath}
+          key={`${filePath}-${theme}`}
           template="react-ts"
           files={sandpackFiles}
+          theme={theme}
         >
           <PanelGroup direction="horizontal" style={{ flexGrow: 1, minHeight: 0 }}>
             {showSource && (
               <>
                 <Panel id="source-panel-container" order={1} defaultSize={showEditor ? 33 : 50}>
-                  <div id="source-code-panel" style={{ height: '100%', overflow: 'auto', borderRight: '1px solid #ccc' }}>
+                  <div
+                    id="source-code-panel"
+                    className="source-code-panel"
+                    style={{
+                      height: '100%',
+                      overflow: 'auto',
+                      borderRight: '1px solid #ccc',
+                      color: theme === 'dark' ? '#f4f4f5' : '#18181b',
+                      backgroundColor: theme === 'dark' ? '#18181b' : '#ffffff'
+                    }}
+                  >
                     <pre><code>{originalCode}</code></pre>
                   </div>
                 </Panel>
@@ -331,7 +342,7 @@ root.render(
               <>
                 <Panel id="editor-panel-container" order={2} defaultSize={showSource ? 33 : 50}>
                   <SandpackLayout id="editor-panel">
-                    <Editor onCodeChange={handleCodeChange} />
+                    <Editor onCodeChange={handleCodeChange} theme={theme} />
                   </SandpackLayout>
                 </Panel>
                 <PanelResizeHandle className="resize-handle" />

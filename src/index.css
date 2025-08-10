@@ -7,6 +7,12 @@ html, body, #root {
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;
+  background-color: #f0f0f0;
+  color: #222;
+}
+.dark html, .dark body, .dark #root {
+  background-color: #18181b;
+  color: #f4f4f5;
 }
 
 /* Force Sandpack preview to take full height */
@@ -80,4 +86,53 @@ button.active {
 
 .sp-overlay, .sp-loading {
     display: none !important;
+}
+
+#dropzone-container {
+  background-color: #f0f0f0;
+  color: #555;
+}
+.dark #dropzone-container {
+  background-color: #18181b;
+  color: #f4f4f5;
+}
+#app-header {
+  background-color: #222;
+  color: white;
+}
+.dark #app-header {
+  background-color: #27272a;
+  color: #f4f4f5;
+}
+
+.source-code-panel {
+  background-color: #ffffff;
+  color: #18181b;
+}
+
+.dark .source-code-panel {
+  background-color: #18181b;
+  color: #f4f4f5;
+}
+
+.app-link {
+  transition: transform 0.2s ease-in-out;
+  display: inline-block; /* Required for transform to work */
+}
+
+.app-link:hover {
+  transform: scale(1.1);
+}
+
+.dark .sp-cm .cm-content, .dark .sp-cm .cm-line {
+  color: #f4f4f5 !important;
+}
+
+.dark .sp-cm .cm-gutters {
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+}
+
+.dark .sp-editor {
+  background-color: #18181b !important;
 }
