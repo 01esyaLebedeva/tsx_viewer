@@ -6,6 +6,38 @@ const store = new Store()
 
 const isDev = !app.isPackaged;
 
+let filePathToOpen = null;
+
+// For Windows and Linux, the file path is passed as a command line argument.
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) {
+      if (win.isMinimized()) win.restore();
+      win.focus();
+      const filePath = commandLine.pop();
+      if (filePath && filePath !== '.') {
+        win.webContents.send('file-opened-from-cli', filePath);
+      }
+    }
+  });
+}
+
+// For macOS, the file path is passed through the 'open-file' event.
+app.on('open-file', (event, path) => {
+  event.preventDefault();
+  filePathToOpen = path;
+  const win = BrowserWindow.getAllWindows()[0];
+  if (win) {
+    win.webContents.send('file-opened-from-cli', path);
+  }
+});
+
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
@@ -24,6 +56,15 @@ function createWindow() {
     win.webContents.send('locale-update', locale);
     const theme = store.get('theme', 'light')
     win.webContents.send('set-theme', theme)
+
+    // Handle file opening from command line argument
+    const filePath = process.argv.find(arg => arg.endsWith('.tsx'));
+    if (filePath) {
+        win.webContents.send('file-opened-from-cli', filePath);
+    } else if (filePathToOpen) {
+        win.webContents.send('file-opened-from-cli', filePathToOpen);
+        filePathToOpen = null;
+    }
   });
 
   if (isDev) {
@@ -90,3 +131,18 @@ ipcMain.on('save-file', (event, { filePath, code }) => {
 ipcMain.on('set-theme', (event, theme) => {
   store.set('theme', theme)
 })
+
+ipcMain.on('read-file-from-cli', (event, filePath) => {
+  fs.readFile(filePath, 'utf-8', (err, data) => {
+    if (err) {
+      console.error('Failed to read the file from cli', err);
+      event.sender.send('file-open-error', err.message);
+    } else {
+      event.sender.send('file-content-from-cli', {
+        path: filePath,
+        name: path.basename(filePath),
+        content: data
+      });
+    }
+  });
+});

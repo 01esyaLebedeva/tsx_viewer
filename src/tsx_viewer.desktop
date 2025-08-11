@@ -1,9 +1,10 @@
 [Desktop Entry]
 Type=Application
 Name=TSX Viewer
-Exec=tsx-viewer
+Exec=tsx-viewer %F
 Icon=io.github.OlesyaLebedeva.tsx_viewer
 Categories=Utility;Development;Viewer;
 Comment=Electron TSX Viewer Application
 StartupNotify=true
 Terminal=false
+MimeType=application/x-tsx;

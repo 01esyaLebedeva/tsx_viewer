@@ -83,11 +83,33 @@ const App: React.FC = () => {
       setIsDirty(false);
     };
 
+    const handleFileOpenedFromCli = (event: any, filePath: string) => {
+      // Since we get a raw file path, we need to ask the main process to read it for us.
+      // This is a good practice for security and to handle potential errors.
+      if (window.Electron?.ipcRenderer) {
+        window.Electron.ipcRenderer.send('read-file-from-cli', filePath);
+      }
+    };
+
+    const handleFileContentFromCli = (event: any, { path, name, content }: FileOpenedPayload) => {
+      setOriginalCode(content);
+      setEditedCode(content);
+      setIsDirty(false);
+      setFilePath(path);
+      setFileName(name);
+      setError(null);
+      setShowSource(false);
+      setShowEditor(false);
+      setShowPreview(true);
+    };
+
     if (window.Electron?.ipcRenderer) {
       window.Electron.ipcRenderer.on('locale-update', handleLocaleUpdate);
       window.Electron.ipcRenderer.on('file-opened', handleFileOpened);
       window.Electron.ipcRenderer.on('file-open-error', handleFileOpenError);
       window.Electron.ipcRenderer.on('file-saved-successfully', handleFileSaved);
+      window.Electron.ipcRenderer.on('file-opened-from-cli', handleFileOpenedFromCli);
+      window.Electron.ipcRenderer.on('file-content-from-cli', handleFileContentFromCli);
     }
 
     return () => {
@@ -96,6 +118,8 @@ const App: React.FC = () => {
         window.Electron.ipcRenderer.removeListener('file-opened', handleFileOpened);
         window.Electron.ipcRenderer.removeListener('file-open-error', handleFileOpenError);
         window.Electron.ipcRenderer.removeListener('file-saved-successfully', handleFileSaved);
+        window.Electron.ipcRenderer.removeListener('file-opened-from-cli', handleFileOpenedFromCli);
+        window.Electron.ipcRenderer.removeListener('file-content-from-cli', handleFileContentFromCli);
       }
     };
   }, []);
