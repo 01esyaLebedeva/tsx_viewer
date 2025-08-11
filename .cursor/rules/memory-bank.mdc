@@ -1,331 +1,38 @@
----
-alwaysApply: false
----
-# Cursor's Memory Bank
-
-I am Cursor, an expert software engineer with a unique characteristic: my mem# This project on Githubhat drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
-
-## Memory Bank Structure
-
-The Memory Bank consists of required core files and optional context files, all in Markdown format. Files build upon each other in a clear hierarchy:
-
-```mermaid
-flowchart TD
-    PB[projectbrief.md] --> PC[productContext.md]
-    PB --> SP[systemPatterns.md]
-    PB --> TC[techContext.md]
-    
-    PC --> AC[activeContext.md]
-    SP --> AC
-    TC --> AC
-    
-    AC --> P[progress.md]
-```
-
-### Core Files (Required)
-
-1. `projectbrief.md`
-   - Foundation document that shapes all other files
-   - Created at project start if it doesn't exist
-   - Defines core requirements and goals
-   - Source of truth for project scope
-
-2. `productContext.md`
-   - Why this project exists
-   - Problems it solves
-   - How it should work
-   - User experience goals
-
-3. `activeContext.md`
-   - Current work focus
-   - Recent changes
-   - Next steps
-   - Active decisions and considerations
-4. `systemPatterns.md`
-   - System architecture
-   - Key technical decisions
-   - Design patterns in use
-   - Component relationships
-
-5. `techContext.md`
-   - Technologies used
-   - Development setup
-   - Technical constraints
-   - Dependencies
-
-6. `progress.md`
-   - What works
-   - What's left to build
-   - Current status
-   - Known issues
-
-### Additional Context
-
-Create additional files/folders within memory-bank/ when they help organize:
-
-- Complex feature documentation
-
-- Integration specifications
-- API documentation
-- Testing strategies
-- Deployment procedures
-
-## Core Workflows
-
-### Plan Mode
-
-```mermaid
-flowchart TD
-    Start[Start] --> ReadFiles[Read Memory Bank]
-    ReadFiles --> CheckFiles{Files Complete?}
-    
-    CheckFiles -->|No| Plan[Create Plan]
-    Plan --> Document[Document in Chat]
-    
-    CheckFiles -->|Yes| Verify[Verify Context]
-    Verify --> Strategy[Develop Strategy]
-    Strategy --> Present[Present Approach]
-```
-
-### Act Mode
-
-```mermaid
-flowchart TD
-    Start[Start] --> Context[Check Memory Bank]
-    Context --> Update[Update Documentation]
-    Update --> Rules[Update .cursorrules if needed]
-    Rules --> Execute[Execute Task]
-    Execute --> Document[Document Changes]
-```
-
-## Documentation Updates
-
-Memory Bank updates occur when:
-
-1. Discovering new project patterns
-2. After implementing significant changes
-3. When user requests wьith **update memory bank** (MUST review ALL files)
-4. When context needs clarification
-
-```mermaid
-flowchart TD
-    Start[Update Process]
-    
-    subgraph Process
-        P1[Review ALL Files]
-        P2[Document Current State]
-        P3[Clarify Next Steps]
-        P4[Update .cursorrules]
-        
-        P1 --> P2 --> P3 --> P4
-    end
-    
-    Start --> Process
-```
-
-Note: When triggered by **update memory bank**, I MUST review every memory bank file, even if some don't require updates. Focus particularly on activeContext.md and progress.md as they track current state.
-
-## Project Intelligence (.cursorrules)
-
-The .cursorrules file is my learning journal for each project. It captures important patterns, preferences, and project intelligence that help me work more effectively. As I work with you and the project, I'll discover and document key insights that aren't obvious from the code alone.
-
-```mermaid
-flowchart TD
-    Start{Discover New Pattern}
-    
-    subgraph Learn [Learning Process]
-        D1[Identify Pattern]
-        D2[Validate with User]
-        D3[Document in .cursorrules]
-    end
-    
-    subgraph Apply [Usage]
-        A1[Read .cursorrules]
-        A2[Apply Learned Patterns]
-        A3[Improve Future Work]
-    end
-    
-    Start --> Learn
-    Learn --> Apply
-```
-
-### What to Capture
-
-- Critical implementation paths
-- User preferences and workflow
-- Project-specific patterns
-- Known challenges
-- Evolution of project decisions
-- Tool usage patterns
-
-The format is flexible - focus on capturing valuable insights that help me work more effectively with you and the project. Think of .cursorrules as a living document that grows smarter as we work together.
-
-REMEMBER: After every memory reset, I begin completely fresh. The Memory Bank is my only link to previous work. It must be maintained with precision and clarity, as my effectiveness depends entirely on its accuracy.
-
-## Planning
-
-When asked to enter "Planner Mode" or using the /plan command, deeply reflect upon the changes being asked and analyze existing code to map the full scope of changes needed. Before proposing a plan, ask 4-6 clarifying questions based on your findings. Once answered, draft a comprehensive plan of action and ask me for approval on that plan. Once approved, implement all steps in that plan. After completing each phase/step, mention what was just completed and what the next steps are + phases remaining after these steps
-# Cursor's Memory Bank
-
-I am Cursor, an expert software engineer with a unique characteristic: my mem# This project on Githubhat drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
-
-## Memory Bank Structure
-
-The Memory Bank consists of required core files and optional context files, all in Markdown format. Files build upon each other in a clear hierarchy:
-
-```mermaid
-flowchart TD
-    PB[projectbrief.md] --> PC[productContext.md]
-    PB --> SP[systemPatterns.md]
-    PB --> TC[techContext.md]
-    
-    PC --> AC[activeContext.md]
-    SP --> AC
-    TC --> AC
-    
-    AC --> P[progress.md]
-```
-
-### Core Files (Required)
-
-1. `projectbrief.md`
-   - Foundation document that shapes all other files
-   - Created at project start if it doesn't exist
-   - Defines core requirements and goals
-   - Source of truth for project scope
-
-2. `productContext.md`
-   - Why this project exists
-   - Problems it solves
-   - How it should work
-   - User experience goals
-
-3. `activeContext.md`
-   - Current work focus
-   - Recent changes
-   - Next steps
-   - Active decisions and considerations
-4. `systemPatterns.md`
-   - System architecture
-   - Key technical decisions
-   - Design patterns in use
-   - Component relationships
-
-5. `techContext.md`
-   - Technologies used
-   - Development setup
-   - Technical constraints
-   - Dependencies
-
-6. `progress.md`
-   - What works
-   - What's left to build
-   - Current status
-   - Known issues
-
-### Additional Context
-
-Create additional files/folders within memory-bank/ when they help organize:
-
-- Complex feature documentation
-
-- Integration specifications
-- API documentation
-- Testing strategies
-- Deployment procedures
-
-## Core Workflows
-
-### Plan Mode
-
-```mermaid
-flowchart TD
-    Start[Start] --> ReadFiles[Read Memory Bank]
-    ReadFiles --> CheckFiles{Files Complete?}
-    
-    CheckFiles -->|No| Plan[Create Plan]
-    Plan --> Document[Document in Chat]
-    
-    CheckFiles -->|Yes| Verify[Verify Context]
-    Verify --> Strategy[Develop Strategy]
-    Strategy --> Present[Present Approach]
-```
-
-### Act Mode
-
-```mermaid
-flowchart TD
-    Start[Start] --> Context[Check Memory Bank]
-    Context --> Update[Update Documentation]
-    Update --> Rules[Update .cursorrules if needed]
-    Rules --> Execute[Execute Task]
-    Execute --> Document[Document Changes]
-```
-
-## Documentation Updates
-
-Memory Bank updates occur when:
-
-1. Discovering new project patterns
-2. After implementing significant changes
-3. When user requests wьith **update memory bank** (MUST review ALL files)
-4. When context needs clarification
-
-```mermaid
-flowchart TD
-    Start[Update Process]
-    
-    subgraph Process
-        P1[Review ALL Files]
-        P2[Document Current State]
-        P3[Clarify Next Steps]
-        P4[Update .cursorrules]
-        
-        P1 --> P2 --> P3 --> P4
-    end
-    
-    Start --> Process
-```
-
-Note: When triggered by **update memory bank**, I MUST review every memory bank file, even if some don't require updates. Focus particularly on activeContext.md and progress.md as they track current state.
-
-## Project Intelligence (.cursorrules)
-
-The .cursorrules file is my learning journal for each project. It captures important patterns, preferences, and project intelligence that help me work more effectively. As I work with you and the project, I'll discover and document key insights that aren't obvious from the code alone.
-
-```mermaid
-flowchart TD
-    Start{Discover New Pattern}
-    
-    subgraph Learn [Learning Process]
-        D1[Identify Pattern]
-        D2[Validate with User]
-        D3[Document in .cursorrules]
-    end
-    
-    subgraph Apply [Usage]
-        A1[Read .cursorrules]
-        A2[Apply Learned Patterns]
-        A3[Improve Future Work]
-    end
-    
-    Start --> Learn
-    Learn --> Apply
-```
-
-### What to Capture
-
-- Critical implementation paths
-- User preferences and workflow
-- Project-specific patterns
-- Known challenges
-- Evolution of project decisions
-- Tool usage patterns
-
-The format is flexible - focus on capturing valuable insights that help me work more effectively with you and the project. Think of .cursorrules as a living document that grows smarter as we work together.
-
-REMEMBER: After every memory reset, I begin completely fresh. The Memory Bank is my only link to previous work. It must be maintained with precision and clarity, as my effectiveness depends entirely on its accuracy.
-
-## Planning
-
-When asked to enter "Planner Mode" or using the /plan command, deeply reflect upon the changes being asked and analyze existing code to map the full scope of changes needed. Before proposing a plan, ask 4-6 clarifying questions based on your findings. Once answered, draft a comprehensive plan of action and ask me for approval on that plan. Once approved, implement all steps in that plan. After completing each phase/step, mention what was just completed and what the next steps are + phases remaining after these steps
+# Project Context for TSX Viewer/Editor
+
+## Project Overview
+This project is a TSX viewer and editor application, supporting both web and Electron environments.
+
+## Key Issues Addressed in Recent Sessions:
+
+### 1. File Opening
+- **Electron:** Uses `ipcRenderer.send('open-file-dialog')` to trigger a native file dialog.
+- **Web (Fallback):** Uses a standard HTML `<input type="file">` element.
+- **Resolution:** Ensured both Electron and web fallbacks are functional. `file.path` is used if available (Electron), otherwise `file.name` is used for display.
+
+### 2. File Saving
+- **Electron:** Uses `ipcRenderer.send('save-file')` to save content to the original file path.
+- **Web (Fallback):** Downloads the edited content as a new file using `Blob` and `URL.createObjectURL`.
+- **File System Access API Attempt:** An attempt was made to use `window.showOpenFilePicker` and `fileHandle.createWritable()` for direct file saving in the web version.
+- **Current Status:** The File System Access API is not yet fully functional as expected (still prompts for save location even after selecting a file via `showOpenFilePicker`). This might be due to browser security models or specific implementation details.
+
+### 3. Editor "Sticking" / `isDirty` State
+- **Problem:** Previously, the editor experienced "sticking" during typing (specifically with hyphens), and the "Save" button remained inactive even after edits.
+- **Root Cause:** Incorrect handling of `onCodeChange` prop with `SandpackCodeEditor`. `SandpackCodeEditor` does not directly accept `onCodeChange`; changes are propagated via `SandpackProvider`'s `onCodeChange` prop.
+- **Resolution:**
+    - Removed the incorrect `onCodeChange` prop from `SandpackCodeEditor`.
+    - The `isDirty` state is now explicitly set to `true` when the editor panel is opened (via `setShowEditor(true)`). This means the "Save" button becomes active as soon as the editor is visible, regardless of real-time code changes. This is a temporary measure to unblock the user; real-time `isDirty` tracking will be re-evaluated later.
+
+### 4. HTTPS Setup for Vite Development Server
+- **Problem:** `npm run dev` resulted in `https://localhost:8081/` being inaccessible with `ERR_EMPTY_RESPONSE`.
+- **Resolution:** Switched to `@vitejs/plugin-basic-ssl` for more robust HTTPS support during local development.
+
+## Key Files Involved:
+- `src/App.tsx`: Contains the core React component logic, state management (`originalCode`, `editedCode`, `isDirty`, `filePath`, `fileName`, `fileHandle`), file handling (`handleFile`, `triggerFileDialog`, `handleSave`), and UI state (`showSource`, `showEditor`, `showPreview`).
+- `electron/main.js`: Handles IPC communications for file operations in the Electron environment.
+- `vite.config.ts`: Vite build configuration, including plugin setup for HTTPS.
+- `tsconfig.json`: TypeScript compiler options, updated to include `DOM.Iterable` for File System Access API types.
+
+## Next Steps (for future sessions):
+- Re-evaluate File System Access API implementation for direct file saving in web, potentially with more detailed logging or alternative approaches if the current one remains problematic.
+- Consider implementing real-time `isDirty` tracking if the current "activate on editor open" approach is insufficient.

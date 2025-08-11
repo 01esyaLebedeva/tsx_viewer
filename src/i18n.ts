@@ -8,13 +8,18 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    lng: 'ru',
     fallbackLng: 'en',
-    debug: true,
+    debug: import.meta.env.DEV,
     interpolation: {
       escapeValue: false,
     },
     backend: {
       loadPath: 'locales/{{lng}}/{{ns}}.json',
+    },
+    detection: {
+      order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
+      caches: ['cookie'],
     },
   });
 

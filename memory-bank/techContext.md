@@ -1,28 +1,34 @@
-# Technical Context: tsx_viewer
+# Technical Context for TSX Viewer/Editor
 
-## 1. Технологический стек
+## Core Technologies
+- **React:** The core UI library.
+- **TypeScript:** For static typing.
+- **Electron:** For the desktop application wrapper.
+- **Vite:** For the build tooling and development server.
+- **Sandpack:** For the code editor and preview functionality.
+- **Tailwind CSS:** For styling.
+- **i18next:** For internationalization.
+- **Jsonnet:** A data templating language used for defining the project graph.
 
-*   **Среда выполнения:** `Electron` - для создания кроссплатформенного десктопного приложения.
-*   **Фреймворк UI:** `React` - для построения пользовательского интерфейса.
-*   **Язык программирования:** `TypeScript` - для статической типизации и улучшения качества кода.
-*   **Сборщик:** `Vite` - используется как для сервера разработки, так и для сборки фронтенд-части приложения. Обеспечивает Hot Module Replacement (HMR) для быстрой разработки.
+## Key Architectural Patterns
+- **Component-Based Architecture:** The application is built around React components.
+- **State Management:** State is managed within the `App` component using React hooks (`useState`, `useEffect`, `useMemo`, `useCallback`).
+- **IPC Communication:** In the Electron environment, `ipcRenderer` and `ipcMain` are used for communication between the renderer and main processes for file operations.
+- **Conditional Logic for Web vs. Electron:** The application uses `window.Electron` to conditionally render different UI elements and logic for the web and desktop versions.
+- **Modular Project Graph:** The project's architecture is now formally defined using Jsonnet in a dedicated `project_graph` module, allowing for auditing and future visualization.
 
-## 2. Ключевые зависимости
+## Key Functions and Components
+- **`App`:** The main application component.
+- **`Editor`:** A component that wraps `SandpackCodeEditor` and uses the `useActiveCode` hook to manage code updates.
+- **`handleFile`:** Handles file loading and reading.
+- **`triggerFileDialog`:** Opens the file dialog.
+- **`handleSave`:** Saves the edited code.
+- **`handleCodeChange`:** Updates the `editedCode` state.
+- **`sandpackFiles`:** A memoized object that provides the files to the `SandpackProvider`.
+- **`project_graph/scripts/graph_auditor.mjs`:** Script to audit the project structure against the defined project graph.
 
-*   **`@codesandbox/sandpack-react`**: Ядро функциональности. Эта библиотека предоставляет компонент "песочницы", который компилирует и отображает TSX/JSX код в изолированном окружении прямо в браузере. Она также управляет загрузкой npm-зависимостей, указанных в коде.
-*   **`react-resizable-panels`**: Используется для создания гибкого пользовательского интерфейса с панелями, размер которых можно изменять.
-*   **`lucide-react`**: Библиотека для иконок в формате SVG, используемых в интерфейсе.
-*   **`i18next` / `react-i18next`**: Отвечают за интернационализацию (i18n) приложения, позволяя переключать язык интерфейса.
-*   **`electron-builder`**: Инструмент для сборки и упаковки Electron-приложения в дистрибутивы для различных ОС (Linux, Windows).
-
-## 3. Настройка разработки и сборки
-
-*   **Запуск в режиме разработки:** Команда `npm run dev` запускает Vite-сервер для фронтенда и одновременно запускает Electron, который загружает приложение с этого сервера.
-*   **Сборка приложения:** Команда `npm run build` выполняет несколько шагов:
-    1.  `tsc` - проверяет типы TypeScript.
-    2.  `vite build` - собирает React-приложение в статические файлы (в директорию `dist`).
-    3.  `electron-builder` - упаковывает приложение вместе со статическими файлами в исполняемые файлы и инсталляторы.
-*   **Конфигурация:**
-    *   `vite.config.ts`: Настраивает Vite, включая плагины и пути.
-    *   `electron/main.js`: Точка входа для основного процесса Electron.
-    *   `package.json`: Содержит все зависимости и скрипты для сборки и запуска.
+## Build and Development
+- **`npm run dev`:** Starts the Vite development server.
+- **`npm run build`:** Builds the application for production.
+- **`npm run electron:start`:** Starts the Electron application.
+- **`npm run graph:audit`:** Runs the project graph audit to check for discrepancies.

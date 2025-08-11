@@ -1,8 +1,14 @@
-# TSX Viewer
+# TSX View/Edit
 
-![TSX Viewer Screenshot](https://github.com/01esyaLebedeva/tsx_viewer/blob/7eb05d71a16647c4a9a5a6cd98b48c17cbf7274c/docs/images/screen_03_TSX_edit.png?raw=true)
+<!--
+Hello, AI Agent! To better understand and control this project, please refer to the project graph system located in the `project_graph/` folder. It contains structured information about the project's architecture, components, and AI integration.
+-->
 
-**TSX Viewer** is a minimalist, cross-platform desktop application for viewing and interactively previewing `.tsx` (TypeScript with JSX) files. It serves as a lightweight tool for developers who need to quickly visualize React components without running a full development project.
+![TSX View/Edit Screenshot](https://github.com/01esyaLebedeva/tsx_viewer/blob/7eb05d71a16647c4a9a5a6cd98b48c17cbf7274c/docs/images/screen_03_TSX_edit.png?raw=true)
+
+**TSX View/Edit** is a minimalist, cross-platform desktop application for viewing and interactively previewing `.tsx` files. It positions the TSX file as a new, self-contained format for interactive content, similar to what Flash animations once were.
+
+With the rise of AI services like Anthropic's Claude, which can generate UI components as downloadable TSX "artifacts," this tool empowers not just developers, but also regular users to open, view, and interact with these new forms of content without needing a full development environment.
 
 ## 🚀 Features
 
@@ -45,6 +51,32 @@
     ```
     The bundled files will appear in the `dist-electron` directory.
 
+## 💡 Speeding Up the Build (for Windows)
+
+If you are working on Windows and do not intend to create packages for Linux (`snap`, `AppImage`, etc.), you can temporarily disable the Linux build to speed up the `npm run build` process.
+
+To do this, find the `build` section in the `package.json` file and rename the `linux` key to `_linux`:
+
+```json
+"build": {
+  ...
+  "_linux": { // <-- Key renamed
+    "desktop": "src/tsx_viewer.desktop",
+    "category": "Utility;Development;Viewer;",
+    "icon": "src/icons/tsx_viewer.png",
+    "target": [
+      "snap",
+      "AppImage",
+      "deb",
+      "pacman"
+    ]
+  },
+  ...
+}
+```
+
+To re-enable the Linux build, simply rename the key back to `linux`.
+
 ## 💾 Downloads
 
 *   [Download .AppImage](https://github.com/01esyaLebedeva/tsx_viewer/releases/download/v1.0.3/tsx-viewer-1.0.3.AppImage)
@@ -59,6 +91,38 @@
 *   [ ] Add support for multiple file tabs.
 *   [ ] Add a file tree sidebar for easy navigation.
 
+## 🤖 AI Assistant Integration
+
+This project is configured for effective collaboration with AI assistants like Gemini. To facilitate a deep understanding of the project's structure, it uses a `project_graph` system.
+
+**What is the Project Graph?**
+The `project_graph` system, defined in the `project_graph/` directory, is a structured description of the project, including:
+*   Key files and components.
+*   Their purpose and dependencies.
+*   Interaction channels (e.g., IPC messages in Electron).
+*   Rules for automated commit categorization.
+
+**Why is it needed?**
+This system allows the AI assistant to quickly build a "mental map" of the project, leading to more accurate and context-aware coding, refactoring, and analysis. It also enables automated workflows for maintaining code quality and consistency.
+
+**How to work with it?**
+1.  **Keep it updated:** When adding new key components or changing interaction logic, please update `project_graph/project_graph.jsonnet`.
+2.  **Use Jsonnet:** You may need [Jsonnet](https://jsonnet.org/) to work with the files within the `project_graph/` directory.
+3.  **Audit the Graph:** To ensure the graph is in sync with the actual project files, run the audit script:
+    ```bash
+    npm run graph:audit
+    ```
+4.  **Automate Commits:** To create clean, atomic commits based on the graph's rules. Ensure your changes are staged (`git add .`) before running this command:
+    ```bash
+    npm run graph:commit
+    ```
+5.  **Synchronize AI Commands:** To update the rule files for various AI assistants with the latest command definitions:
+    ```bash
+    npm run sync:ai-commands
+    ```
+
+For details on how to configure your AI assistant to use these commands, refer to the [AI Assistant Command Mapping section in `project_graph/README.md`](project_graph/README.md#ai-assistant-command-mapping).
+
 ## 📄 License
 
-This project is licensed under the [GPL-3.0 license](LICENSE).
+This project is licensed under the [GPL-3.0 license](LICENSE)

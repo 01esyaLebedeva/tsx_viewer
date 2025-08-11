@@ -1,8 +1,8 @@
-name: tsx-viewer
-version: '1.0.3'
-summary: 'TSX viewer application built with Electron and Vite.'
+name: tsx-view-edit
+version: '1.0.6'
+summary: 'TSX view/edit application built with Electron and Vite.'
 description: |
-  TSX viewer application built with Electron and Vite.
+  TSX view/edit application built with Electron and Vite.
   Автор: Olesya Lebedeva
   Email: olesya.andreevna.lebedeva@gmail.com
 grade: stable
