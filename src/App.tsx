@@ -22,7 +22,17 @@ const Editor: React.FC<{ onCodeChange: (newCode: string) => void, theme: 'light'
     onCodeChange(code);
   }, [code, onCodeChange]);
 
-  return <SandpackCodeEditor key={theme} showLineNumbers showInlineErrors />;
+  return (
+    <SandpackCodeEditor
+      key={theme}
+      showLineNumbers
+      showInlineErrors
+      style={{
+        backgroundColor: theme === 'dark' ? '#18181b' : '#ffffff',
+        color: theme === 'dark' ? '#f4f4f5' : '#18181b',
+      }}
+    />
+  );
 };
 
 const App: React.FC = () => {
