@@ -6,7 +6,8 @@ import * as lucide from 'lucide-react';
 import './index.css';
 import { useTranslation, Trans } from 'react-i18next';
 import i18n from './i18n'; // Import i18n instance
-import { ThemeToggle } from './components/theme-toggle'
+import { ThemeToggle } from './components/theme-toggle';
+import LanguageSwitcher from './components/LanguageSwitcher';
 import { useTheme } from './hooks/use-theme';
 interface FileOpenedPayload {
   path: string;
@@ -236,6 +237,9 @@ root.render(
           className="flex flex-col justify-center items-center min-h-screen h-screen w-screen fixed inset-0 border-4 border-dashed rounded-lg bg-gray-100 text-gray-700 dark:bg-zinc-900 dark:text-gray-100 text-center transition-colors z-10"
           style={{ borderColor: '#333' }}
         >
+          <div style={{ position: 'absolute', top: '0', left: '50%', transform: 'translateX(-50%)' }}>
+            <LanguageSwitcher />
+          </div>
           <Upload size={64} className="mb-4" />
           <h1 className="text-2xl font-bold"><Trans i18nKey="drag_tsx_file">Перетащите TSX-файл сюда</Trans></h1>
           <p style={{ fontSize: '3rem', margin: '0.5rem 0' }}>{t('or')}</p>
@@ -255,7 +259,7 @@ root.render(
             <span className="text-base font-bold">TSX Viewer</span>
             <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
           </a>
-          <ThemeToggle />
+          <ThemeToggle targetId="source-panel-container" />
         </div>
       </div>
     );
@@ -307,7 +311,7 @@ root.render(
               <span className="text-base font-bold">TSX Viewer</span>
               <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
             </a>
-            <ThemeToggle />
+            <ThemeToggle targetId="source-panel-container" />
           </div>
         </header>
 
