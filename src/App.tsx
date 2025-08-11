@@ -6,7 +6,8 @@ import * as lucide from 'lucide-react';
 import './index.css';
 import { useTranslation, Trans } from 'react-i18next';
 import i18n from './i18n'; // Import i18n instance
-import { ThemeToggle } from './components/theme-toggle'
+import { ThemeToggle } from './components/theme-toggle';
+import LanguageSwitcher from './components/LanguageSwitcher';
 import { useTheme } from './hooks/use-theme';
 interface FileOpenedPayload {
   path: string;
@@ -21,7 +22,17 @@ const Editor: React.FC<{ onCodeChange: (newCode: string) => void, theme: 'light'
     onCodeChange(code);
   }, [code, onCodeChange]);
 
-  return <SandpackCodeEditor key={theme} showLineNumbers showInlineErrors />;
+  return (
+    <SandpackCodeEditor
+      key={theme}
+      showLineNumbers
+      showInlineErrors
+      style={{
+        backgroundColor: theme === 'dark' ? '#18181b' : '#ffffff',
+        color: theme === 'dark' ? '#f4f4f5' : '#18181b',
+      }}
+    />
+  );
 };
 
 const App: React.FC = () => {
@@ -72,11 +83,33 @@ const App: React.FC = () => {
       setIsDirty(false);
     };
 
+    const handleFileOpenedFromCli = (event: any, filePath: string) => {
+      // Since we get a raw file path, we need to ask the main process to read it for us.
+      // This is a good practice for security and to handle potential errors.
+      if (window.Electron?.ipcRenderer) {
+        window.Electron.ipcRenderer.send('read-file-from-cli', filePath);
+      }
+    };
+
+    const handleFileContentFromCli = (event: any, { path, name, content }: FileOpenedPayload) => {
+      setOriginalCode(content);
+      setEditedCode(content);
+      setIsDirty(false);
+      setFilePath(path);
+      setFileName(name);
+      setError(null);
+      setShowSource(false);
+      setShowEditor(false);
+      setShowPreview(true);
+    };
+
     if (window.Electron?.ipcRenderer) {
       window.Electron.ipcRenderer.on('locale-update', handleLocaleUpdate);
       window.Electron.ipcRenderer.on('file-opened', handleFileOpened);
       window.Electron.ipcRenderer.on('file-open-error', handleFileOpenError);
       window.Electron.ipcRenderer.on('file-saved-successfully', handleFileSaved);
+      window.Electron.ipcRenderer.on('file-opened-from-cli', handleFileOpenedFromCli);
+      window.Electron.ipcRenderer.on('file-content-from-cli', handleFileContentFromCli);
     }
 
     return () => {
@@ -85,14 +118,12 @@ const App: React.FC = () => {
         window.Electron.ipcRenderer.removeListener('file-opened', handleFileOpened);
         window.Electron.ipcRenderer.removeListener('file-open-error', handleFileOpenError);
         window.Electron.ipcRenderer.removeListener('file-saved-successfully', handleFileSaved);
+        window.Electron.ipcRenderer.removeListener('file-opened-from-cli', handleFileOpenedFromCli);
+        window.Electron.ipcRenderer.removeListener('file-content-from-cli', handleFileContentFromCli);
       }
     };
   }, []);
 
-  useEffect(() => {
-    setOriginalCode(editedCode);
-    setEditedCode(editedCode);
-  }, [theme]);
 
   const handleFile = (file: any) => {
     setIsLoading(true);
@@ -236,6 +267,9 @@ root.render(
           className="flex flex-col justify-center items-center min-h-screen h-screen w-screen fixed inset-0 border-4 border-dashed rounded-lg bg-gray-100 text-gray-700 dark:bg-zinc-900 dark:text-gray-100 text-center transition-colors z-10"
           style={{ borderColor: '#333' }}
         >
+          <div style={{ position: 'absolute', top: '0', left: '50%', transform: 'translateX(-50%)' }}>
+            <LanguageSwitcher />
+          </div>
           <Upload size={64} className="mb-4" />
           <h1 className="text-2xl font-bold"><Trans i18nKey="drag_tsx_file">Перетащите TSX-файл сюда</Trans></h1>
           <p style={{ fontSize: '3rem', margin: '0.5rem 0' }}>{t('or')}</p>
@@ -264,7 +298,7 @@ root.render(
   return (
     <React.Fragment>
       <div id="main-app-container" style={{ height: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-        <header className="relative flex flex-row items-center justify-between w-full px-4 py-6 min-h-[80px]" style={{ backgroundColor: '#18181b', color: '#f4f4f5' }}>
+        <header id="app-header" className="relative flex flex-row items-center justify-between w-full px-4 py-6 min-h-[80px]">
           <div className="flex-1 flex items-center gap-4">
             <div className="flex items-center">
               <button id="upload-new-file-button" onClick={triggerFileDialog} title={t('upload_new_file')} className="hover:text-blue-400 transition header-icon-button">
@@ -312,7 +346,7 @@ root.render(
         </header>
 
         <SandpackProvider
-          key={`${filePath}-${theme}`}
+          key={`${filePath}-${theme}-${originalCode}`}
           template="react-ts"
           files={sandpackFiles}
           theme={theme}
@@ -320,16 +354,14 @@ root.render(
           <PanelGroup direction="horizontal" style={{ flexGrow: 1, minHeight: 0 }}>
             {showSource && (
               <>
-                <Panel id="source-panel-container" order={1} defaultSize={showEditor ? 33 : 50}>
+                <Panel id="source-panel-container" key={`source-${theme}`} order={1} defaultSize={showEditor ? 33 : 50}>
                   <div
                     id="source-code-panel"
-                    className="source-code-panel"
+                    className={`source-code-panel ${theme === 'dark' ? 'dark' : ''}`}
                     style={{
                       height: '100%',
                       overflow: 'auto',
-                      borderRight: '1px solid #ccc',
-                      color: theme === 'dark' ? '#f4f4f5' : '#18181b',
-                      backgroundColor: theme === 'dark' ? '#18181b' : '#ffffff'
+                      borderRight: '1px solid #ccc'
                     }}
                   >
                     <pre><code>{originalCode}</code></pre>
@@ -340,7 +372,7 @@ root.render(
             )}
             {showEditor && (
               <>
-                <Panel id="editor-panel-container" order={2} defaultSize={showSource ? 33 : 50}>
+                <Panel id="editor-panel-container" key={`editor-${theme}`} order={2} defaultSize={showSource ? 33 : 50}>
                   <SandpackLayout id="editor-panel">
                     <Editor onCodeChange={handleCodeChange} theme={theme} />
                   </SandpackLayout>
@@ -349,7 +381,7 @@ root.render(
               </>
             )}
             {showPreview && (
-              <Panel id="preview-panel-container" order={3} defaultSize={showSource && showEditor ? 34 : (showSource || showEditor ? 50 : 100)}>
+              <Panel id="preview-panel-container" key={`preview-${theme}`} order={3} defaultSize={showSource && showEditor ? 34 : (showSource || showEditor ? 50 : 100)}>
                 <SandpackLayout id="preview-panel">
                   <SandpackPreview />
                 </SandpackLayout>

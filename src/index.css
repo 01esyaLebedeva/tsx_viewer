@@ -136,3 +136,13 @@ button.active {
 .dark .sp-editor {
   background-color: #18181b !important;
 }
+
+#source-code-panel {
+  background-color: #ffffff;
+  color: #18181b;
+}
+
+#source-code-panel.dark {
+  background-color: #18181b;
+  color: #f4f4f5;
+}
