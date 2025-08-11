@@ -259,7 +259,7 @@ root.render(
             <span className="text-base font-bold">TSX Viewer</span>
             <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
           </a>
-          <ThemeToggle targetId="source-panel-container" />
+          <ThemeToggle targetId="source-code-panel" />
         </div>
       </div>
     );
@@ -311,7 +311,7 @@ root.render(
               <span className="text-base font-bold">TSX Viewer</span>
               <span className="text-xs">&nbsp;v{__APP_VERSION__}</span>
             </a>
-            <ThemeToggle targetId="source-panel-container" />
+            <ThemeToggle targetId="source-code-panel" />
           </div>
         </header>
 
@@ -327,7 +327,7 @@ root.render(
                 <Panel id="source-panel-container" order={1} defaultSize={showEditor ? 33 : 50}>
                   <div
                     id="source-code-panel"
-                    className="source-code-panel"
+                    className={`source-code-panel ${theme === 'dark' ? 'dark' : ''}`}
                     style={{
                       height: '100%',
                       overflow: 'auto',

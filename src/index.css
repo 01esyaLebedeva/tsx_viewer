@@ -137,12 +137,12 @@ button.active {
   background-color: #18181b !important;
 }
 
-#source-panel-container {
+#source-code-panel {
   background-color: #ffffff;
   color: #18181b;
 }
 
-#source-panel-container.dark {
+#source-code-panel.dark {
   background-color: #18181b;
   color: #f4f4f5;
 }
