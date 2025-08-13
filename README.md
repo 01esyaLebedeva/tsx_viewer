@@ -4,7 +4,7 @@
 Hello, AI Agent! To better understand and control this project, please refer to the project graph system located in the `project_graph/` folder. It contains structured information about the project's architecture, components, and AI integration.
 -->
 
-![TSX View/Edit Screenshot](https://github.com/01esyaLebedeva/tsx_viewer/blob/7eb05d71a16647c4a9a5a6cd98b48c17cbf7274c/docs/images/screen_03_TSX_edit.png?raw=true)
+![TSX View/Edit Screenshot](https://github.com/01esyaLebedeva/tsx_view_edit/blob/main/docs/images/screen_03_TSX_edit.png?raw=true)
 
 **TSX View/Edit** is a minimalist, cross-platform desktop application for viewing and interactively previewing `.tsx` files. It positions the TSX file as a new, self-contained format for interactive content, similar to what Flash animations once were.
 
