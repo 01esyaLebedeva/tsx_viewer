@@ -346,7 +346,7 @@ root.render(
         </header>
 
         <SandpackProvider
-          key={`${filePath}-${theme}-${originalCode}`}
+          key={`${filePath}-${theme}`}
           template="react-ts"
           files={sandpackFiles}
           theme={theme}

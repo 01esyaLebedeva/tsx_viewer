@@ -1,0 +1,33 @@
+---
+alwaysApply: true
+---
+# Unified Base Rules for React 19 + TypeScript
+
+---
+
+## 1. Base Practices (Developer-Oriented)
+- Prefer functional components with hooks over class components.
+- Explicit TypeScript typing for props, state, and parameters.
+- Avoid `any` and implicit `any`.
+- Consistent naming aligned with project conventions.
+- Side effects only in `useEffect` with full dependency arrays.
+- Controlled form inputs unless explicitly required otherwise.
+
+---
+
+## 2. WFGY Semantic Layer
+- **BBMC**: Maintain consistent mapping from data source → props → UI; no untracked mutations.
+- **BBPF**: Use explicit boolean expressions in conditionals — avoid truthy/falsy shorthand.
+- **BBCR**: Each side effect must have a defined trigger and intended outcome validation.
+- **BBAM**: Keep types and variable semantics aligned with the project’s domain model.
+
+---
+
+## 3. Consistency Checks
+- No unused imports/variables/parameters.
+- Imports must match actual paths — no broken links.
+- Hooks must have identical call order across renders.
+- JSX must be valid and complete.
+- Async handlers must handle success, error, and timeout.
+
+---
