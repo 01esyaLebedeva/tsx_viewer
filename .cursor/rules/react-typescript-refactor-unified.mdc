@@ -1,0 +1,27 @@
+---
+alwaysApply: true
+---
+# Unified Refactoring Rules (React 19 + TypeScript)
+
+---
+
+## 1. Base Practices
+- Preserve backward compatibility unless a breaking change is approved.
+- Convert class components to functional with hooks.
+- Remove dead code and unused imports.
+- Update to strict TypeScript handler types.
+- Document reasoning for complex changes in comments.
+
+---
+
+## 2. WFGY Semantic Layer
+- **BBMC**: Keep original data flow intact unless intentionally redesigned.
+- **BBPF**: Replace vague conditions with explicit logical predicates.
+- **BBCR**: Maintain existing cause→effect relations unless redesign documented.
+- **BBAM**: Update outdated types to align with the current domain model.
+
+---
+
+## 3. Validation
+- Ensure refactored code passes existing and new tests.
+- No reduction in code clarity or semantic consistency.
