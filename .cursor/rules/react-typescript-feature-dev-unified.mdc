@@ -1,0 +1,30 @@
+---
+alwaysApply: true
+---
+# Unified Feature Development Rules (React 19 + TypeScript)
+
+---
+
+## 1. Base Practices
+- Follow existing folder/component naming patterns.
+- Check for reusable functions before creating new ones.
+- All new components must have explicit props & state types.
+- Add JSDoc for public component props.
+- Integrate into the existing state management pattern.
+- Place all feature files in designated folders with `index.ts` exports.
+- Include unit tests for all new logic.
+
+---
+
+## 2. WFGY Semantic Layer
+- **BBMC**: New props/state must trace from data source to UI without logic gaps.
+- **BBPF**: Add explicit guards for conditionals and branching logic.
+- **BBCR**: Async flows must confirm intended result from the cause chain.
+- **BBAM**: New logic must align with existing architecture & abstractions.
+
+---
+
+## 3. Quality Checks
+- Linting must pass.
+- Test coverage must not decrease.
+- API calls must handle all result states (success/failure/timeout).
