@@ -232,12 +232,25 @@ const App: React.FC = () => {
     }
   };
 
-  const sandpackFiles = useMemo(() => ({
-    '/App.tsx': originalCode,
-    '/index.tsx': {
-      code: `import React from 'react';
+  const sandpackFiles = useMemo(() => {
+    const isDark = theme === 'dark';
+    const styles = `
+body {
+  background-color: ${isDark ? '#18181b' : '#ffffff'};
+  color: ${isDark ? '#f4f4f5' : '#18181b'};
+}
+`;
+    return {
+      '/App.tsx': originalCode,
+      '/styles.css': {
+        code: styles,
+        hidden: true,
+      },
+      '/index.tsx': {
+        code: `import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import './styles.css';
 
 const root = createRoot(document.getElementById('root'));
 root.render(
@@ -245,17 +258,18 @@ root.render(
     <App />
   </React.StrictMode>
 );`,
-      hidden: true,
-    },
-    "/package.json": JSON.stringify({
-      main: "/index.tsx",
-      dependencies: {
-        "react": "latest",
-        "react-dom": "latest",
-        "lucide-react": "latest",
+        hidden: true,
       },
-    }),
-  }), [originalCode]);
+      "/package.json": JSON.stringify({
+        main: "/index.tsx",
+        dependencies: {
+          "react": "latest",
+          "react-dom": "latest",
+          "lucide-react": "latest",
+        },
+      }),
+    };
+  }, [originalCode, theme]);
 
   if (!filePath) {
     return (
